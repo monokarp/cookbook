@@ -1,0 +1,43 @@
+{
+    "common": {
+        "save": "Save",
+        "login": "Login",
+        "cookbook": "Cookbook"
+    },
+    "views": {
+        "recipes": "Recipes view",
+        "products": "Products view"
+    },
+    "product": {
+        "name": "Product name",
+        "details": {
+            "title": "Product details",
+            "totalWeight": "Total weight in grams",
+            "numberOfPieces": "Number of pieces",
+            "weightPerPiece": "Grams per piece"
+        },
+        "pricing": {
+            "type": "Pricing type",
+            "pricedByWeight": "Priced by total weight",
+            "pricedPerPiece": "Priced per piece",
+            "label": "Priced at {{pricePerGram}} per gram",
+            "totalPrice": "Total price"
+        },
+        "addNew": "Add new product"
+    },
+    "recipe": {
+        "name": "Recipe name",
+        "addNew": "Add new recipe",
+        "details": {
+            "title": "Recipe details",
+            "servingSize": "Serving size in grams"
+        }
+    },
+    "validation": {
+        "required": {
+            "integerGTE": "Required integer greater than or equal to {{gte}}",
+            "decimalGTE": "Required decimal (precision up to 3 digits) greater than or equal to {{gte}}",
+            "aplhanumeric": "Required letters or whitespaces"
+        }
+    }
+}

@@ -1,0 +1,43 @@
+{
+    "common": {
+        "save": "Сохранить",
+        "login": "Логин",
+        "cookbook": "Книга рецептов"
+    },
+    "views": {
+        "recipes": "Рецепты",
+        "products": "Продукты"
+    },
+    "product": {
+        "name": "Название продукта",
+        "details": {
+            "title": "Детали продукта",
+            "totalWeight": "Общий вес в граммах",
+            "numberOfPieces": "Количество штук",
+            "weightPerPiece": "Вес одной штуки в граммах"
+        },
+        "pricing": {
+            "type": "Тип цены",
+            "pricedByWeight": "Цена за упаковку",
+            "pricedPerPiece": "Цена за штуку",
+            "label": "Цена за грамм: {{pricePerGram}}",
+            "totalPrice": "Общая цена"
+        },
+        "addNew": "Добавить новый продукт"
+    },
+    "recipe":{
+        "name": "Имя рецепта",
+        "addNew": "Добавить рецепт",
+        "details": {
+            "title": "Детали рецепта",
+            "servingSize": "Количество в граммах"
+        }
+    },
+    "validation": {
+        "required": {
+            "integerGTE": "Ожидается целое число не менее {{gte}}",
+            "decimalGTE": "Ожидается десятичное число c точностью до тысячных, не менее {{gte}}",
+            "aplhanumeric": "Ожидаются буквы и пробелы"
+        }
+    }
+}

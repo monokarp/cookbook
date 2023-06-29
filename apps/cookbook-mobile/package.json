@@ -1,0 +1,32 @@
+{
+  "name": "cookbook-mobile",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-native": "*",
+    "@testing-library/react-native": "*",
+    "react": "*",
+    "react-native": "*",
+    "react-native-svg": "*",
+    "metro-config": "*",
+    "@react-navigation/material-top-tabs": "^6.6.3",
+    "@react-navigation/native": "*",
+    "@react-navigation/native-stack": "*",
+    "react-native-safe-area-context": "*",
+    "react-native-screens": "*",
+    "react-native-pager-view": "*",
+    "react-native-tab-view": "*",
+    "inversify-react-native": "*",
+    "inversify": "*",
+    "react-native-uuid": "*",
+    "reflect-metadata": "*",
+    "@babel/plugin-proposal-decorators": "*",
+    "@babel/plugin-transform-class-static-block": "*",
+    "react-hook-form": "*",
+    "zustand": "*",
+    "react-native-paper": "*",
+    "i18next": "*",
+    "react-i18next": "*",
+    "@react-native-picker/picker": "*"
+  }
+}
