@@ -26,7 +26,6 @@
     "zustand": "*",
     "react-native-paper": "*",
     "i18next": "*",
-    "react-i18next": "*",
-    "@react-native-picker/picker": "*"
+    "react-i18next": "*"
   }
 }

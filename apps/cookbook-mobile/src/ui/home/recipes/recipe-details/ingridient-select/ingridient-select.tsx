@@ -1,4 +1,3 @@
-import { Picker } from "@react-native-picker/picker";
 import { Product } from "apps/cookbook-mobile/src/domain/types/product/product";
 import { Ingridient } from "apps/cookbook-mobile/src/domain/types/recipe/ingridient";
 import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
@@ -8,19 +7,19 @@ import { View } from "react-native";
 import { Text, TextInput } from "react-native-paper";
 import { RegexPatterns } from "../../../products/product-details/util";
 import { styles } from "./ingridient-select.style";
+import { ProductSelect } from "./product-select/product-select";
 
 export interface IngridientSelectProps {
     selectedIngridient: Ingridient,
-    allProducts: Product[];
     onChange: (data: Ingridient) => void,
 }
 
-export function IngridientSelect({ selectedIngridient, allProducts, onChange }: IngridientSelectProps) {
+export function IngridientSelect({ selectedIngridient, onChange }: IngridientSelectProps) {
     const { t } = useTranslation();
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            selectedProductId: selectedIngridient.product.id,
+            selectedProduct: selectedIngridient.product,
             unitsPerServing: selectedIngridient.unitsPerServing.toString()
         },
         mode: 'onChange'
@@ -31,7 +30,7 @@ export function IngridientSelect({ selectedIngridient, allProducts, onChange }: 
             if (isValid) {
                 onChange(
                     new Ingridient(
-                        allProducts.find(one => one.id == data.selectedProductId),
+                        data.selectedProduct,
                         Number(data.unitsPerServing),
                     )
                 );
@@ -50,14 +49,13 @@ export function IngridientSelect({ selectedIngridient, allProducts, onChange }: 
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <View style={styles.pickerWrapper}>
-                            <Picker
-                                selectedValue={value}
-                                onValueChange={onChange}>
-                                {allProducts.map(one => <Picker.Item label={one.name} value={one.id} key={one.id} />)}
-                            </Picker>
+                            <ProductSelect
+                                selectedProduct={value}
+                                onSelect={onChange}
+                            />
                         </View>
                     )}
-                    name="selectedProductId"
+                    name="selectedProduct"
                 />
 
                 <Controller

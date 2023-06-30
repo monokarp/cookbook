@@ -12,6 +12,7 @@ import { RegexPatterns } from "../../products/product-details/util";
 import { useRecipesStore } from "../recipes.store";
 import { IngridientSelect } from "./ingridient-select/ingridient-select";
 import { styles } from "./recipe-details.style";
+import { useProductsStore } from "../../products/products.store";
 
 export function RecipeDetails({ route, navigation }) {
     const recipe: Recipe = route.params.recipe;
@@ -23,7 +24,8 @@ export function RecipeDetails({ route, navigation }) {
 
     const { t } = useTranslation();
 
-    const { products, setProducts, setRecipes } = useRecipesStore();
+    const { setRecipes } = useRecipesStore();
+    const { products, setProducts } = useProductsStore();
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -91,7 +93,6 @@ export function RecipeDetails({ route, navigation }) {
                 renderItem={({ item, index }) =>
                     <IngridientSelect
                         selectedIngridient={item}
-                        allProducts={products}
                         onChange={(value) => onIngridientSelect(value, index)}
                     />
                 }

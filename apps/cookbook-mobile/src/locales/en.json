@@ -9,6 +9,10 @@
         "products": "Products view"
     },
     "product": {
+        "search":{
+            "byName": "Search product by name",
+            "noneSelected": "No product selected"
+        },
         "name": "Product name",
         "details": {
             "title": "Product details",

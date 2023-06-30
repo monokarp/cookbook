@@ -10,23 +10,26 @@ import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { useTranslation } from 'react-i18next';
 import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
+import { PaperProvider } from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
-  const {t} = useTranslation();
-  
+  const { t } = useTranslation();
+
   return (
-    <Provider container={buildRootContainer()}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
-          <Stack.Screen name={RootViews.Home} component={HomeScreen} options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }} />
-          <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetails} options={{ headerTitle: t('recipe.details.title') }} />
-          <Stack.Screen name={RootViews.ProductDetails} component={ProductDetails} options={{ headerTitle: t('product.details.title') }} />
-        </Stack.Navigator>
-      </NavigationContainer>
+    <PaperProvider>
+      <Provider container={buildRootContainer()}>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={RootViews.Home} component={HomeScreen} options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }} />
+            <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetails} options={{ headerTitle: t('recipe.details.title') }} />
+            <Stack.Screen name={RootViews.ProductDetails} component={ProductDetails} options={{ headerTitle: t('product.details.title') }} />
+          </Stack.Navigator>
+        </NavigationContainer>
       </Provider>
+    </PaperProvider>
   );
 };
 
