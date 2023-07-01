@@ -3,7 +3,7 @@ export class RecipeEntity extends Realm.Object<RecipeEntity> implements RecipeDa
         name: "Recipe",
         primaryKey: "id",
         properties: {
-            id: { type: "uuid", indexed: true },
+            id: { type: "string", indexed: true },
             name: "string",
             positions: {
                 type: "list",

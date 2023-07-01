@@ -2,7 +2,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
 import React from 'react';
-import "reflect-metadata";
 import { HomeScreen } from './home/home-screen';
 import { ProductDetails } from './home/products/product-details/product-details';
 import { buildRootContainer } from './root.container';
@@ -19,12 +18,12 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   const { t } = useTranslation();
 
-  const { RealmProvider } = createRealmContext(realmConfig);
+  const RealmContext = createRealmContext(realmConfig);
 
   return (
     <PaperProvider>
-      <RealmProvider>
-        <Provider container={buildRootContainer()}>
+      <RealmContext.RealmProvider>
+        <Provider container={buildRootContainer(RealmContext)}>
           <NavigationContainer>
             <Stack.Navigator>
               <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
@@ -34,7 +33,7 @@ const App = () => {
             </Stack.Navigator>
           </NavigationContainer>
         </Provider>
-      </RealmProvider>
+      </RealmContext.RealmProvider>
     </PaperProvider>
   );
 };

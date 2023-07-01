@@ -7,7 +7,7 @@ export class ProductEntity extends Realm.Object<ProductEntity> implements Produc
         name: "Product",
         primaryKey: "id",
         properties: {
-            id: { type: "uuid", indexed: true },
+            id: { type: "string", indexed: true },
             name: "string",
             pricing: "PricingInfoEntity",
         },
