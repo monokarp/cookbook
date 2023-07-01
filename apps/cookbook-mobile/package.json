@@ -26,6 +26,8 @@
     "zustand": "*",
     "react-native-paper": "*",
     "i18next": "*",
-    "react-i18next": "*"
+    "react-i18next": "*",
+    "@realm/react": "*",
+    "realm": "*"
   }
 }

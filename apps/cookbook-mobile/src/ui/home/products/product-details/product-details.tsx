@@ -5,13 +5,15 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, SegmentedButtons, Text, TextInput } from 'react-native-paper';
-import { Product, ProductPricingType } from '../../../../domain/types/product/product';
-import { PricedByWeight, PricedPerPiece, PricingInfo } from '../../../../domain/types/product/product-pricing';
+import { Product } from '../../../../domain/types/product/product';
+import { PricingInfo, PricingInfoDto, ProductPricingType } from '../../../../domain/types/product/product-pricing/product-pricing';
 import { useProductsStore } from '../products.store';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
 import { styles } from './product-defails.style';
 import { RegexPatterns } from './util';
+import { PricedByWeightDto } from 'apps/cookbook-mobile/src/domain/types/product/product-pricing/by-weight';
+import { PricedPerPieceDto } from 'apps/cookbook-mobile/src/domain/types/product/product-pricing/per-piece';
 
 export function ProductDetails({ route, navigation }) {
     const product: Product = route.params.product;
@@ -22,7 +24,7 @@ export function ProductDetails({ route, navigation }) {
     const { setProducts } = useProductsStore();
 
     const [pricingType, setPricingType] = useState(product.getPricingType());
-    const [pricingInfo, setPricingInfo] = useState<PricingInfo | null>(null);
+    const [pricingInfo, setPricingInfo] = useState<PricingInfoDto | null>(null);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -33,11 +35,11 @@ export function ProductDetails({ route, navigation }) {
     });
 
     const onSubmit = async (data) => {
-        await service.Save(new Product(
-            product.id,
-            data.productName,
-            pricingInfo,
-        ));
+        await service.Save(new Product({
+            id: product.id,
+            name: data.productName,
+            pricing: pricingInfo,
+        }));
 
         await service.All().then(setProducts);
 
@@ -99,13 +101,13 @@ export function ProductDetails({ route, navigation }) {
 
                         case ProductPricingType.ByWeight:
                             return <PricingByWeightForm
-                                pricing={product.pricing as PricedByWeight}
+                                pricing={product.pricing as PricedByWeightDto}
                                 onChange={setPricingInfo}
                             />;
 
                         case ProductPricingType.PerPiece:
                             return <PricingPerPieceForm
-                                pricing={product.pricing as PricedPerPiece}
+                                pricing={product.pricing as PricedPerPieceDto}
                                 onChange={setPricingInfo}
                             />
 

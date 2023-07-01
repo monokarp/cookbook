@@ -1,15 +1,15 @@
+import { PricedByWeightDto } from "apps/cookbook-mobile/src/domain/types/product/product-pricing/by-weight";
+import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
-import { PricedByWeight } from "../../../../../domain/types/product/product-pricing";
 import { styles } from "../product-defails.style";
 import { RegexPatterns } from "../util";
-import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 
 export interface PricingByWeightFormProps {
-    pricing: PricedByWeight;
-    onChange: (formData: PricedByWeight) => void
+    pricing: PricedByWeightDto;
+    onChange: (formData: PricedByWeightDto) => void
 }
 
 export function PricingByWeightForm({ pricing, onChange }: PricingByWeightFormProps) {
@@ -26,12 +26,10 @@ export function PricingByWeightForm({ pricing, onChange }: PricingByWeightFormPr
     withUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
-                onChange(
-                    new PricedByWeight(
-                        Number(data.totalPrice),
-                        Number(data.totalGrams),
-                    )
-                );
+                onChange({
+                    totalPrice: Number(data.totalPrice),
+                    totalGrams: Number(data.totalGrams),
+                });
             }
         });
     });

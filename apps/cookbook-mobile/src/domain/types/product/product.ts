@@ -1,30 +1,27 @@
-import { PricingInfo } from "./product-pricing";
-import { isPricedByWeight, isPricedPerPiece } from "./product-pricing.type-guards";
+import { PricingInfo, PricingInfoDto, PricingInfoFrom, ProductPricingType } from "./product-pricing/product-pricing";
 
 export class Product {
+    public readonly id: string;
+    public readonly name: string;
+    public readonly pricing: PricingInfo;
 
-    constructor(
-        public readonly id: string,
-        public readonly name: string,
-        public readonly pricing: PricingInfo,
-    ) { }
+    constructor(dto: ProductDto) {
+        this.id = dto.id;
+        this.name = dto.name;
+        this.pricing = PricingInfoFrom(dto.pricing);
+    }
 
     public pricePerGram(): number {
         return this.pricing.pricePerGram();
     }
 
     public getPricingType(): ProductPricingType {
-        switch (true) {
-            case isPricedByWeight(this.pricing): return ProductPricingType.ByWeight;
-            case isPricedPerPiece(this.pricing): return ProductPricingType.PerPiece;
-            default: throw new Error('Unrecognized product pricing type');
-        }
+        return this.pricing.pricingType;
     }
 }
 
-export enum ProductPricingType {
-    PerPiece = "per-piece",
-    ByWeight = "by-weight",
-};
-
-
+export interface ProductDto {
+    id: string;
+    name: string;
+    pricing: PricingInfoDto;
+}

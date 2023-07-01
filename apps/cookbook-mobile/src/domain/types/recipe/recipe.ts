@@ -3,11 +3,15 @@ import { Ingridient } from "./ingridient";
 
 
 export class Recipe {
-    constructor(
-        public readonly id: string,
-        public readonly name: string,
-        public readonly positions: Position[],
-    ) { }
+    public readonly id: string;
+    public readonly name: string;
+    public readonly positions: Position[];
+
+    constructor(data: { id: string, name: string, positions: Position[] }) {
+        this.id = data.id;
+        this.name = data.name;
+        this.positions = data.positions;
+    }
 
     public totalPrice(): number {
         return this.positions.reduce((total, next) => round(total + next.price()), 0);

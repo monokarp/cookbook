@@ -4,7 +4,7 @@ import { RecipesView } from './recipes/recipes-view';
 import { HomeTabs } from './home-tabs.enum';
 import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
-import { ProductsRepository } from '../../app/repositories/products.repository';
+import { ProductsRepository } from '../../core/repositories/products.repository';
 import { useProductsStore } from './products/products.store';
 import { useTranslation } from 'react-i18next';
 

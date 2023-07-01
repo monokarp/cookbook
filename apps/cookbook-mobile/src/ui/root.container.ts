@@ -1,6 +1,6 @@
 import { Container } from 'inversify';
-import { ProductsRepository } from '../app/repositories/products.repository';
-import { RecipesRepository } from '../app/repositories/recipes.repository';
+import { ProductsRepository } from '../core/repositories/products.repository';
+import { RecipesRepository } from '../core/repositories/recipes.repository';
 import { ProductsService } from '../app/services/products.service';
 import { RecipesService } from '../app/services/recipes.service';
 

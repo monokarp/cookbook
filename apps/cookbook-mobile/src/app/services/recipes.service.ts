@@ -1,7 +1,7 @@
 import { Ingridient } from "../../domain/types/recipe/ingridient";
 import { Position, Recipe } from "../../domain/types/recipe/recipe";
-import { IngridientEntity, RecipeEntity } from "../entities/recipe.entity";
-import { RecipesRepository } from "../repositories/recipes.repository";
+import { IngridientData, RecipeData } from "../../core/entities/recipe.entity";
+import { RecipesRepository } from "../../core/repositories/recipes.repository";
 import { ProductsService } from "./products.service";
 import { injectable, inject } from 'inversify';
 import uuid from 'react-native-uuid';
@@ -13,17 +13,17 @@ export class RecipesService {
     @inject(ProductsService) private readonly productsService!: ProductsService;
 
     public Create(): Recipe {
-        return new Recipe(
-            uuid.v4().toString(),
-            '',
-            []
-        );
+        return new Recipe({
+            id: uuid.v4().toString(),
+            name: '',
+            positions: []
+        });
     }
 
     public async All(): Promise<Recipe[]> {
         const entities = await this.recipesRepo.All();
 
-        return Promise.all(entities.map(one => this.MapRecipeEntity(one)));
+        return asyncMap(entities, one => this.MapRecipeEntity(one));
     }
 
     public Save(recipe: Recipe): Promise<void> {
@@ -37,19 +37,22 @@ export class RecipesService {
         });
     }
 
-    private async MapRecipeEntity(entity: RecipeEntity): Promise<Recipe> {
-        return new Recipe(
-            entity.id,
-            entity.name,
-            await Promise.all(
-                entity.positions.map(one => this.MapIngridientEntity(one))
-            ));
+    private async MapRecipeEntity(entity: RecipeData): Promise<Recipe> {
+        return new Recipe({
+            id: entity.id,
+            name: entity.name,
+            positions: await asyncMap(entity.positions, one => this.MapIngridient(one))
+        });
     }
 
-    private async MapIngridientEntity(entity: IngridientEntity): Promise<Position> {
-        return new Ingridient(
-            await this.productsService.One(entity.productId),
-            entity.unitsPerServing
-        );
+    private async MapIngridient(entity: IngridientData): Promise<Position> {
+        return new Ingridient({
+            product: await this.productsService.One(entity.productId),
+            unitsPerServing: entity.unitsPerServing
+        });
     }
+}
+
+function asyncMap<T, U>(array: T[], callback: (item: T) => Promise<U>): Promise<U[]> {
+    return Promise.all(array.map(callback));
 }

@@ -1,16 +1,15 @@
+import { PricedPerPieceDto } from "apps/cookbook-mobile/src/domain/types/product/product-pricing/per-piece";
+import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
-import { PricedPerPiece } from "../../../../../domain/types/product/product-pricing";
 import { styles } from "../product-defails.style";
 import { RegexPatterns } from "../util";
-import { useEffect } from "react";
-import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 
 export interface PricingPerPieceFormProps {
-    pricing: PricedPerPiece;
-    onChange: (formData: PricedPerPiece) => void
+    pricing: PricedPerPieceDto;
+    onChange: (formData: PricedPerPieceDto) => void
 }
 
 export function PricingPerPieceForm({ pricing, onChange }: PricingPerPieceFormProps) {
@@ -28,13 +27,11 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingPerPieceFormPr
     withUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
-                onChange(
-                    new PricedPerPiece(
-                        Number(data.totalPrice),
-                        Number(data.numberOfPieces),
-                        Number(data.gramsPerPiece),
-                    )
-                );
+                onChange({
+                    totalPrice: Number(data.totalPrice),
+                    numberOfPieces: Number(data.numberOfPieces),
+                    gramsPerPiece: Number(data.gramsPerPiece),
+                });
             }
         });
     });
