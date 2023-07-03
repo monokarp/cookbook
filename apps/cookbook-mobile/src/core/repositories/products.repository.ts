@@ -1,39 +1,90 @@
-import { useObject, useQuery, useRealm } from '@realm/react';
-import { injectable } from 'inversify';
-import { ProductEntity } from "../entities/product.entity";
-import { BaseRepository } from './base.repository';
-import { ProductDto } from '../../domain/types/product/product';
+import { inject, injectable } from 'inversify';
+import uuid from 'react-native-uuid';
+import { Product, ProductDto } from '../../domain/types/product/product';
+import { Database } from '../database/database';
+import { ProductPricing, ProductPricingType } from '../../domain/types/product/product-pricing';
 
 @injectable()
-export class ProductsRepository extends BaseRepository {
-    // private readonly products: ProductEntity[] = [
-    //     { id: '5cd4091b-c610-4371-a83b-5622438d24d9', name: 'Яблоко', pricing: { totalPrice: 6.54, totalGrams: 100 } },
-    //     { id: 'd4ba3654-7f1b-4e19-9be3-81fda9874710', name: 'Банан', pricing: { totalPrice: 8.21, totalGrams: 50 } },
-    //     { id: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a', name: 'Морковка', pricing: { totalPrice: 2.87, totalGrams: 25 } },
-    // ];
+export class ProductsRepository {
 
-    public All(): Promise<ProductDto[]> {
-        return this.RunAsync(() => Array.from(useQuery(ProductEntity).snapshot().values()));
-    }
+    @inject(Database) private readonly database!: Database;
 
-    public One(id: string): Promise<ProductDto | null> {
-        return this.RunAsync(() => useObject(ProductEntity, id));
-    }
-
-    public Save(entity: ProductDto): Promise<void> {
-        return this.RunAsync(() => {
-            const realm = useRealm();
-
-            const existing = useObject(ProductEntity, entity.id)
-
-            realm.write(() => {
-                if (!existing) {
-                    realm.create(ProductEntity, entity);
-                } else {
-                    existing.name = entity.name;
-                    existing.pricing = entity.pricing;
-                }
-            });
+    public Create(): Product {
+        return new Product({
+            id: uuid.v4().toString(),
+            name: '',
+            pricing: new ProductPricing({
+                pricingType: ProductPricingType.ByWeight,
+                totalPrice: 0,
+                totalWeight: 0,
+                numberOfUnits: 0,
+            })
         });
     }
+
+    public async All(): Promise<Product[]> {
+        const [result] = await this.database.ExecuteSql(`
+            SELECT [Id], [Name], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits]
+            FROM [Products]
+            LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id];
+        `);
+
+        return result.rows.raw().map(MapProductRow);
+    }
+
+    public async One(id: string): Promise<Product | null> {
+        const [result] = await this.database.ExecuteSql(`
+            SELECT [Id], [Name], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits]
+            FROM [Products]
+            LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id]
+            WHERE [Id] = ?;
+        `, [id]);
+
+        return result.rows.length
+            ? MapProductRow(result.rows.item(0))
+            : null;
+    }
+
+    public async Save(product: ProductDto): Promise<void> {
+        await this.database.ExecuteSql(`
+            INSERT OR REPLACE INTO [Products] ([Id], [Name])
+            VALUES (?, ?);
+        `, [
+            product.id,
+            product.name,
+        ]);
+
+        await this.database.ExecuteSql(`
+            INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits])
+            VALUES (?, ?, ?, ?, ?);
+        `, [
+            product.id,
+            product.pricing.pricingType,
+            product.pricing.totalPrice,
+            product.pricing.totalWeight,
+            product.pricing.numberOfUnits,
+        ]);
+    }
+}
+
+function MapProductRow(row: ProductRow): Product {
+    return new Product({
+        id: row.Id,
+        name: row.Name,
+        pricing: new ProductPricing({
+            pricingType: row.PricingType,
+            totalPrice: row.TotalPrice,
+            totalWeight: row.TotalWeight,
+            numberOfUnits: row.NumberOfUnits,
+        })
+    });
+}
+
+interface ProductRow {
+    Id: string;
+    Name: string;
+    PricingType: ProductPricingType;
+    TotalPrice: number;
+    TotalWeight: number;
+    NumberOfUnits: number;
 }

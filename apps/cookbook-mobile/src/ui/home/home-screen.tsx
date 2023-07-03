@@ -1,12 +1,8 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { useTranslation } from 'react-i18next';
+import { HomeTabs } from './home-tabs.enum';
 import { ProductsView } from './products/products-view';
 import { RecipesView } from './recipes/recipes-view';
-import { HomeTabs } from './home-tabs.enum';
-import { useInjection } from 'inversify-react-native';
-import { useEffect } from 'react';
-import { ProductsRepository } from '../../core/repositories/products.repository';
-import { useProductsStore } from './products/products.store';
-import { useTranslation } from 'react-i18next';
 
 
 const Tab = createMaterialTopTabNavigator();

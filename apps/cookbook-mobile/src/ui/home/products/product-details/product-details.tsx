@@ -1,4 +1,6 @@
-import { ProductsService } from 'apps/cookbook-mobile/src/app/services/products.service';
+
+import { RegexPatterns } from 'apps/cookbook-mobile/src/constants';
+import { ProductsRepository } from 'apps/cookbook-mobile/src/core/repositories/products.repository';
 import { useInjection } from 'inversify-react-native';
 import { useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
@@ -6,25 +8,22 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, SegmentedButtons, Text, TextInput } from 'react-native-paper';
 import { Product } from '../../../../domain/types/product/product';
-import { PricingInfo, PricingInfoDto, ProductPricingType } from '../../../../domain/types/product/product-pricing/product-pricing';
+import { ProductPricing, ProductPricingType } from '../../../../domain/types/product/product-pricing';
 import { useProductsStore } from '../products.store';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
 import { styles } from './product-defails.style';
-import { RegexPatterns } from './util';
-import { PricedByWeightDto } from 'apps/cookbook-mobile/src/domain/types/product/product-pricing/by-weight';
-import { PricedPerPieceDto } from 'apps/cookbook-mobile/src/domain/types/product/product-pricing/per-piece';
 
 export function ProductDetails({ route, navigation }) {
     const product: Product = route.params.product;
     const { t } = useTranslation();
 
-    const service = useInjection(ProductsService);
+    const repo = useInjection(ProductsRepository);
 
     const { setProducts } = useProductsStore();
 
-    const [pricingType, setPricingType] = useState(product.getPricingType());
-    const [pricingInfo, setPricingInfo] = useState<PricingInfoDto | null>(null);
+    const [pricingType, setPricingType] = useState(product.pricing.pricingType);
+    const [pricingInfo, setPricingInfo] = useState<ProductPricing | null>(null);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -35,13 +34,13 @@ export function ProductDetails({ route, navigation }) {
     });
 
     const onSubmit = async (data) => {
-        await service.Save(new Product({
+        await repo.Save(new Product({
             id: product.id,
             name: data.productName,
             pricing: pricingInfo,
         }));
 
-        await service.All().then(setProducts);
+        await repo.All().then(setProducts);
 
         navigation.goBack();
     };
@@ -101,13 +100,13 @@ export function ProductDetails({ route, navigation }) {
 
                         case ProductPricingType.ByWeight:
                             return <PricingByWeightForm
-                                pricing={product.pricing as PricedByWeightDto}
+                                pricing={product.pricing}
                                 onChange={setPricingInfo}
                             />;
 
                         case ProductPricingType.PerPiece:
                             return <PricingPerPieceForm
-                                pricing={product.pricing as PricedPerPieceDto}
+                                pricing={product.pricing}
                                 onChange={setPricingInfo}
                             />
 

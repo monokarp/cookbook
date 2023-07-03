@@ -29,7 +29,7 @@ export function ProductSelect({ selectedProduct, onSelect }: ProductSelectProps)
                         selectedProduct
                             ? <Card.Title
                                 title={selectedProduct.name}
-                                subtitle={t('product.pricing.label', { pricePerGram: selectedProduct.pricePerGram() })}
+                                subtitle={t('product.pricing.label', { pricePerGram: selectedProduct.pricing.pricePerGram() })}
                             />
                             : <Card.Title
                                 title={t('product.search.noneSelected')}

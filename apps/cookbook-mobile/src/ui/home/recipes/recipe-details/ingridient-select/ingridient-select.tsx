@@ -1,13 +1,12 @@
-import { Product } from "apps/cookbook-mobile/src/domain/types/product/product";
 import { Ingridient } from "apps/cookbook-mobile/src/domain/types/recipe/ingridient";
 import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from "react-native-paper";
-import { RegexPatterns } from "../../../products/product-details/util";
 import { styles } from "./ingridient-select.style";
 import { ProductSelect } from "./product-select/product-select";
+import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
 
 export interface IngridientSelectProps {
     selectedIngridient: Ingridient,
@@ -29,10 +28,10 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
         trigger().then(isValid => {
             if (isValid) {
                 onChange(
-                    new Ingridient(
-                        data.selectedProduct,
-                        Number(data.unitsPerServing),
-                    )
+                    new Ingridient({
+                        product: data.selectedProduct,
+                        unitsPerServing: Number(data.unitsPerServing),
+                    })
                 );
             }
         });

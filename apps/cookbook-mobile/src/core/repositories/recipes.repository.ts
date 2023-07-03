@@ -1,64 +1,127 @@
-import { useObject, useQuery, useRealm } from '@realm/react';
-import { injectable } from 'inversify';
-import { RecipeEntity, RecipeData } from '../entities/recipe.entity';
-import { BaseRepository } from './base.repository';
+import { inject, injectable } from 'inversify';
+import uuid from 'react-native-uuid';
+import { Product } from '../../domain/types/product/product';
+import { ProductPricing, ProductPricingType } from '../../domain/types/product/product-pricing';
+import { Ingridient } from '../../domain/types/recipe/ingridient';
+import { Position, Recipe } from '../../domain/types/recipe/recipe';
+import { Database } from '../database/database';
 
 @injectable()
-export class RecipesRepository extends BaseRepository {
+export class RecipesRepository {
 
-    // private readonly recipes: RecipeEntity[] = [
-    //     {
-    //         id: '5cd4091b-c610-4371-a83b-5622438d24d9',
-    //         name: 'Яблоко c бананом',
-    //         positions: [
-    //             {
-    //                 productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
-    //                 unitsPerServing: 100
-    //             },
-    //             {
-    //                 productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
-    //                 unitsPerServing: 50
-    //             }
-    //         ]
-    //     },
-    //     {
-    //         id: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
-    //         name: 'Банан с морковкой',
-    //         positions: [
-    //             {
-    //                 productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
-    //                 unitsPerServing: 100
-    //             },
-    //             {
-    //                 productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
-    //                 unitsPerServing: 20
-    //             }
-    //         ]
-    //     },
-    // ];
+    @inject(Database) private readonly database!: Database;
 
-    public All(): Promise<RecipeData[]> {
-        return this.RunAsync(() => Array.from(useQuery(RecipeEntity).snapshot().values()));
-    }
-
-    public One(id: string): Promise<RecipeData | null> {
-        return this.RunAsync(() => useObject(RecipeEntity, id));
-    }
-
-    public Save(entity: RecipeData): Promise<void> {
-        return this.RunAsync(() => {
-            const realm = useRealm();
-
-            const existing = useObject(RecipeEntity, entity.id)
-
-            realm.write(() => {
-                if (!existing) {
-                    realm.create(RecipeEntity, entity);
-                } else {
-                    existing.name = entity.name;
-                    existing.positions = entity.positions;
-                }
-            });
+    public Create(): Recipe {
+        return new Recipe({
+            id: uuid.v4().toString(),
+            name: '',
+            positions: []
         });
     }
+
+    public async All(): Promise<Recipe[]> {
+        const [result] = await this.database.ExecuteSql(`
+            SELECT [Recipes].[Id], [Recipes].[Name], [Ingridients].[PositionNumber], [Ingridients].[UnitsPerServing], [Ingridients].[ProductId], [Products].[Name] AS [ProductName], [ProductPricing].[PricingType], [ProductPricing].[TotalPrice], [ProductPricing].[TotalWeight], [ProductPricing].[NumberOfUnits]
+            FROM [Recipes]
+            LEFT JOIN [Ingridients] ON [Ingridients].[RecipeId] = [Recipes].[Id]
+            LEFT JOIN [Products] ON [Products].[Id] = [Ingridients].[ProductId]
+            LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id]
+            ORDER BY [Recipes].[Id], [Ingridients].[PositionNumber]
+        `);
+
+        return result.rows.length
+            ? GroupByRecipeId(result.rows.raw()).map(MapRecipe)
+            : [];
+    }
+
+    public async One(id: string): Promise<Recipe | null> {
+        const [result] = await this.database.ExecuteSql(`
+            SELECT [Recipes].[Id], [Recipes].[Name], [Ingridients].[PositionNumber], [Ingridients].[UnitsPerServing], [Ingridients].[ProductId], [Products].[Name] AS [ProductName], [ProductPricing].[PricingType], [ProductPricing].[TotalPrice], [ProductPricing].[TotalWeight], [ProductPricing].[NumberOfUnits]
+            FROM [Recipes]
+            LEFT JOIN [Ingridients] ON [Ingridients].[RecipeId] = [Recipes].[Id]
+            LEFT JOIN [Products] ON [Products].[Id] = [Ingridients].[ProductId]
+            LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id]
+            ORDER BY [Ingridients].[PositionNumber]
+            WHERE [Id] = ?
+        `, [id]);
+
+        return result.rows.length
+            ? MapRecipe(result.rows.raw())
+            : null;
+    }
+
+    public async Save(recipe: Recipe): Promise<void> {
+        await this.database.ExecuteSql(`
+            INSERT OR REPLACE INTO [Recipes] ([Id], [Name])
+            VALUES (?, ?);
+        `, [
+            recipe.id,
+            recipe.name,
+        ]);
+
+        let idx = 1;
+
+        for (const position of recipe.positions) {
+            await this.database.ExecuteSql(`
+                INSERT OR REPLACE INTO [Ingridients] ([RecipeId], [PositionNumber], [ProductId], [UnitsPerServing])
+                values (?, ?, ?, ?);
+            `, [
+                recipe.id,
+                idx++,
+                position.product.id,
+                position.unitsPerServing
+            ]);
+        }
+    }
+}
+
+interface RecipeRow {
+    Id: string;
+    Name: string;
+    PositionNumber: number;
+    UnitsPerServing: number;
+    ProductId: string;
+    ProductName: string;
+    PricingType: string;
+    TotalPrice: number;
+    TotalWeight: number;
+    NumberOfUnits: number;
+}
+
+function MapRecipePosition(row: RecipeRow): Position {
+    return new Ingridient({
+        product: new Product({
+            id: row.ProductId,
+            name: row.ProductName,
+            pricing: new ProductPricing({
+                pricingType: row.PricingType as ProductPricingType,
+                totalWeight: row.TotalWeight,
+                totalPrice: row.TotalPrice,
+                numberOfUnits: row.NumberOfUnits
+            })
+        }),
+        unitsPerServing: row.UnitsPerServing
+    });
+}
+
+function MapRecipe(rows: RecipeRow[]): Recipe {
+    return new Recipe({
+        id: rows[0].Id,
+        name: rows[0].Name,
+        positions: rows.map(MapRecipePosition)
+    });
+}
+
+function GroupByRecipeId(rows: RecipeRow[]): RecipeRow[][] {
+    const groups = new Map<string, RecipeRow[]>();
+
+    rows.forEach(row => {
+        const group = groups.get(row.Id) ?? [];
+
+        group.push(row);
+
+        groups.set(row.Id, group);
+    });
+
+    return Array.from(groups.values());
 }

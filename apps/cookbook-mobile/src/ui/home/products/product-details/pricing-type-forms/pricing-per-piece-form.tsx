@@ -1,24 +1,21 @@
-import { PricedPerPieceDto } from "apps/cookbook-mobile/src/domain/types/product/product-pricing/per-piece";
+import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
+import { round } from "apps/cookbook-mobile/src/domain/util";
 import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
 import { styles } from "../product-defails.style";
-import { RegexPatterns } from "../util";
+import { PricingFormProps } from "./props";
 
-export interface PricingPerPieceFormProps {
-    pricing: PricedPerPieceDto;
-    onChange: (formData: PricedPerPieceDto) => void
-}
 
-export function PricingPerPieceForm({ pricing, onChange }: PricingPerPieceFormProps) {
+export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
     const { t } = useTranslation();
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            numberOfPieces: pricing.numberOfPieces?.toString(),
-            gramsPerPiece: pricing.gramsPerPiece?.toString(),
+            numberOfPieces: pricing.numberOfUnits?.toString(),
+            gramsPerPiece: round(pricing.totalWeight / pricing.numberOfUnits).toString(),
             totalPrice: pricing.totalPrice?.toString()
         },
         mode: 'onChange'
@@ -28,9 +25,10 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingPerPieceFormPr
         trigger().then(isValid => {
             if (isValid) {
                 onChange({
+                    pricingType: pricing.pricingType,
                     totalPrice: Number(data.totalPrice),
-                    numberOfPieces: Number(data.numberOfPieces),
-                    gramsPerPiece: Number(data.gramsPerPiece),
+                    numberOfUnits: Number(data.numberOfPieces),
+                    totalWeight: round(Number(data.numberOfPieces) * Number(data.gramsPerPiece)),
                 });
             }
         });

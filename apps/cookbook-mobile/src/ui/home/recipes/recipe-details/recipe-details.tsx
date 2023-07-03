@@ -1,5 +1,6 @@
-import { ProductsService } from "apps/cookbook-mobile/src/app/services/products.service";
-import { RecipesService } from "apps/cookbook-mobile/src/app/services/recipes.service";
+
+import { ProductsRepository } from "apps/cookbook-mobile/src/core/repositories/products.repository";
+import { RecipesRepository } from "apps/cookbook-mobile/src/core/repositories/recipes.repository";
 import { Ingridient } from "apps/cookbook-mobile/src/domain/types/recipe/ingridient";
 import { Recipe } from "apps/cookbook-mobile/src/domain/types/recipe/recipe";
 import { useInjection } from "inversify-react-native";
@@ -8,19 +9,19 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
-import { RegexPatterns } from "../../products/product-details/util";
+import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { IngridientSelect } from "./ingridient-select/ingridient-select";
 import { styles } from "./recipe-details.style";
-import { useProductsStore } from "../../products/products.store";
+import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
 
 export function RecipeDetails({ route, navigation }) {
     const recipe: Recipe = route.params.recipe;
 
     const [ingridients, setIngridients] = useState(recipe.positions);
 
-    const recipeService = useInjection(RecipesService);
-    const productsService = useInjection(ProductsService);
+    const recipeRepo = useInjection(RecipesRepository);
+    const productsRepo = useInjection(ProductsRepository);
 
     const { t } = useTranslation();
 
@@ -35,19 +36,21 @@ export function RecipeDetails({ route, navigation }) {
     });
 
     const onSubmit = async (data) => {
-        await recipeService.Save(new Recipe(
-            recipe.id,
-            data.recipeName,
-            ingridients
-        ));
+        await recipeRepo.Save(
+            new Recipe({
+                id: recipe.id,
+                name: data.recipeName,
+                positions: ingridients
+            })
+        );
 
-        await recipeService.All().then(setRecipes);
+        await recipeRepo.All().then(setRecipes);
 
         navigation.goBack();
     };
 
     function addNewIngridient() {
-        setIngridients([...ingridients, new Ingridient(products[0], 0)]);
+        setIngridients([...ingridients, new Ingridient({ product: products[0], unitsPerServing: 0 })]);
     }
 
     function onIngridientSelect(value: Ingridient, index: number) {
@@ -60,8 +63,8 @@ export function RecipeDetails({ route, navigation }) {
     }
 
     useEffect(() => {
-        productsService.All().then(setProducts);
-    }, [productsService, setProducts]);
+        productsRepo.All().then(setProducts);
+    }, [productsRepo, setProducts]);
 
     return (
         <View style={styles.container}>

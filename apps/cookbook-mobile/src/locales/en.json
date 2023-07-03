@@ -2,7 +2,8 @@
     "common": {
         "save": "Save",
         "login": "Login",
-        "cookbook": "Cookbook"
+        "cookbook": "Cookbook",
+        "loading": "Loading..."
     },
     "views": {
         "recipes": "Recipes view",
