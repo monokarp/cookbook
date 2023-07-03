@@ -15,7 +15,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
             numberOfPieces: pricing.numberOfUnits?.toString(),
-            gramsPerPiece: round(pricing.totalWeight / pricing.numberOfUnits).toString(),
+            gramsPerPiece: round(pricing.totalWeight ? pricing.totalWeight / pricing.numberOfUnits : 0).toString(),
             totalPrice: pricing.totalPrice?.toString()
         },
         mode: 'onChange'

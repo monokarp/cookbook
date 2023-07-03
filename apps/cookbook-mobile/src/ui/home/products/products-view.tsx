@@ -29,7 +29,6 @@ export function ProductsView({ navigation }) {
               onPress={() => navigation.navigate(RootViews.ProductDetails, { product: item })}
             >
               <Text style={{ fontWeight: '800' }}>{item.name}</Text>
-              <Text>{t('product.pricing.label', { pricePerGram: item.pricing.pricePerGram() })}</Text>
             </Pressable>
           }
           keyExtractor={product => product.id}

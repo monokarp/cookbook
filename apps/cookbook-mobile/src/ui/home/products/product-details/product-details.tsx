@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, SegmentedButtons, Text, TextInput } from 'react-native-paper';
 import { Product } from '../../../../domain/types/product/product';
-import { ProductPricing, ProductPricingType } from '../../../../domain/types/product/product-pricing';
+import { ProductPricingDto, ProductPricingType } from '../../../../domain/types/product/product-pricing';
 import { useProductsStore } from '../products.store';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
@@ -23,7 +23,7 @@ export function ProductDetails({ route, navigation }) {
     const { setProducts } = useProductsStore();
 
     const [pricingType, setPricingType] = useState(product.pricing.pricingType);
-    const [pricingInfo, setPricingInfo] = useState<ProductPricing | null>(null);
+    const [pricingInfo, setPricingInfo] = useState<ProductPricingDto | null>(null);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {

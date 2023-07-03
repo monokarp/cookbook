@@ -28,7 +28,6 @@ return (
             onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: item })}
           >
             <Text style={{ fontWeight: '800' }}>{item.name}</Text>
-            <Text>{`Number of ingridients: ${item.positions.length}`}</Text>
           </Pressable>
         }
         keyExtractor={product => product.id}
