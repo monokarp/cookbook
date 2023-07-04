@@ -2,15 +2,16 @@ import { Product } from "apps/cookbook-mobile/src/domain/types/product/product";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, List, Portal, TextInput } from "react-native-paper";
+import { Card, Dialog, List, Portal, TextInput, Text } from "react-native-paper";
 import { useProductsStore } from "../../../../products/products.store";
 
 export interface ProductSelectProps {
     selectedProduct: Product | null,
+    ingridientPrice: number,
     onSelect: (product: Product) => void,
 }
 
-export function ProductSelect({ selectedProduct, onSelect }: ProductSelectProps) {
+export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: ProductSelectProps) {
     const { t } = useTranslation();
 
     const { products } = useProductsStore();
@@ -25,7 +26,15 @@ export function ProductSelect({ selectedProduct, onSelect }: ProductSelectProps)
         <View>
             <Pressable onPress={show}>
                 <Card>
-                    <Card.Title title={selectedProduct ? selectedProduct.name : t('product.search.noneSelected')} />
+                    <Card.Title title={
+                        selectedProduct
+                            ? selectedProduct.name
+                            : t('product.search.noneSelected')
+                    } />
+                    <Card.Content>
+                        <Text variant="labelSmall">{t('product.pricing.label', { pricePerGram: selectedProduct.pricing.pricePerGram() })}</Text>
+                        <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${ingridientPrice}`}</Text>
+                    </Card.Content>
                 </Card>
             </Pressable>
             <Portal>

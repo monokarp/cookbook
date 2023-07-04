@@ -36,7 +36,8 @@
         "details": {
             "title": "Recipe details",
             "servingSize": "Serving size in grams"
-        }
+        },
+        "ingridientPrice": "Ingridient price"
     },
     "validation": {
         "required": {

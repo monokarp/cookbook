@@ -36,7 +36,8 @@
         "details": {
             "title": "Детали рецепта",
             "servingSize": "Количество в граммах"
-        }
+        },
+        "ingridientPrice": "Стоимость ингридиента"
     },
     "validation": {
         "required": {

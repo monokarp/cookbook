@@ -7,6 +7,7 @@ import { Text, TextInput } from "react-native-paper";
 import { styles } from "./ingridient-select.style";
 import { ProductSelect } from "./product-select/product-select";
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
+import { useState } from "react";
 
 export interface IngridientSelectProps {
     selectedIngridient: Ingridient,
@@ -16,10 +17,12 @@ export interface IngridientSelectProps {
 export function IngridientSelect({ selectedIngridient, onChange }: IngridientSelectProps) {
     const { t } = useTranslation();
 
+    const [ingridient, setIngridient] = useState(selectedIngridient);
+
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            selectedProduct: selectedIngridient.product,
-            unitsPerServing: selectedIngridient.unitsPerServing.toString()
+            selectedProduct: ingridient.product,
+            unitsPerServing: ingridient.unitsPerServing.toString()
         },
         mode: 'onChange'
     });
@@ -27,12 +30,14 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
     withUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
-                onChange(
-                    new Ingridient({
-                        product: data.selectedProduct,
-                        unitsPerServing: Number(data.unitsPerServing),
-                    })
-                );
+                const update = new Ingridient({
+                    product: data.selectedProduct,
+                    unitsPerServing: Number(data.unitsPerServing),
+                });
+
+                setIngridient(update);
+
+                onChange(update);
             }
         });
     });
@@ -49,6 +54,7 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                     render={({ field: { onChange, onBlur, value } }) => (
                         <View style={styles.pickerWrapper}>
                             <ProductSelect
+                                ingridientPrice={ingridient.price()}
                                 selectedProduct={value}
                                 onSelect={onChange}
                             />

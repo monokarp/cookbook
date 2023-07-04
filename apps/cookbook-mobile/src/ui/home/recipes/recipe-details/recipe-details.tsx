@@ -16,14 +16,11 @@ import { styles } from "./recipe-details.style";
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
 
 export function RecipeDetails({ route, navigation }) {
-    const recipe: Recipe = route.params.recipe;
-
-    const [ingridients, setIngridients] = useState(recipe.positions);
-
+    const { t } = useTranslation();
     const recipeRepo = useInjection(RecipesRepository);
     const productsRepo = useInjection(ProductsRepository);
 
-    const { t } = useTranslation();
+    const [recipe, setRecipe] = useState(route.params.recipe);
 
     const { setRecipes } = useRecipesStore();
     const { products, setProducts } = useProductsStore();
@@ -40,7 +37,7 @@ export function RecipeDetails({ route, navigation }) {
             new Recipe({
                 id: recipe.id,
                 name: data.recipeName,
-                positions: ingridients
+                positions: recipe.positions
             })
         );
 
@@ -49,28 +46,38 @@ export function RecipeDetails({ route, navigation }) {
         navigation.goBack();
     };
 
-    function addNewIngridient() {
-        setIngridients([...ingridients, new Ingridient({ product: products[0], unitsPerServing: 0 })]);
-    }
+    function addEmptyIngridient() {
+        setRecipe(new Recipe({
+            ...recipe,
+            positions: [
+                ...recipe.positions,
+                new Ingridient({ product: products[0], unitsPerServing: 0 })
+            ]
+        }));
+    };
 
     function onIngridientSelect(value: Ingridient, index: number) {
-        if (ingridients[index]) {
-            ingridients[index] = value;
-            setIngridients(ingridients);
+        const updatedPositions = [...recipe.positions];
+
+        if (recipe.positions[index]) {
+            updatedPositions[index] = value;
         } else {
-            setIngridients([...ingridients, value]);
+            updatedPositions.push(value);
         }
+
+        setRecipe(new Recipe({
+            ...recipe,
+            positions: updatedPositions
+        }));
     }
 
     useEffect(() => {
         productsRepo.All().then(setProducts);
-    }, [productsRepo, setProducts]);
+    }, []);
 
     return (
         <View style={styles.container}>
             <View style={{ width: '100%' }}>
-                {/* Product name */}
-                <Text style={styles.inputLabel}>{t('recipe.name')}</Text>
                 <Controller
                     control={control}
                     rules={{
@@ -79,6 +86,7 @@ export function RecipeDetails({ route, navigation }) {
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
+                            label={t('recipe.name')}
                             style={styles.input}
                             onBlur={onBlur}
                             onChangeText={onChange}
@@ -88,11 +96,14 @@ export function RecipeDetails({ route, navigation }) {
                     name="recipeName"
                 />
                 {errors.recipeName && <Text style={styles.validationErrorLabel}>{t('validation.required.aplhanumeric')}</Text>}
+                <Text variant="labelLarge" style={{ margin: 5 }}>
+                    {`${t('product.pricing.totalPrice')}: ${recipe.totalPrice().toString()}`}
+                </Text>
             </View>
 
             <FlatList
                 style={{ flexGrow: 0 }}
-                data={ingridients}
+                data={recipe.positions}
                 renderItem={({ item, index }) =>
                     <IngridientSelect
                         selectedIngridient={item}
@@ -103,10 +114,11 @@ export function RecipeDetails({ route, navigation }) {
 
             <FAB
                 icon="plus"
-                onPress={addNewIngridient}
+                style={{ marginTop: 10 }}
+                onPress={addEmptyIngridient}
             />
 
-            <Button style={{ marginTop: 'auto' }} mode="outlined" onPress={handleSubmit(onSubmit)}>{t('common.save')}</Button>
+            <Button style={{ marginTop: 'auto', marginBottom: 15 }} mode="outlined" onPress={handleSubmit(onSubmit)}>{t('common.save')}</Button>
         </View>
     );
 }
