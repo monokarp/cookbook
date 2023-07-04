@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   item: {
     backgroundColor: '#bfbfbd',
     color: 'white',
-    padding: 20,
+    padding: 10,
     marginVertical: 4,
   },
   button: {

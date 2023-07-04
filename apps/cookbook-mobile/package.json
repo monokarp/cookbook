@@ -27,6 +27,7 @@
     "react-native-paper": "*",
     "i18next": "*",
     "react-i18next": "*",
-    "react-native-sqlite-storage": "*"
+    "react-native-sqlite-storage": "*",
+    "@react-native-clipboard/clipboard": "*"
   }
 }

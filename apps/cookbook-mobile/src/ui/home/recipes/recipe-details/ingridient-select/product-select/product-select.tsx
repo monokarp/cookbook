@@ -25,16 +25,7 @@ export function ProductSelect({ selectedProduct, onSelect }: ProductSelectProps)
         <View>
             <Pressable onPress={show}>
                 <Card>
-                    {
-                        selectedProduct
-                            ? <Card.Title
-                                title={selectedProduct.name}
-                                subtitle={t('product.pricing.label', { pricePerGram: selectedProduct.pricing.pricePerGram() })}
-                            />
-                            : <Card.Title
-                                title={t('product.search.noneSelected')}
-                            />
-                    }
+                    <Card.Title title={selectedProduct ? selectedProduct.name : t('product.search.noneSelected')} />
                 </Card>
             </Pressable>
             <Portal>

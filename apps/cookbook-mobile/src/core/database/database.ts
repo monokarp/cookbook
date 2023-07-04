@@ -9,6 +9,8 @@ export type Migration = {
     up: (db: SQLiteDatabase) => Promise<void>
 };
 
+export type Query = [string, any[]];
+
 @injectable()
 export class Database {
     private sqliteDb: SQLiteDatabase | null = null;
@@ -49,6 +51,16 @@ export class Database {
 
         const appliedVersions = await this.GetAppliedMigrationVersions();
         console.log('Already applied migrations:', appliedVersions);
+    }
+
+    public async Transaction(queries: Query[]): Promise<void> {
+        if (queries.length) {
+            await this.sqliteDb.transaction(async (tx: Transaction) => {
+                for (const [sql, params] of queries) {
+                    tx.executeSql(sql, params);
+                }
+            });
+        }
     }
 
     public async ExecuteSql(sql: string, params: any[] = []): Promise<[ResultSet]> {

@@ -7,6 +7,8 @@ import { Text } from 'react-native-paper';
 import { RootViews } from '../../root-views.enum';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
+import { SummaryListItem } from '../common/list-item';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 export function ProductsView({ navigation }) {
   const { t } = useTranslation();
@@ -16,7 +18,7 @@ export function ProductsView({ navigation }) {
 
   useEffect(() => {
     repo.All().then(setProducts);
-  }, [repo, setProducts]);
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -24,12 +26,14 @@ export function ProductsView({ navigation }) {
         <FlatList
           data={products}
           renderItem={({ item }) =>
-            <Pressable
-              style={styles.item}
-              onPress={() => navigation.navigate(RootViews.ProductDetails, { product: item })}
-            >
-              <Text style={{ fontWeight: '800' }}>{item.name}</Text>
-            </Pressable>
+            <View style={styles.item}>
+              <SummaryListItem
+                item={item}
+                itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item })}
+                deleteRequested={() => repo.Delete(item.id).then(() => setProducts(products.filter(p => p.id !== item.id)))}
+                exportRequested={() => Clipboard.setString(item.ExportAsString())}
+              />
+            </View>
           }
           keyExtractor={product => product.id}
         />

@@ -14,4 +14,12 @@ export class Ingridient {
     public price() {
         return round(this.unitsPerServing * this.product.pricing.pricePerGram());
     }
+
+    public ExportAsString(): string {
+        return [
+            this.product.name,
+            `Units - ${this.unitsPerServing}`,
+            `Total price - ${this.price()}`,
+        ].join('\n');
+    }
 }

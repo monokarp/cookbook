@@ -4,7 +4,7 @@ import { Product } from '../../domain/types/product/product';
 import { ProductPricing, ProductPricingType } from '../../domain/types/product/product-pricing';
 import { Ingridient } from '../../domain/types/recipe/ingridient';
 import { Position, Recipe } from '../../domain/types/recipe/recipe';
-import { Database } from '../database/database';
+import { Database, Query } from '../database/database';
 
 @injectable()
 export class RecipesRepository {
@@ -51,27 +51,32 @@ export class RecipesRepository {
     }
 
     public async Save(recipe: Recipe): Promise<void> {
-        await this.database.ExecuteSql(`
-            INSERT OR REPLACE INTO [Recipes] ([Id], [Name])
-            VALUES (?, ?);
-        `, [
-            recipe.id,
-            recipe.name,
+        await this.database.Transaction([
+            [
+                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name]) VALUES (?, ?);`,
+                [recipe.id, recipe.name,]
+            ],
+            ...recipe.positions.map(
+                (position, idx) =>
+                    <Query>[
+                        `INSERT OR REPLACE INTO [Ingridients] ([RecipeId], [PositionNumber], [ProductId], [UnitsPerServing])
+                        VALUES (?, ?, ?, ?);`,
+                        [
+                            recipe.id,
+                            idx + 1,
+                            position.product.id,
+                            position.unitsPerServing
+                        ]
+                    ]
+            ),
         ]);
+    }
 
-        let idx = 1;
-
-        for (const position of recipe.positions) {
-            await this.database.ExecuteSql(`
-                INSERT OR REPLACE INTO [Ingridients] ([RecipeId], [PositionNumber], [ProductId], [UnitsPerServing])
-                values (?, ?, ?, ?);
-            `, [
-                recipe.id,
-                idx++,
-                position.product.id,
-                position.unitsPerServing
-            ]);
-        }
+    public async Delete(id: string): Promise<void> {
+        await this.database.Transaction([
+            ['DELETE FROM [Ingridients]  WHERE [RecipeId] = ?;', [id]],
+            ['DELETE FROM [Recipes]  WHERE [Id] = ?;', [id]]
+        ]);
     }
 }
 

@@ -46,23 +46,29 @@ export class ProductsRepository {
     }
 
     public async Save(product: ProductDto): Promise<void> {
-        await this.database.ExecuteSql(`
-            INSERT OR REPLACE INTO [Products] ([Id], [Name])
-            VALUES (?, ?);
-        `, [
-            product.id,
-            product.name,
+        await this.database.Transaction([
+            [
+                `INSERT OR REPLACE INTO [Products] ([Id], [Name]) VALUES (?, ?);`,
+                [product.id, product.name,]
+            ],
+            [
+                `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits])
+                VALUES (?, ?, ?, ?, ?);`,
+                [
+                    product.id,
+                    product.pricing.pricingType,
+                    product.pricing.totalPrice,
+                    product.pricing.totalWeight,
+                    product.pricing.numberOfUnits,
+                ]
+            ]
         ]);
+    }
 
-        await this.database.ExecuteSql(`
-            INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits])
-            VALUES (?, ?, ?, ?, ?);
-        `, [
-            product.id,
-            product.pricing.pricingType,
-            product.pricing.totalPrice,
-            product.pricing.totalWeight,
-            product.pricing.numberOfUnits,
+    public async Delete(id: string): Promise<void> {
+        await this.database.Transaction([
+            ['DELETE FROM [ProductPricing]  WHERE [ProductId] = ?;', [id]],
+            ['DELETE FROM [Products]  WHERE [Id] = ?;', [id]],
         ]);
     }
 }
