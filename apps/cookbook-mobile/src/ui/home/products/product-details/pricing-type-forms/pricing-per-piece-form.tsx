@@ -56,7 +56,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
             />
             {errors.numberOfPieces && <Text style={styles.validationErrorLabel}>{t('validation.required.integerGTE', { gte: 1 })}</Text>}
 
-            <Text style={styles.inputLabel}>{t('product.details.weightPerPiece')}</Text>
+            <Text style={styles.inputLabel}>{t('product.details.gramsPerPiece')}</Text>
             <Controller
                 control={control}
                 rules={{

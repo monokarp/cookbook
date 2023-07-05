@@ -19,13 +19,16 @@
             "title": "Product details",
             "totalWeight": "Total weight in grams",
             "numberOfPieces": "Number of pieces",
-            "weightPerPiece": "Grams per piece"
+            "gramsPerPiece": "Grams per piece",
+            "weightPerPiece": "Weight per piece",
+            "weightInGrams": "Weight in grams"
         },
         "pricing": {
             "type": "Pricing type",
             "pricedByWeight": "Priced by total weight",
             "pricedPerPiece": "Priced per piece",
             "label": "Priced at {{pricePerGram}} per gram",
+            "price": "Price",
             "totalPrice": "Total price"
         },
         "addNew": "Add new product"

@@ -10,15 +10,6 @@ export class Product {
         this.name = dto.name;
         this.pricing = new ProductPricing(dto.pricing);
     }
-
-    public ExportAsString(): string {
-        return [
-            this.name,
-            `Number of pieces - ${this.pricing.numberOfUnits}`,
-            `Total price - ${this.pricing.price}`,
-            `Total weight - ${this.pricing.weightInGrams}`
-        ].join('\n');
-    }
 }
 
 export interface ProductDto {

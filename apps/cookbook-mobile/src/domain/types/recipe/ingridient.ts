@@ -19,14 +19,6 @@ export class Ingridient {
                 : this.serving.units * this.product.pricing.pricePerUnit()
         );
     }
-
-    public ExportAsString(): string {
-        return [
-            this.product.name,
-            `Units - ${this.serving.units}`,
-            `Total price - ${this.price()}`,
-        ].join('\n');
-    }
 }
 
 export interface Serving {

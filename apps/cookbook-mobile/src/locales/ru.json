@@ -19,13 +19,16 @@
             "title": "Детали продукта",
             "totalWeight": "Общий вес в граммах",
             "numberOfPieces": "Количество штук",
-            "weightPerPiece": "Вес одной штуки в граммах"
+            "gramsPerPiece": "Вес одной штуки в граммах",
+            "weightPerPiece": "Вес одной штуки",
+            "weightInGrams": "Вес в граммах"
         },
         "pricing": {
             "type": "Тип цены",
             "pricedByWeight": "Цена за упаковку",
             "pricedPerPiece": "Цена за штуку",
             "label": "Цена за грамм: {{pricePerGram}}",
+            "price": "Цена",
             "totalPrice": "Общая цена"
         },
         "addNew": "Добавить новый продукт"

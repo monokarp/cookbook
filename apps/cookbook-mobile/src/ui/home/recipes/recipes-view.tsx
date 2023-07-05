@@ -7,10 +7,12 @@ import { RootViews } from '../../root-views.enum';
 import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
 import { SummaryListItem } from '../common/list-item';
-import Clipboard from '@react-native-clipboard/clipboard';
+import { ExportToClipboard } from '../common/clipboard-export';
 
 export function RecipesView({ navigation }) {
   const { t } = useTranslation();
+  const clipboardExport = new ExportToClipboard(t);
+  
   const repo = useInjection(RecipesRepository);
 
   const { recipes, setRecipes } = useRecipesStore((state) => state);
@@ -30,7 +32,7 @@ export function RecipesView({ navigation }) {
                 item={item}
                 itemSelected={() => navigation.navigate(RootViews.RecipeDetails, { recipe: item })}
                 deleteRequested={() => repo.Delete(item.id).then(() => setRecipes(recipes.filter(p => p.id !== item.id)))}
-                exportRequested={() => Clipboard.setString(item.ExportAsString())}
+                exportRequested={() => clipboardExport.recipe(item)}
               />
             </View>
           }

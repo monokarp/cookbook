@@ -16,13 +16,6 @@ export class Recipe {
     public totalPrice(): number {
         return roundMoney(this.positions.reduce((total, next) => total + next.price(), 0));
     }
-
-    public ExportAsString(): string {
-        return [
-            this.name,
-            ...this.positions.map(position => position.ExportAsString()),
-        ].join('\n\n');
-    }
 }
 
 export type Position = Ingridient;

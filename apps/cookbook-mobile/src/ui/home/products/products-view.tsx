@@ -5,13 +5,15 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, View } from 'react-native';
 import { Text } from 'react-native-paper';
 import { RootViews } from '../../root-views.enum';
+import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
-import { SummaryListItem } from '../common/list-item';
-import Clipboard from '@react-native-clipboard/clipboard';
+import { ExportToClipboard } from '../common/clipboard-export';
 
 export function ProductsView({ navigation }) {
   const { t } = useTranslation();
+  const clipboardExport = new ExportToClipboard(t);
+
   const repo = useInjection(ProductsRepository);
 
   const { products, setProducts } = useProductsStore((state) => state);
@@ -31,7 +33,7 @@ export function ProductsView({ navigation }) {
                 item={item}
                 itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item })}
                 deleteRequested={() => repo.Delete(item.id).then(() => setProducts(products.filter(p => p.id !== item.id)))}
-                exportRequested={() => Clipboard.setString(item.ExportAsString())}
+                exportRequested={() => clipboardExport.product(item)}
               />
             </View>
           }
