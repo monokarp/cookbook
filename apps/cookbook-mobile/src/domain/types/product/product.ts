@@ -15,8 +15,8 @@ export class Product {
         return [
             this.name,
             `Number of pieces - ${this.pricing.numberOfUnits}`,
-            `Total price - ${this.pricing.totalPrice}`,
-            `Total weight - ${this.pricing.totalWeight}`
+            `Total price - ${this.pricing.price}`,
+            `Total weight - ${this.pricing.weightInGrams}`
         ].join('\n');
     }
 }

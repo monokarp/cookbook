@@ -1,5 +1,4 @@
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
-import { round } from "apps/cookbook-mobile/src/domain/util";
 import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -15,8 +14,8 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
             numberOfPieces: pricing.numberOfUnits?.toString(),
-            gramsPerPiece: round(pricing.totalWeight ? pricing.totalWeight / pricing.numberOfUnits : 0).toString(),
-            totalPrice: pricing.totalPrice?.toString()
+            gramsPerPiece: (pricing.weightInGrams ? pricing.weightInGrams / pricing.numberOfUnits : 0).toString(),
+            totalPrice: pricing.price?.toString()
         },
         mode: 'onChange'
     });
@@ -25,10 +24,10 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
         trigger().then(isValid => {
             if (isValid) {
                 onChange({
-                    pricingType: pricing.pricingType,
-                    totalPrice: Number(data.totalPrice),
+                    measuring: pricing.measuring,
+                    price: Number(data.totalPrice),
                     numberOfUnits: Number(data.numberOfPieces),
-                    totalWeight: round(Number(data.numberOfPieces) * Number(data.gramsPerPiece)),
+                    weightInGrams: Number(data.numberOfPieces) * Number(data.gramsPerPiece),
                 });
             }
         });

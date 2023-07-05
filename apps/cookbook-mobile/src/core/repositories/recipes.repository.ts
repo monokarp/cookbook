@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
 import { Product } from '../../domain/types/product/product';
-import { ProductPricing, ProductPricingType } from '../../domain/types/product/product-pricing';
+import { ProductPricing, ProductMeasuring } from '../../domain/types/product/product-pricing';
 import { Ingridient } from '../../domain/types/recipe/ingridient';
 import { Position, Recipe } from '../../domain/types/recipe/recipe';
 import { Database, Query } from '../database/database';
@@ -21,7 +21,7 @@ export class RecipesRepository {
 
     public async All(): Promise<Recipe[]> {
         const [result] = await this.database.ExecuteSql(`
-            SELECT [Recipes].[Id], [Recipes].[Name], [Ingridients].[PositionNumber], [Ingridients].[UnitsPerServing], [Ingridients].[ProductId], [Products].[Name] AS [ProductName], [ProductPricing].[PricingType], [ProductPricing].[TotalPrice], [ProductPricing].[TotalWeight], [ProductPricing].[NumberOfUnits]
+            SELECT [Recipes].[Id], [Recipes].[Name], [Ingridients].[PositionNumber], [Ingridients].[ServingUnits], [Ingridients].[ServingMeasuring], [Ingridients].[ProductId], [Products].[Name] AS [ProductName], [ProductPricing].[Measuring], [ProductPricing].[Price], [ProductPricing].[WeightInGrams], [ProductPricing].[NumberOfUnits]
             FROM [Recipes]
             LEFT JOIN [Ingridients] ON [Ingridients].[RecipeId] = [Recipes].[Id]
             LEFT JOIN [Products] ON [Products].[Id] = [Ingridients].[ProductId]
@@ -36,7 +36,7 @@ export class RecipesRepository {
 
     public async One(id: string): Promise<Recipe | null> {
         const [result] = await this.database.ExecuteSql(`
-            SELECT [Recipes].[Id], [Recipes].[Name], [Ingridients].[PositionNumber], [Ingridients].[UnitsPerServing], [Ingridients].[ProductId], [Products].[Name] AS [ProductName], [ProductPricing].[PricingType], [ProductPricing].[TotalPrice], [ProductPricing].[TotalWeight], [ProductPricing].[NumberOfUnits]
+            SELECT [Recipes].[Id], [Recipes].[Name], [Ingridients].[PositionNumber], [Ingridients].[ServingUnits], [Ingridients].[ServingMeasuring], [Ingridients].[ProductId], [Products].[Name] AS [ProductName], [ProductPricing].[Measuring], [ProductPricing].[Price], [ProductPricing].[WeightInGrams], [ProductPricing].[NumberOfUnits]
             FROM [Recipes]
             LEFT JOIN [Ingridients] ON [Ingridients].[RecipeId] = [Recipes].[Id]
             LEFT JOIN [Products] ON [Products].[Id] = [Ingridients].[ProductId]
@@ -59,13 +59,14 @@ export class RecipesRepository {
             ...recipe.positions.map(
                 (position, idx) =>
                     <Query>[
-                        `INSERT OR REPLACE INTO [Ingridients] ([RecipeId], [PositionNumber], [ProductId], [UnitsPerServing])
-                        VALUES (?, ?, ?, ?);`,
+                        `INSERT OR REPLACE INTO [Ingridients] ([RecipeId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
+                        VALUES (?, ?, ?, ?, ?);`,
                         [
                             recipe.id,
                             idx + 1,
                             position.product.id,
-                            position.unitsPerServing
+                            position.serving.units,
+                            position.serving.measuring
                         ]
                     ]
             ),
@@ -84,12 +85,13 @@ interface RecipeRow {
     Id: string;
     Name: string;
     PositionNumber: number;
-    UnitsPerServing: number;
+    ServingUnits: number;
+    ServingMeasuring: ProductMeasuring;
     ProductId: string;
     ProductName: string;
-    PricingType: string;
-    TotalPrice: number;
-    TotalWeight: number;
+    Measuring: ProductMeasuring;
+    Price: number;
+    WeightInGrams: number;
     NumberOfUnits: number;
 }
 
@@ -99,13 +101,16 @@ function MapRecipePosition(row: RecipeRow): Position {
             id: row.ProductId,
             name: row.ProductName,
             pricing: new ProductPricing({
-                pricingType: row.PricingType as ProductPricingType,
-                totalWeight: row.TotalWeight,
-                totalPrice: row.TotalPrice,
+                measuring: row.Measuring as ProductMeasuring,
+                weightInGrams: row.WeightInGrams,
+                price: row.Price,
                 numberOfUnits: row.NumberOfUnits
             })
         }),
-        unitsPerServing: row.UnitsPerServing
+        serving: {
+            units: row.ServingUnits,
+            measuring: row.ServingMeasuring
+        }
     });
 }
 

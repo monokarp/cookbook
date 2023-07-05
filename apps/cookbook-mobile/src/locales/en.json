@@ -35,7 +35,8 @@
         "addNew": "Add new recipe",
         "details": {
             "title": "Recipe details",
-            "servingSize": "Serving size in grams"
+            "servingSizeInGrams": "Serving size in grams",
+            "servingSizeInUnits": "Serving size in units"
         },
         "ingridientPrice": "Ingridient price"
     },

@@ -1,31 +1,35 @@
-import { round } from "../../util";
+import { roundMoney } from "../../util";
 
-export enum ProductPricingType {
-    PerPiece = "per-piece",
-    ByWeight = "by-weight",
+export enum ProductMeasuring {
+    Units = "units",
+    Grams = "grams",
 };
 
 export class ProductPricing implements ProductPricingDto {
-    public readonly pricingType: ProductPricingType;
-    public readonly totalPrice: number;
-    public readonly totalWeight: number;
+    public readonly measuring: ProductMeasuring;
+    public readonly price: number;
+    public readonly weightInGrams: number;
     public readonly numberOfUnits: number;
 
     constructor(dto: ProductPricingDto) {
-        this.pricingType = dto.pricingType;
-        this.totalPrice = dto.totalPrice;
-        this.totalWeight = dto.totalWeight;
+        this.measuring = dto.measuring;
+        this.price = dto.price;
+        this.weightInGrams = dto.weightInGrams;
         this.numberOfUnits = dto.numberOfUnits;
     }
 
     public pricePerGram(): number {
-        return round(this.totalPrice / this.totalWeight);
+        return roundMoney(this.price / this.weightInGrams);
+    }
+
+    public pricePerUnit(): number {
+        return roundMoney(this.price / this.numberOfUnits);
     }
 }
 
 export interface ProductPricingDto {
-    pricingType: ProductPricingType;
-    totalPrice: number;
-    totalWeight: number;
+    measuring: ProductMeasuring;
+    price: number;
+    weightInGrams: number;
     numberOfUnits: number;
 }

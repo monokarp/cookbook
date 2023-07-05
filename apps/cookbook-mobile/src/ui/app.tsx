@@ -11,6 +11,7 @@ import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
+import { theme } from './app.theme';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,7 +19,7 @@ const App = () => {
   const { t } = useTranslation();
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <Provider container={buildRootContainer()}>
         <NavigationContainer>
           <Stack.Navigator>

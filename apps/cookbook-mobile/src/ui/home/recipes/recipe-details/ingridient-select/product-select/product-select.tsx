@@ -32,7 +32,6 @@ export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: Pr
                             : t('product.search.noneSelected')
                     } />
                     <Card.Content>
-                        <Text variant="labelSmall">{t('product.pricing.label', { pricePerGram: selectedProduct.pricing.pricePerGram() })}</Text>
                         <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${ingridientPrice}`}</Text>
                     </Card.Content>
                 </Card>

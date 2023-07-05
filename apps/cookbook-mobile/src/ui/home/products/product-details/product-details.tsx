@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, SegmentedButtons, Text, TextInput } from 'react-native-paper';
 import { Product } from '../../../../domain/types/product/product';
-import { ProductPricingDto, ProductPricingType } from '../../../../domain/types/product/product-pricing';
+import { ProductPricingDto, ProductMeasuring } from '../../../../domain/types/product/product-pricing';
 import { useProductsStore } from '../products.store';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
@@ -22,7 +22,7 @@ export function ProductDetails({ route, navigation }) {
 
     const { setProducts } = useProductsStore();
 
-    const [pricingType, setPricingType] = useState(product.pricing.pricingType);
+    const [pricingType, setPricingType] = useState(product.pricing.measuring);
     const [pricingInfo, setPricingInfo] = useState<ProductPricingDto | null>(null);
 
     const { control, handleSubmit, formState: { errors } } = useForm({
@@ -80,11 +80,11 @@ export function ProductDetails({ route, navigation }) {
                         onValueChange={value => setPricingType(value)}
                         buttons={[
                             {
-                                value: ProductPricingType.ByWeight,
+                                value: ProductMeasuring.Grams,
                                 label: t('product.pricing.pricedByWeight'),
                             },
                             {
-                                value: ProductPricingType.PerPiece,
+                                value: ProductMeasuring.Units,
                                 label: t('product.pricing.pricedPerPiece'),
                             },
                         ]}
@@ -98,13 +98,13 @@ export function ProductDetails({ route, navigation }) {
                 function () {
                     switch (pricingType) {
 
-                        case ProductPricingType.ByWeight:
+                        case ProductMeasuring.Grams:
                             return <PricingByWeightForm
                                 pricing={product.pricing}
                                 onChange={setPricingInfo}
                             />;
 
-                        case ProductPricingType.PerPiece:
+                        case ProductMeasuring.Units:
                             return <PricingPerPieceForm
                                 pricing={product.pricing}
                                 onChange={setPricingInfo}

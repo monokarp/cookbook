@@ -31,12 +31,24 @@ export const initialMigration: Migration = {
             `);
 
             tx.executeSql(`
+                CREATE TABLE IF NOT EXISTS [ProductMeasuring] (
+                    [Value] TEXT NOT NULL PRIMARY KEY
+                );
+            `);
+
+            tx.executeSql(`
+                INSERT INTO [ProductMeasuring] ([Value]) VALUES ('grams'), ('units');
+            `);
+
+            tx.executeSql(`
                 CREATE TABLE IF NOT EXISTS [Ingridients] (
                     [RecipeId] TEXT NOT NULL,
                     [PositionNumber] INTEGER NOT NULL,
                     [ProductId] TEXT NOT NULL,
-                    [UnitsPerServing] REAL NOT NULL,
+                    [ServingUnits] REAL NOT NULL,
+                    [ServingMeasuring] TEXT NOT NULL,
                     PRIMARY KEY ([RecipeId], [PositionNumber]),
+                    FOREIGN KEY ([ServingMeasuring]) REFERENCES [ProductMeasuring]([Value]),
                     FOREIGN KEY ([RecipeId]) REFERENCES [Recipes]([Id]),
                     FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id])
                 );
@@ -45,10 +57,11 @@ export const initialMigration: Migration = {
             tx.executeSql(`
                 CREATE TABLE IF NOT EXISTS [ProductPricing] (
                     [ProductId] TEXT NOT NULL PRIMARY KEY,
-                    [PricingType] TEXT CHECK( [PricingType] IN ('by-weight','per-piece') ) NOT NULL,
-                    [TotalPrice] REAL NOT NULL,
-                    [TotalWeight] REAL NOT NULL,
+                    [Measuring] TEXT NOT NULL,
+                    [Price] REAL NOT NULL,
+                    [WeightInGrams] REAL NOT NULL,
                     [NumberOfUnits] REAL NOT NULL,
+                    FOREIGN KEY ([Measuring]) REFERENCES [ProductMeasuring]([Value]),
                     FOREIGN KEY ([ProductId]) REFERENCES [Products]([Id])
                 );
             `);

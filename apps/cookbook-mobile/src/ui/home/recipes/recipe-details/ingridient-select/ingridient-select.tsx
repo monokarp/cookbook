@@ -3,11 +3,12 @@ import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { Text, TextInput } from "react-native-paper";
+import { Switch, Text, TextInput } from "react-native-paper";
 import { styles } from "./ingridient-select.style";
 import { ProductSelect } from "./product-select/product-select";
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
 import { useState } from "react";
+import { ProductMeasuring } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
 
 export interface IngridientSelectProps {
     selectedIngridient: Ingridient,
@@ -19,10 +20,11 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
 
     const [ingridient, setIngridient] = useState(selectedIngridient);
 
-    const { control, watch, formState: { errors }, trigger } = useForm({
+    const { control, watch, formState: { errors }, trigger, getValues } = useForm({
         defaultValues: {
             selectedProduct: ingridient.product,
-            unitsPerServing: ingridient.unitsPerServing.toString()
+            units: ingridient.serving.units.toString(),
+            measuringType: ingridient.serving.measuring !== ProductMeasuring.Grams
         },
         mode: 'onChange'
     });
@@ -32,7 +34,10 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
             if (isValid) {
                 const update = new Ingridient({
                     product: data.selectedProduct,
-                    unitsPerServing: Number(data.unitsPerServing),
+                    serving: {
+                        units: Number(data.units),
+                        measuring: data.measuringType ? ProductMeasuring.Units : ProductMeasuring.Grams
+                    }
                 });
 
                 setIngridient(update);
@@ -46,45 +51,61 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
         <View>
             <View style={styles.container}>
 
-                <Controller
-                    control={control}
-                    rules={{
-                        required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <View style={styles.pickerWrapper}>
+                <View style={styles.pickerWrapper}>
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
                             <ProductSelect
                                 ingridientPrice={ingridient.price()}
                                 selectedProduct={value}
                                 onSelect={onChange}
                             />
-                        </View>
-                    )}
-                    name="selectedProduct"
-                />
+                        )}
+                        name="selectedProduct"
+                    />
+                </View>
 
-                <Controller
-                    control={control}
-                    rules={{
-                        required: true,
-                        pattern: RegexPatterns.WeightDecimal,
-                        min: 0
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            label={t('recipe.details.servingSize')}
-                            style={styles.servingSizeInput}
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            keyboardType='numeric'
-                            value={value}
+                <View style={styles.servingUnitsWrapper}>
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                            pattern: RegexPatterns.WeightDecimal,
+                            min: 0
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                mode="outlined"
+                                label={t(getValues().measuringType ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
+                                style={styles.servingSizeInput}
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                keyboardType='numeric'
+                                value={value}
+                            />
+                        )}
+                        name="units"
+                    />
+                </View>
+
+                <View style={styles.servingMeasureWrapper}>
+                    {
+                        ingridient.product.pricing.measuring === ProductMeasuring.Units &&
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <Switch value={value} onValueChange={onChange} />
+                            )}
+                            name="measuringType"
                         />
-                    )}
-                    name="unitsPerServing"
-                />
+                    }
+                </View>
 
             </View>
-            {errors.unitsPerServing && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {errors.units && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
         </View>
     );
 }

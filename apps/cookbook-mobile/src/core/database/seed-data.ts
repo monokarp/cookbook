@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Product, ProductDto } from "../../domain/types/product/product";
-import { ProductPricingType } from "../../domain/types/product/product-pricing";
+import { ProductMeasuring, ProductPricingDto } from "../../domain/types/product/product-pricing";
 import { Ingridient } from "../../domain/types/recipe/ingridient";
 import { Recipe } from "../../domain/types/recipe/recipe";
 import { ProductsRepository } from "../repositories/products.repository";
@@ -16,9 +16,9 @@ export class SeedData {
             id: '5cd4091b-c610-4371-a83b-5622438d24d9',
             name: 'Яблоко',
             pricing: {
-                pricingType: ProductPricingType.ByWeight,
-                totalPrice: 6.54,
-                totalWeight: 100,
+                measuring: ProductMeasuring.Grams,
+                price: 6.54,
+                weightInGrams: 100,
                 numberOfUnits: 1
             }
         },
@@ -26,9 +26,9 @@ export class SeedData {
             id: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
             name: 'Банан',
             pricing: {
-                pricingType: ProductPricingType.ByWeight,
-                totalPrice: 8.21,
-                totalWeight: 50,
+                measuring: ProductMeasuring.Grams,
+                price: 8.21,
+                weightInGrams: 50,
                 numberOfUnits: 1
             }
         },
@@ -36,9 +36,9 @@ export class SeedData {
             id: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
             name: 'Морковка',
             pricing: {
-                pricingType: ProductPricingType.PerPiece,
-                totalPrice: 2.87,
-                totalWeight: 25,
+                measuring: ProductMeasuring.Units,
+                price: 2.87,
+                weightInGrams: 25,
                 numberOfUnits: 5
             }
         },
@@ -51,11 +51,17 @@ export class SeedData {
             positions: [
                 new Ingridient({
                     product: new Product(this.products[0]),
-                    unitsPerServing: 100
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 100
+                    }
                 }),
                 new Ingridient({
                     product: new Product(this.products[1]),
-                    unitsPerServing: 50
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 50
+                    }
                 })
             ]
         }),
@@ -65,11 +71,17 @@ export class SeedData {
             positions: [
                 new Ingridient({
                     product: new Product(this.products[1]),
-                    unitsPerServing: 100
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 100
+                    }
                 }),
                 new Ingridient({
                     product: new Product(this.products[2]),
-                    unitsPerServing: 20
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 20
+                    }
                 })
             ]
         }),

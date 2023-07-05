@@ -35,7 +35,8 @@
         "addNew": "Добавить рецепт",
         "details": {
             "title": "Детали рецепта",
-            "servingSize": "Количество в граммах"
+            "servingSizeInGrams": "Грамм",
+            "servingSizeInUnits": "Штук"
         },
         "ingridientPrice": "Стоимость ингридиента"
     },

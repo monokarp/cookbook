@@ -1,4 +1,4 @@
-import { round } from "../../util";
+import { roundMoney } from "../../util";
 import { Ingridient } from "./ingridient";
 
 
@@ -14,7 +14,7 @@ export class Recipe {
     }
 
     public totalPrice(): number {
-        return this.positions.reduce((total, next) => round(total + next.price()), 0);
+        return roundMoney(this.positions.reduce((total, next) => total + next.price(), 0));
     }
 
     public ExportAsString(): string {

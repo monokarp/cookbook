@@ -13,8 +13,8 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            totalGrams: pricing.totalWeight?.toString(),
-            totalPrice: pricing.totalPrice?.toString()
+            totalGrams: pricing.weightInGrams?.toString(),
+            totalPrice: pricing.price?.toString()
         },
         mode: 'onChange'
     });
@@ -23,9 +23,9 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
         trigger().then(isValid => {
             if (isValid) {
                 onChange({
-                    pricingType: pricing.pricingType,
-                    totalPrice: Number(data.totalPrice),
-                    totalWeight: Number(data.totalGrams),
+                    measuring: pricing.measuring,
+                    price: Number(data.totalPrice),
+                    weightInGrams: Number(data.totalGrams),
                     numberOfUnits: 1,
                 });
             }

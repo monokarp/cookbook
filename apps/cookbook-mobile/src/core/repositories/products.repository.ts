@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
 import { Product, ProductDto } from '../../domain/types/product/product';
 import { Database } from '../database/database';
-import { ProductPricing, ProductPricingType } from '../../domain/types/product/product-pricing';
+import { ProductPricing, ProductMeasuring } from '../../domain/types/product/product-pricing';
 
 @injectable()
 export class ProductsRepository {
@@ -14,9 +14,9 @@ export class ProductsRepository {
             id: uuid.v4().toString(),
             name: '',
             pricing: new ProductPricing({
-                pricingType: ProductPricingType.ByWeight,
-                totalPrice: 0,
-                totalWeight: 0,
+                measuring: ProductMeasuring.Grams,
+                price: 0,
+                weightInGrams: 0,
                 numberOfUnits: 0,
             })
         });
@@ -24,7 +24,7 @@ export class ProductsRepository {
 
     public async All(): Promise<Product[]> {
         const [result] = await this.database.ExecuteSql(`
-            SELECT [Id], [Name], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits]
+            SELECT [Id], [Name], [Measuring], [Price], [WeightInGrams], [NumberOfUnits]
             FROM [Products]
             LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id];
         `);
@@ -34,7 +34,7 @@ export class ProductsRepository {
 
     public async One(id: string): Promise<Product | null> {
         const [result] = await this.database.ExecuteSql(`
-            SELECT [Id], [Name], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits]
+            SELECT [Id], [Name], [Measuring], [Price], [WeightInGrams], [NumberOfUnits]
             FROM [Products]
             LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id]
             WHERE [Id] = ?;
@@ -52,13 +52,13 @@ export class ProductsRepository {
                 [product.id, product.name,]
             ],
             [
-                `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [PricingType], [TotalPrice], [TotalWeight], [NumberOfUnits])
+                `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])
                 VALUES (?, ?, ?, ?, ?);`,
                 [
                     product.id,
-                    product.pricing.pricingType,
-                    product.pricing.totalPrice,
-                    product.pricing.totalWeight,
+                    product.pricing.measuring,
+                    product.pricing.price,
+                    product.pricing.weightInGrams,
                     product.pricing.numberOfUnits,
                 ]
             ]
@@ -78,9 +78,9 @@ function MapProductRow(row: ProductRow): Product {
         id: row.Id,
         name: row.Name,
         pricing: new ProductPricing({
-            pricingType: row.PricingType,
-            totalPrice: row.TotalPrice,
-            totalWeight: row.TotalWeight,
+            measuring: row.Measuring,
+            price: row.Price,
+            weightInGrams: row.WeightInGrams,
             numberOfUnits: row.NumberOfUnits,
         })
     });
@@ -89,8 +89,8 @@ function MapProductRow(row: ProductRow): Product {
 interface ProductRow {
     Id: string;
     Name: string;
-    PricingType: ProductPricingType;
-    TotalPrice: number;
-    TotalWeight: number;
+    Measuring: ProductMeasuring;
+    Price: number;
+    WeightInGrams: number;
     NumberOfUnits: number;
 }
