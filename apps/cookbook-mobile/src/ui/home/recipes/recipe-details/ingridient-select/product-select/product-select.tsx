@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
 import { Card, Dialog, List, Portal, TextInput, Text } from "react-native-paper";
 import { useProductsStore } from "../../../../products/products.store";
+import { FormatNumber } from "apps/cookbook-mobile/src/domain/util";
 
 export interface ProductSelectProps {
     selectedProduct: Product | null,
@@ -32,7 +33,7 @@ export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: Pr
                             : t('product.search.noneSelected')
                     } />
                     <Card.Content>
-                        <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${ingridientPrice}`}</Text>
+                        <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${FormatNumber.Money(ingridientPrice)}`}</Text>
                     </Card.Content>
                 </Card>
             </Pressable>

@@ -73,7 +73,7 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                         control={control}
                         rules={{
                             required: true,
-                            pattern: RegexPatterns.WeightDecimal,
+                            pattern: getValues().measuringType ? RegexPatterns.Integer : RegexPatterns.WeightDecimal,
                             min: 0
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (

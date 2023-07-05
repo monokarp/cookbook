@@ -15,6 +15,7 @@ import { IngridientSelect } from "./ingridient-select/ingridient-select";
 import { styles } from "./recipe-details.style";
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
 import { ProductMeasuring } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
+import { FormatNumber } from "apps/cookbook-mobile/src/domain/util";
 
 export function RecipeDetails({ route, navigation }) {
     const { t } = useTranslation();
@@ -98,7 +99,7 @@ export function RecipeDetails({ route, navigation }) {
                 />
                 {errors.recipeName && <Text style={styles.validationErrorLabel}>{t('validation.required.aplhanumeric')}</Text>}
                 <Text variant="labelLarge" style={{ margin: 5 }}>
-                    {`${t('product.pricing.totalPrice')}: ${recipe.totalPrice().toString()}`}
+                    {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(recipe.totalPrice())}`}
                 </Text>
             </View>
 

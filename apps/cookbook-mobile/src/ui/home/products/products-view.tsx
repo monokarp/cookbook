@@ -1,14 +1,15 @@
 import { ProductsRepository } from 'apps/cookbook-mobile/src/core/repositories/products.repository';
 import { useInjection } from 'inversify-react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Portal, Snackbar, Text } from 'react-native-paper';
 import { RootViews } from '../../root-views.enum';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
 import { ExportToClipboard } from '../common/clipboard-export';
+import { Product } from 'apps/cookbook-mobile/src/domain/types/product/product';
 
 export function ProductsView({ navigation }) {
   const { t } = useTranslation();
@@ -17,6 +18,22 @@ export function ProductsView({ navigation }) {
   const repo = useInjection(ProductsRepository);
 
   const { products, setProducts } = useProductsStore((state) => state);
+  const [snackbarMessage, setSnackbarMessage] = useState(null);
+
+  async function tryDeleteProduct(item: Product) {
+    try {
+      await repo.Delete(item.id);
+
+      setProducts(products.filter(p => p.id !== item.id));
+    } catch (e) {
+      switch (e.code) {
+        case 0: setSnackbarMessage('There are recipes that use this product. Please remove them first.'); break;
+        default: setSnackbarMessage('Unable to delete this product');
+      }
+
+      setTimeout(() => setSnackbarMessage(null), 3000);
+    }
+  }
 
   useEffect(() => {
     repo.All().then(setProducts);
@@ -32,7 +49,7 @@ export function ProductsView({ navigation }) {
               <SummaryListItem
                 item={item}
                 itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item })}
-                deleteRequested={() => repo.Delete(item.id).then(() => setProducts(products.filter(p => p.id !== item.id)))}
+                deleteRequested={() => tryDeleteProduct(item)}
                 exportRequested={() => clipboardExport.product(item)}
               />
             </View>
@@ -46,6 +63,18 @@ export function ProductsView({ navigation }) {
       >
         <Text style={styles.buttonText}>{t('product.addNew')}</Text>
       </Pressable>
+
+      <Portal>
+        <Snackbar
+          visible={snackbarMessage}
+          onDismiss={() => setSnackbarMessage(null)}
+          action={{
+            label: 'Ok'
+          }}
+        >
+          {snackbarMessage}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }

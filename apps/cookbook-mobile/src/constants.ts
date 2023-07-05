@@ -1,10 +1,6 @@
-export const MoneyRoundingPrecision = 3;
+export const MoneyRoundingPrecision = 2;
 
 export const WeightRoundingPrecision = 3;
-
-export const InjectionTokens = {
-    Realm: 'realm'
-};
 
 export const RegexPatterns = {
     Integer: /^\d+$/,
