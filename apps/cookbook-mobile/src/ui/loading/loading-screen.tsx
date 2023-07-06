@@ -1,7 +1,8 @@
 import { useInjection } from 'inversify-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
+import { Text } from 'react-native-paper';
 import { Database } from '../../core/database/database';
 import { SeedData } from '../../core/database/seed-data';
 import { RootViews } from '../root-views.enum';
@@ -27,8 +28,8 @@ export function LoadingScreen({ navigation }) {
     }), [];
 
     return (
-        <View style={{ flex: 1, alignContent: 'center', justifyContent: 'center' }}>
-            <Text>{t('common.loading')}</Text>
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <Text variant="displayMedium">{t('common.loading')}</Text>
         </View>
     );
 }

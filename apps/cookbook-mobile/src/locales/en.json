@@ -3,7 +3,8 @@
         "save": "Save",
         "login": "Login",
         "cookbook": "Cookbook",
-        "loading": "Loading..."
+        "loading": "Loading...",
+        "ok": "OK"
     },
     "views": {
         "recipes": "Recipes view",
@@ -17,7 +18,7 @@
         "name": "Product name",
         "details": {
             "title": "Product details",
-            "totalWeight": "Total weight in grams",
+            "totalWeight": "Total weight",
             "numberOfPieces": "Number of pieces",
             "gramsPerPiece": "Grams per piece",
             "weightPerPiece": "Weight per piece",
@@ -48,6 +49,12 @@
             "integerGTE": "Required integer greater than or equal to {{gte}}",
             "decimalGTE": "Required decimal (precision up to 3 digits) greater than or equal to {{gte}}",
             "aplhanumeric": "Required letters or whitespaces"
+        }
+    },
+    "errors":{
+        "product": {
+            "cantDelete": "Unable to delete this product",
+            "fkViolation": "There are recipes that use this product. Please remove them first."
         }
     }
 }

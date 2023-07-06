@@ -3,13 +3,14 @@ import { useInjection } from 'inversify-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, View } from 'react-native';
-import { Portal, Snackbar, Text } from 'react-native-paper';
+import { Portal, Snackbar, Button, Text } from 'react-native-paper';
 import { RootViews } from '../../root-views.enum';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
 import { ExportToClipboard } from '../common/clipboard-export';
 import { Product } from 'apps/cookbook-mobile/src/domain/types/product/product';
+
 
 export function ProductsView({ navigation }) {
   const { t } = useTranslation();
@@ -27,8 +28,8 @@ export function ProductsView({ navigation }) {
       setProducts(products.filter(p => p.id !== item.id));
     } catch (e) {
       switch (e.code) {
-        case 0: setSnackbarMessage('There are recipes that use this product. Please remove them first.'); break;
-        default: setSnackbarMessage('Unable to delete this product');
+        case 0: setSnackbarMessage(t('errors.product.fkViolation')); break;
+        default: setSnackbarMessage(t('errors.product.cantDelete'));
       }
 
       setTimeout(() => setSnackbarMessage(null), 3000);
@@ -57,19 +58,21 @@ export function ProductsView({ navigation }) {
           keyExtractor={product => product.id}
         />
       </View>
-      <Pressable
+
+      <Button
         style={styles.button}
+        mode='outlined'
         onPress={() => navigation.navigate(RootViews.ProductDetails, { product: repo.Create() })}
       >
-        <Text style={styles.buttonText}>{t('product.addNew')}</Text>
-      </Pressable>
+        <Text style={{ fontSize: 18 }}>{t('product.addNew')}</Text>
+      </Button>
 
       <Portal>
         <Snackbar
           visible={snackbarMessage}
           onDismiss={() => setSnackbarMessage(null)}
           action={{
-            label: 'Ok'
+            label: t('common.ok')
           }}
         >
           {snackbarMessage}

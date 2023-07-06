@@ -9,11 +9,17 @@ export class FormatNumber {
         return value.toFixed(MoneyRoundingPrecision);
     }
 
-    public static Weight(value: number): string {
-        return value.toFixed(WeightRoundingPrecision);
+    public static Weight(integer: number): string {
+        return (integer / 1000).toFixed(WeightRoundingPrecision);
     }
 
     public static Units(value: number): string {
-        return value.toFixed(2);
+        return Number(value.toFixed(2)).toString();
+    }
+}
+
+export class FormatString {
+    public static Weight(value: string): number {
+        return Number(value) * 1000;
     }
 }

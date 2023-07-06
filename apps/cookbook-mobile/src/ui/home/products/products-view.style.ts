@@ -10,14 +10,6 @@ export const styles = StyleSheet.create({
     marginVertical: 4,
   },
   button: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'green'
+    margin: 5,
   },
-  buttonText: {
-    fontWeight: '600',
-    fontSize: 20,
-    color: 'white'
-  }
 });

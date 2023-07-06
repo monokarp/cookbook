@@ -1,9 +1,10 @@
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
+import { FormatNumber, FormatString } from "apps/cookbook-mobile/src/domain/util";
 import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { Text, TextInput } from 'react-native-paper';
+import { TextInput, Text } from 'react-native-paper';
 import { styles } from "../product-defails.style";
 import { PricingFormProps } from "./props";
 
@@ -13,9 +14,9 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            numberOfPieces: pricing.numberOfUnits?.toString(),
-            gramsPerPiece: (pricing.weightInGrams ? pricing.weightInGrams / pricing.numberOfUnits : 0).toString(),
-            totalPrice: pricing.price?.toString()
+            numberOfPieces: FormatNumber.Units(pricing.numberOfUnits),
+            gramsPerPiece: FormatNumber.Weight(pricing.weightInGrams / pricing.numberOfUnits),
+            totalPrice: FormatNumber.Money(pricing.price)
         },
         mode: 'onChange'
     });
@@ -27,7 +28,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
                     measuring: pricing.measuring,
                     price: Number(data.totalPrice),
                     numberOfUnits: Number(data.numberOfPieces),
-                    weightInGrams: Number(data.numberOfPieces) * Number(data.gramsPerPiece),
+                    weightInGrams: Number(data.numberOfPieces) * FormatString.Weight(data.gramsPerPiece),
                 });
             }
         });
@@ -40,8 +41,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
                 control={control}
                 rules={{
                     required: true,
-                    pattern: RegexPatterns.Integer,
-                    min: 1
+                    validate: (value) => RegexPatterns.Money.test(value) && Number(value) > 0,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
@@ -61,8 +61,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
                 control={control}
                 rules={{
                     required: true,
-                    pattern: RegexPatterns.WeightDecimal,
-                    min: 1
+                    validate: (value) => RegexPatterns.Weight.test(value) && Number(value) > 0
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
@@ -82,8 +81,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
                 control={control}
                 rules={{
                     required: true,
-                    pattern: RegexPatterns.WeightDecimal,
-                    min: 0
+                    validate: (value) => RegexPatterns.Money.test(value) && Number(value) > 0,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput

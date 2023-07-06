@@ -8,11 +8,12 @@ import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
 import { SummaryListItem } from '../common/list-item';
 import { ExportToClipboard } from '../common/clipboard-export';
+import { Button } from 'react-native-paper';
 
 export function RecipesView({ navigation }) {
   const { t } = useTranslation();
   const clipboardExport = new ExportToClipboard(t);
-  
+
   const repo = useInjection(RecipesRepository);
 
   const { recipes, setRecipes } = useRecipesStore((state) => state);
@@ -39,12 +40,14 @@ export function RecipesView({ navigation }) {
           keyExtractor={product => product.id}
         />
       </View>
-      <Pressable
+
+      <Button
         style={styles.button}
+        mode='outlined'
         onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: repo.Create() })}
       >
-        <Text style={styles.buttonText}>{t('recipe.addNew')}</Text>
-      </Pressable>
+        <Text style={{ fontSize: 18 }}>{t('recipe.addNew')}</Text>
+      </Button>
     </View>
   );
 }

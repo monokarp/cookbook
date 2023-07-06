@@ -47,7 +47,6 @@ export function ProductDetails({ route, navigation }) {
 
     return (
         <View style={styles.container}>
-            {/* Product name */}
             <Text style={styles.inputLabel}>{t('product.name')}</Text>
             <Controller
                 control={control}
@@ -58,6 +57,7 @@ export function ProductDetails({ route, navigation }) {
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                         style={styles.input}
+                        mode='outlined'
                         onBlur={onBlur}
                         onChangeText={onChange}
                         value={value}
@@ -67,17 +67,17 @@ export function ProductDetails({ route, navigation }) {
             />
             {errors.productName && <Text style={styles.validationErrorLabel}>{t('validation.required.aplhanumeric')}</Text>}
 
-            {/* Pricing type selector */}
             <Text style={styles.inputLabel}>{t('product.pricing.type')}</Text>
             <Controller
                 control={control}
                 rules={{
                     required: true,
                 }}
-                render={({ field: { value } }) => (
+                render={({ field: { value, onChange } }) => (
                     <SegmentedButtons
+                        style={styles.input}
                         value={value}
-                        onValueChange={value => setPricingType(value)}
+                        onValueChange={value => { setPricingType(value); onChange(value); }}
                         buttons={[
                             {
                                 value: ProductMeasuring.Grams,
@@ -93,7 +93,6 @@ export function ProductDetails({ route, navigation }) {
                 name="pricingType"
             />
 
-            {/* Two forms depenging on pricing type */}
             {
                 function () {
                     switch (pricingType) {

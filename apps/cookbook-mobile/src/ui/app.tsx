@@ -1,9 +1,9 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaperProvider } from 'react-native-paper';
+import { MD3LightTheme, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { HomeScreen } from './home/home-screen';
 import { ProductDetails } from './home/products/product-details/product-details';
 import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
@@ -14,14 +14,16 @@ import { buildRootContainer } from './root.container';
 import { theme } from './app.theme';
 
 const Stack = createNativeStackNavigator();
+const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
 
 const App = () => {
   const { t } = useTranslation();
+  const container = buildRootContainer();
 
   return (
     <PaperProvider theme={theme}>
-      <Provider container={buildRootContainer()}>
-        <NavigationContainer>
+      <Provider container={container}>
+        <NavigationContainer theme={LightTheme}>
           <Stack.Navigator>
             <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
             <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />

@@ -9,6 +9,7 @@ import { ProductSelect } from "./product-select/product-select";
 import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
 import { useState } from "react";
 import { ProductMeasuring } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
+import { FormatNumber, FormatString } from "apps/cookbook-mobile/src/domain/util";
 
 export interface IngridientSelectProps {
     selectedIngridient: Ingridient,
@@ -20,11 +21,13 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
 
     const [ingridient, setIngridient] = useState(selectedIngridient);
 
+    const isMeasuredInUnits = ingridient.serving.measuring !== ProductMeasuring.Grams;
+
     const { control, watch, formState: { errors }, trigger, getValues } = useForm({
         defaultValues: {
             selectedProduct: ingridient.product,
-            units: ingridient.serving.units.toString(),
-            measuringType: ingridient.serving.measuring !== ProductMeasuring.Grams
+            units: (isMeasuredInUnits ? FormatNumber.Units : FormatNumber.Weight)(ingridient.serving.units),
+            measuringType: isMeasuredInUnits
         },
         mode: 'onChange'
     });
@@ -35,7 +38,7 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                 const update = new Ingridient({
                     product: data.selectedProduct,
                     serving: {
-                        units: Number(data.units),
+                        units: data.measuringType ? Number(data.units) : FormatString.Weight(data.units),
                         measuring: data.measuringType ? ProductMeasuring.Units : ProductMeasuring.Grams
                     }
                 });
@@ -73,8 +76,7 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                         control={control}
                         rules={{
                             required: true,
-                            pattern: getValues().measuringType ? RegexPatterns.Integer : RegexPatterns.WeightDecimal,
-                            min: 0
+                            validate: (value) => (getValues().measuringType ? RegexPatterns.Money : RegexPatterns.Weight).test(value) && Number(value) > 0,
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput

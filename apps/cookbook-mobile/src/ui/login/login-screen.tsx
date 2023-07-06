@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Button, View } from 'react-native';
+import { View } from 'react-native';
+
 import { RootViews } from '../root-views.enum';
+import { Button } from 'react-native-paper';
 
 export function LoginScreen({ navigation }) {
   const { t } = useTranslation();
@@ -8,11 +10,13 @@ export function LoginScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Button
-        title={t('common.login')}
+        mode='outlined'
         onPress={() =>
           navigation.navigate(RootViews.Home)
         }
-      />
+      >
+        {t('common.login')}
+      </Button>
     </View>
   );
 }

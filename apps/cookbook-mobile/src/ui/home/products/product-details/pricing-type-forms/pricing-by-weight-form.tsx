@@ -6,6 +6,7 @@ import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
 import { styles } from "../product-defails.style";
 import { PricingFormProps } from "./props";
+import { FormatNumber, FormatString } from "apps/cookbook-mobile/src/domain/util";
 
 
 export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
@@ -13,8 +14,8 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            totalGrams: pricing.weightInGrams?.toString(),
-            totalPrice: pricing.price?.toString()
+            totalGrams: FormatNumber.Weight(pricing.weightInGrams),
+            totalPrice: FormatNumber.Money(pricing.price)
         },
         mode: 'onChange'
     });
@@ -25,7 +26,7 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
                 onChange({
                     measuring: pricing.measuring,
                     price: Number(data.totalPrice),
-                    weightInGrams: Number(data.totalGrams),
+                    weightInGrams: FormatString.Weight(data.totalGrams),
                     numberOfUnits: 1,
                 });
             }
@@ -39,12 +40,12 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
                 control={control}
                 rules={{
                     required: true,
-                    pattern: RegexPatterns.WeightDecimal,
-                    min: 0
+                    validate: (value) => RegexPatterns.Weight.test(value) && Number(value) > 0,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                         style={styles.input}
+                        mode='outlined'
                         onBlur={onBlur}
                         onChangeText={onChange}
                         keyboardType='numeric'
@@ -60,12 +61,12 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
                 control={control}
                 rules={{
                     required: true,
-                    pattern: RegexPatterns.WeightDecimal,
-                    min: 0
+                    pattern: RegexPatterns.Money,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                         style={styles.input}
+                        mode='outlined'
                         onBlur={onBlur}
                         onChangeText={onChange}
                         keyboardType='numeric'
