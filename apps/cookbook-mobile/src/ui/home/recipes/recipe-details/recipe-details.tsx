@@ -1,21 +1,21 @@
 
-import { ProductsRepository } from "apps/cookbook-mobile/src/core/repositories/products.repository";
-import { RecipesRepository } from "apps/cookbook-mobile/src/core/repositories/recipes.repository";
-import { Ingridient } from "apps/cookbook-mobile/src/domain/types/recipe/ingridient";
-import { Recipe } from "apps/cookbook-mobile/src/domain/types/recipe/recipe";
 import { useInjection } from "inversify-react-native";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
+import { RegexPatterns } from "../../../../constants";
+import { ProductsRepository } from "../../../../core/repositories/products.repository";
+import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
+import { ProductMeasuring } from "../../../../domain/types/product/product-pricing";
+import { Ingridient } from "../../../../domain/types/recipe/ingridient";
+import { Recipe } from "../../../../domain/types/recipe/recipe";
+import { FormatNumber } from "../../../../domain/util";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { IngridientSelect } from "./ingridient-select/ingridient-select";
 import { styles } from "./recipe-details.style";
-import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
-import { ProductMeasuring } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
-import { FormatNumber } from "apps/cookbook-mobile/src/domain/util";
 
 export function RecipeDetails({ route, navigation }) {
     const { t } = useTranslation();

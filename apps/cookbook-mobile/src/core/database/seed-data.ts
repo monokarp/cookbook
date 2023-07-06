@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { Product, ProductDto } from "../../domain/types/product/product";
-import { ProductMeasuring, ProductPricingDto } from "../../domain/types/product/product-pricing";
+import { ProductMeasuring } from "../../domain/types/product/product-pricing";
 import { Ingridient } from "../../domain/types/recipe/ingridient";
 import { Recipe } from "../../domain/types/recipe/recipe";
 import { ProductsRepository } from "../repositories/products.repository";

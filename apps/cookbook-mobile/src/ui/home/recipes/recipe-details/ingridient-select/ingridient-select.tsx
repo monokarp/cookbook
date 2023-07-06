@@ -1,15 +1,16 @@
-import { Ingridient } from "apps/cookbook-mobile/src/domain/types/recipe/ingridient";
-import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Switch, Text, TextInput } from "react-native-paper";
+import { RegexPatterns } from "../../../../../constants";
+import { Product } from "../../../../../domain/types/product/product";
+import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
+import { Ingridient } from "../../../../../domain/types/recipe/ingridient";
+import { FormatNumber, FormatString } from "../../../../../domain/util";
+import { useUnsub } from "../../../../../ui/custom-hooks";
 import { styles } from "./ingridient-select.style";
 import { ProductSelect } from "./product-select/product-select";
-import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
-import { useState } from "react";
-import { ProductMeasuring } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
-import { FormatNumber, FormatString } from "apps/cookbook-mobile/src/domain/util";
 
 export interface IngridientSelectProps {
     selectedIngridient: Ingridient,
@@ -32,11 +33,11 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
         mode: 'onChange'
     });
 
-    withUnsub(watch, (data) => {
+    useUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
                 const update = new Ingridient({
-                    product: data.selectedProduct,
+                    product: data.selectedProduct as Product,
                     serving: {
                         units: data.measuringType ? Number(data.units) : FormatString.Weight(data.units),
                         measuring: data.measuringType ? ProductMeasuring.Units : ProductMeasuring.Grams
@@ -60,7 +61,7 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                         rules={{
                             required: true,
                         }}
-                        render={({ field: { onChange, onBlur, value } }) => (
+                        render={({ field: { onChange, value } }) => (
                             <ProductSelect
                                 ingridientPrice={ingridient.price()}
                                 selectedProduct={value}

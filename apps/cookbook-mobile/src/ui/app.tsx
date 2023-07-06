@@ -1,9 +1,10 @@
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { MD3LightTheme, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
+import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
+import { theme } from './app.theme';
 import { HomeScreen } from './home/home-screen';
 import { ProductDetails } from './home/products/product-details/product-details';
 import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
@@ -11,7 +12,6 @@ import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
-import { theme } from './app.theme';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });

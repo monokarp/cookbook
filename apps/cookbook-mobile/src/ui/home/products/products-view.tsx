@@ -1,15 +1,15 @@
-import { ProductsRepository } from 'apps/cookbook-mobile/src/core/repositories/products.repository';
 import { useInjection } from 'inversify-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, View } from 'react-native';
-import { Portal, Snackbar, Button, Text } from 'react-native-paper';
+import { FlatList, View } from 'react-native';
+import { Button, Portal, Snackbar, Text } from 'react-native-paper';
+import { ProductsRepository } from '../../../core/repositories/products.repository';
+import { Product } from '../../../domain/types/product/product';
 import { RootViews } from '../../root-views.enum';
+import { ExportToClipboard } from '../common/clipboard-export';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
-import { ExportToClipboard } from '../common/clipboard-export';
-import { Product } from 'apps/cookbook-mobile/src/domain/types/product/product';
 
 
 export function ProductsView({ navigation }) {

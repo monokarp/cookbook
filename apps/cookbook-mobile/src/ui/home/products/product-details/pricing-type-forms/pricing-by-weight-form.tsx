@@ -1,12 +1,12 @@
-import { RegexPatterns } from "apps/cookbook-mobile/src/constants";
-import { withUnsub } from "apps/cookbook-mobile/src/ui/custom-hooks";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
+import { RegexPatterns } from "../../../../../constants";
+import { FormatNumber, FormatString } from "../../../../../domain/util";
+import { useUnsub } from "../../../../../ui/custom-hooks";
 import { styles } from "../product-defails.style";
 import { PricingFormProps } from "./props";
-import { FormatNumber, FormatString } from "apps/cookbook-mobile/src/domain/util";
 
 
 export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
@@ -20,7 +20,7 @@ export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
         mode: 'onChange'
     });
 
-    withUnsub(watch, (data) => {
+    useUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
                 onChange({

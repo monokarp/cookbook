@@ -1,6 +1,6 @@
-import { useEffect } from "react"
+import { useEffect } from "react";
 
-export function withUnsub(subscriber: (cb: Function) => ({ unsubscribe: Function }), callback: Function) {
+export function useUnsub<S>(subscriber: (cb: S) => ({ unsubscribe: () => void }), callback: S) {
     useEffect(() => {
         const sub = subscriber(callback);
 

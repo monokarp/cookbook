@@ -1,6 +1,4 @@
 
-import { RegexPatterns } from 'apps/cookbook-mobile/src/constants';
-import { ProductsRepository } from 'apps/cookbook-mobile/src/core/repositories/products.repository';
 import { useInjection } from 'inversify-react-native';
 import { useState } from 'react';
 import { Controller, useForm } from "react-hook-form";
@@ -8,7 +6,9 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, SegmentedButtons, Text, TextInput } from 'react-native-paper';
 import { Product } from '../../../../domain/types/product/product';
-import { ProductPricingDto, ProductMeasuring } from '../../../../domain/types/product/product-pricing';
+import { ProductMeasuring, ProductPricingDto } from '../../../../domain/types/product/product-pricing';
+import { RegexPatterns } from '../../../../constants';
+import { ProductsRepository } from '../../../../core/repositories/products.repository';
 import { useProductsStore } from '../products.store';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';

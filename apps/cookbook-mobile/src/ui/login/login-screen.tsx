@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 
-import { RootViews } from '../root-views.enum';
 import { Button } from 'react-native-paper';
+import { RootViews } from '../root-views.enum';
 
 export function LoginScreen({ navigation }) {
   const { t } = useTranslation();

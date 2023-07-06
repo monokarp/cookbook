@@ -1,4 +1,4 @@
-import { ProductPricingDto } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
+import { ProductPricingDto } from "../../../../../domain/types/product/product-pricing";
 
 export interface PricingFormProps {
     pricing: ProductPricingDto;

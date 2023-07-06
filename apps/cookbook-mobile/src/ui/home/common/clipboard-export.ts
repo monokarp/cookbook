@@ -1,8 +1,8 @@
-import { Product } from "apps/cookbook-mobile/src/domain/types/product/product";
-import { Position, Recipe } from "apps/cookbook-mobile/src/domain/types/recipe/recipe";
 import Clipboard from '@react-native-clipboard/clipboard';
-import { ProductMeasuring, ProductPricing } from "apps/cookbook-mobile/src/domain/types/product/product-pricing";
-import { roundMoney } from "apps/cookbook-mobile/src/domain/util";
+import { Product } from "../../../domain/types/product/product";
+import { ProductMeasuring, ProductPricing } from "../../../domain/types/product/product-pricing";
+import { Position, Recipe } from "../../../domain/types/recipe/recipe";
+import { roundMoney } from "../../../domain/util";
 
 
 export class ExportToClipboard {

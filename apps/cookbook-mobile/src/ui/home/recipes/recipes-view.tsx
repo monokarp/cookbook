@@ -1,14 +1,14 @@
-import { RecipesRepository } from 'apps/cookbook-mobile/src/core/repositories/recipes.repository';
 import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
+import { Button } from 'react-native-paper';
+import { RecipesRepository } from '../../../core/repositories/recipes.repository';
 import { RootViews } from '../../root-views.enum';
+import { ExportToClipboard } from '../common/clipboard-export';
+import { SummaryListItem } from '../common/list-item';
 import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
-import { SummaryListItem } from '../common/list-item';
-import { ExportToClipboard } from '../common/clipboard-export';
-import { Button } from 'react-native-paper';
 
 export function RecipesView({ navigation }) {
   const { t } = useTranslation();

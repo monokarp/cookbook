@@ -1,5 +1,5 @@
-import { Recipe } from 'apps/cookbook-mobile/src/domain/types/recipe/recipe';
 import { create } from 'zustand';
+import { Recipe } from '../../../domain/types/recipe/recipe';
 
 interface RecipesStore {
     recipes: Recipe[];

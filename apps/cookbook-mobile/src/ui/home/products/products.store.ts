@@ -1,5 +1,5 @@
-import { Product } from '../../../domain/types/product/product';
 import { create } from 'zustand';
+import { Product } from '../../../domain/types/product/product';
 
 interface ProdctsStore {
     products: Product[];

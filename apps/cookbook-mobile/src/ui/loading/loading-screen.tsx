@@ -25,7 +25,7 @@ export function LoadingScreen({ navigation }) {
                     navigation.navigate(RootViews.Login);
                 });
         }
-    }), [];
+    }, [isReady]);
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

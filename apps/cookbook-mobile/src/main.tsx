@@ -1,6 +1,6 @@
 import { AppRegistry } from 'react-native';
-import App from './ui/app';
-import './locales/index';
 import "reflect-metadata";
+import './locales/index';
+import App from './ui/app';
 
 AppRegistry.registerComponent('CookbookMobile', () => App);

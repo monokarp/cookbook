@@ -3,7 +3,13 @@
         "save": "Сохранить",
         "login": "Логин",
         "cookbook": "Книга рецептов",
-        "loading": "Загрузка..."
+        "loading": "Загрузка...",
+        "ok": "OK",
+        "cancel": "Отмена",
+        "yes": "Да"
+    },
+    "lists":{
+        "deleteItemPrompt": "Удалить этот элемент?"
     },
     "views": {
         "recipes": "Рецепты",

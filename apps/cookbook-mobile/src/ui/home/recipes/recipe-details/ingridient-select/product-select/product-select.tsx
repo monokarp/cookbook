@@ -1,10 +1,10 @@
-import { Product } from "apps/cookbook-mobile/src/domain/types/product/product";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, List, Portal, TextInput, Text } from "react-native-paper";
+import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
 import { useProductsStore } from "../../../../products/products.store";
-import { FormatNumber } from "apps/cookbook-mobile/src/domain/util";
+import { Product } from "../../../../../../domain/types/product/product";
+import { FormatNumber } from "../../../../../../domain/util";
 
 export interface ProductSelectProps {
     selectedProduct: Product | null,

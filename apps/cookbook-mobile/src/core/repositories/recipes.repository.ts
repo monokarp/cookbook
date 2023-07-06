@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
 import { Product } from '../../domain/types/product/product';
-import { ProductPricing, ProductMeasuring } from '../../domain/types/product/product-pricing';
+import { ProductMeasuring, ProductPricing } from '../../domain/types/product/product-pricing';
 import { Ingridient } from '../../domain/types/recipe/ingridient';
 import { Position, Recipe } from '../../domain/types/recipe/recipe';
 import { Database, Query } from '../database/database';
@@ -58,7 +58,7 @@ export class RecipesRepository {
             ],
             ...recipe.positions.map(
                 (position, idx) =>
-                    <Query>[
+                    [
                         `INSERT OR REPLACE INTO [Ingridients] ([RecipeId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
                         VALUES (?, ?, ?, ?, ?);`,
                         [
@@ -68,7 +68,7 @@ export class RecipesRepository {
                             position.serving.units,
                             position.serving.measuring
                         ]
-                    ]
+                    ] as Query
             ),
         ]);
     }

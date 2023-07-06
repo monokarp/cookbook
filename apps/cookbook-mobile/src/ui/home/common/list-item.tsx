@@ -34,11 +34,11 @@ export function SummaryListItem({ item, itemSelected, deleteRequested, exportReq
             />
             <Portal>
                 <Dialog visible={visible} onDismiss={dismiss}>
-                    <Dialog.Title>Delete this item?</Dialog.Title>
+                    <Dialog.Title>{t('lists.deleteItemPrompt')}</Dialog.Title>
                     <Dialog.Content>
                         <Dialog.Actions>
-                            <Button onPress={dismiss}>Cancel</Button>
-                            <Button onPress={confirmDelete}>Yes</Button>
+                            <Button onPress={dismiss}>{t('common.cancel')}</Button>
+                            <Button onPress={confirmDelete}>{t('common.yes')}</Button>
                         </Dialog.Actions>
                     </Dialog.Content>
                 </Dialog>

@@ -4,7 +4,12 @@
         "login": "Login",
         "cookbook": "Cookbook",
         "loading": "Loading...",
-        "ok": "OK"
+        "ok": "OK",
+        "cancel": "Cancel",
+        "yes": "Yes"
+    },
+    "lists":{
+        "deleteItemPrompt": "Delete this item?"
     },
     "views": {
         "recipes": "Recipes view",

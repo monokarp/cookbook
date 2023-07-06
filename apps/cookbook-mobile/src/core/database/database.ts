@@ -1,6 +1,6 @@
+import { injectable } from 'inversify';
 import { ResultSet, SQLiteDatabase, Transaction, enablePromise, openDatabase } from 'react-native-sqlite-storage';
 import { migrations } from './migrations';
-import { injectable } from 'inversify';
 
 enablePromise(true);
 
@@ -9,6 +9,7 @@ export type Migration = {
     up: (db: SQLiteDatabase) => Promise<void>
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Query = [string, any[]];
 
 @injectable()
@@ -44,13 +45,6 @@ export class Database {
 
             console.log(`Migration info saved`);
         }
-
-        // TEMP
-        const [result] = await this.sqliteDb.executeSql(`SELECT name FROM sqlite_master WHERE type='table'`);
-        console.log('tables', result.rows.raw().map((row: { name: string }) => row.name));
-
-        const appliedVersions = await this.GetAppliedMigrationVersions();
-        console.log('Already applied migrations:', appliedVersions);
     }
 
     public async Transaction(queries: Query[]): Promise<void> {
@@ -63,6 +57,7 @@ export class Database {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public async ExecuteSql(sql: string, params: any[] = []): Promise<[ResultSet]> {
         return this.sqliteDb.executeSql(sql, params);
     }
