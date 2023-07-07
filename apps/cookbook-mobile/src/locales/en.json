@@ -44,8 +44,8 @@
         "addNew": "Add new recipe",
         "details": {
             "title": "Recipe details",
-            "servingSizeInGrams": "Serving size in grams",
-            "servingSizeInUnits": "Serving size in units"
+            "servingSizeInGrams": "Kilos",
+            "servingSizeInUnits": "Units"
         },
         "ingridientPrice": "Ingridient price"
     },
@@ -53,7 +53,8 @@
         "required": {
             "integerGTE": "Required integer greater than or equal to {{gte}}",
             "decimalGTE": "Required decimal (precision up to 3 digits) greater than or equal to {{gte}}",
-            "aplhanumeric": "Required letters or whitespaces"
+            "aplhanumeric": "Required letters or whitespaces",
+            "selectProduct": "Please select a product"
         }
     },
     "errors":{

@@ -22,26 +22,31 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
 
     const [ingridient, setIngridient] = useState(selectedIngridient);
 
-    const isMeasuredInUnits = ingridient.serving.measuring !== ProductMeasuring.Grams;
-
     const { control, watch, formState: { errors }, trigger, getValues } = useForm({
         defaultValues: {
             selectedProduct: ingridient.product,
-            units: (isMeasuredInUnits ? FormatNumber.Units : FormatNumber.Weight)(ingridient.serving.units),
-            measuringType: isMeasuredInUnits
+            units: ingridient.serving.units ? FormatNumber.ServingUnits(ingridient.serving) : '',
+            measuringType: ingridient.serving.measuring
         },
-        mode: 'onChange'
+        mode: 'onTouched'
     });
 
     useUnsub(watch, (data) => {
+        console.log('form changed', data)
         trigger().then(isValid => {
+            console.log('form valid', isValid)
             if (isValid) {
                 const update = new Ingridient({
                     product: data.selectedProduct as Product,
-                    serving: {
-                        units: data.measuringType ? Number(data.units) : FormatString.Weight(data.units),
-                        measuring: data.measuringType ? ProductMeasuring.Units : ProductMeasuring.Grams
-                    }
+                    serving: data.measuringType === ProductMeasuring.Units
+                        ? {
+                            units: Number(data.units),
+                            measuring: ProductMeasuring.Units,
+                        }
+                        : {
+                            units: FormatString.Weight(data.units),
+                            measuring: ProductMeasuring.Grams,
+                        }
                 });
 
                 setIngridient(update);
@@ -60,10 +65,11 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                         control={control}
                         rules={{
                             required: true,
+                            validate: (value) => !!value.id,
                         }}
                         render={({ field: { onChange, value } }) => (
                             <ProductSelect
-                                ingridientPrice={ingridient.price()}
+                                ingridientPrice={value.id ? ingridient.price() : 0}
                                 selectedProduct={value}
                                 onSelect={onChange}
                             />
@@ -77,12 +83,12 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                         control={control}
                         rules={{
                             required: true,
-                            validate: (value) => (getValues().measuringType ? RegexPatterns.Money : RegexPatterns.Weight).test(value) && Number(value) > 0,
+                            validate: (value) => (getValues().measuringType === ProductMeasuring.Units ? RegexPatterns.Money : RegexPatterns.Weight).test(value) && Number(value) > 0,
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
                                 mode="outlined"
-                                label={t(getValues().measuringType ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
+                                label={t(getValues().measuringType === ProductMeasuring.Units ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
                                 style={styles.servingSizeInput}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
@@ -100,7 +106,10 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                         <Controller
                             control={control}
                             render={({ field: { onChange, onBlur, value } }) => (
-                                <Switch value={value} onValueChange={onChange} />
+                                <Switch
+                                    value={value === ProductMeasuring.Units}
+                                    onValueChange={value => onChange(value ? ProductMeasuring.Units : ProductMeasuring.Grams)}
+                                />
                             )}
                             name="measuringType"
                         />
@@ -108,6 +117,7 @@ export function IngridientSelect({ selectedIngridient, onChange }: IngridientSel
                 </View>
 
             </View>
+            {errors.selectedProduct && <Text style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>}
             {errors.units && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
         </View>
     );

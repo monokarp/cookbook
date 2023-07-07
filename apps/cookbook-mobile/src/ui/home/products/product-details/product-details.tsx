@@ -13,9 +13,12 @@ import { useProductsStore } from '../products.store';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
 import { styles } from './product-defails.style';
+import { FormMode } from '../../common/form-mode.enum';
 
 export function ProductDetails({ route, navigation }) {
     const product: Product = route.params.product;
+    const mode: FormMode = route.params.mode;
+
     const { t } = useTranslation();
 
     const repo = useInjection(ProductsRepository);
@@ -30,7 +33,7 @@ export function ProductDetails({ route, navigation }) {
             productName: product.name,
             pricingType
         },
-        mode: 'onChange'
+        mode: 'onTouched'
     });
 
     const onSubmit = async (data) => {
@@ -101,12 +104,14 @@ export function ProductDetails({ route, navigation }) {
                             return <PricingByWeightForm
                                 pricing={product.pricing}
                                 onChange={setPricingInfo}
+                                mode={mode}
                             />;
 
                         case ProductMeasuring.Units:
                             return <PricingPerPieceForm
                                 pricing={product.pricing}
                                 onChange={setPricingInfo}
+                                mode={mode}
                             />
 
                         default: throw new Error(`No template for pricing type: ${pricingType}`);

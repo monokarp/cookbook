@@ -1,4 +1,6 @@
 import { MoneyRoundingPrecision, WeightRoundingPrecision } from "../constants";
+import { ProductMeasuring } from "./types/product/product-pricing";
+import { Serving } from "./types/recipe/ingridient";
 
 export function roundMoney(value: number): number {
     return Number(value.toFixed(MoneyRoundingPrecision));
@@ -15,6 +17,14 @@ export class FormatNumber {
 
     public static Units(value: number): string {
         return Number(value.toFixed(2)).toString();
+    }
+
+    public static ServingUnits(value: Serving): string {
+        switch (value.measuring) {
+            case ProductMeasuring.Grams: return FormatNumber.Weight(value.units);
+            case ProductMeasuring.Units: return FormatNumber.Units(value.units);
+            default: throw new Error(`Unexpected measuring: ${value.measuring}`);
+        }
     }
 }
 

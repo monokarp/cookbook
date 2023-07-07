@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
+import { Card, Dialog, List, Portal, Text, TextInput, Button } from "react-native-paper";
 import { useProductsStore } from "../../../../products/products.store";
 import { Product } from "../../../../../../domain/types/product/product";
 import { FormatNumber } from "../../../../../../domain/util";
@@ -21,22 +21,30 @@ export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: Pr
     const [displayedProducts, setDisplayedProducts] = useState(products);
 
     const show = () => setVisible(true);
-    const dismiss = () => setVisible(false);
+
+    const dismiss = () => {
+        setVisible(false);
+        setDisplayedProducts(products);
+    }
 
     return (
         <View>
             <Pressable onPress={show}>
-                <Card>
+                <Card style={{height:'100%'}}>
                     <Card.Title title={
                         selectedProduct
                             ? selectedProduct.name
                             : t('product.search.noneSelected')
                     } />
-                    <Card.Content>
-                        <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${FormatNumber.Money(ingridientPrice)}`}</Text>
-                    </Card.Content>
+                    {
+                        selectedProduct.id &&
+                        <Card.Content>
+                            <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${FormatNumber.Money(ingridientPrice)}`}</Text>
+                        </Card.Content>
+                    }
                 </Card>
             </Pressable>
+
             <Portal>
                 <Dialog visible={visible} onDismiss={dismiss}>
                     <TextInput
@@ -52,7 +60,11 @@ export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: Pr
                         <FlatList
                             data={displayedProducts}
                             renderItem={info =>
-                                <Pressable onPress={() => { onSelect(info.item); dismiss(); }}>
+                                <Pressable
+                                    onTouchEnd={() => {
+                                        onSelect(info.item);
+                                        dismiss();
+                                    }}>
                                     <List.Item title={info.item.name} />
                                 </Pressable>
                             }

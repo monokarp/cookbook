@@ -7,25 +7,28 @@ import { FormatNumber, FormatString } from "../../../../../domain/util";
 import { useUnsub } from "../../../../../ui/custom-hooks";
 import { styles } from "../product-defails.style";
 import { PricingFormProps } from "./props";
+import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
+import { FormMode } from "../../../common/form-mode.enum";
 
 
-export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
+export function PricingPerPieceForm({ pricing, onChange, mode }: PricingFormProps) {
     const { t } = useTranslation();
+    const isEdit = mode === FormMode.Edit;
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            numberOfPieces: FormatNumber.Units(pricing.numberOfUnits),
-            gramsPerPiece: FormatNumber.Weight(pricing.weightInGrams / pricing.numberOfUnits),
-            totalPrice: FormatNumber.Money(pricing.price)
+            numberOfPieces: isEdit ? FormatNumber.Units(pricing.numberOfUnits) : '',
+            gramsPerPiece: isEdit ? FormatNumber.Weight(pricing.numberOfUnits ? pricing.weightInGrams / pricing.numberOfUnits : 0) : '',
+            totalPrice: isEdit ? FormatNumber.Money(pricing.price) : '',
         },
-        mode: 'onChange'
+        mode: 'onTouched'
     });
 
     useUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
                 onChange({
-                    measuring: pricing.measuring,
+                    measuring: ProductMeasuring.Units,
                     price: Number(data.totalPrice),
                     numberOfUnits: Number(data.numberOfPieces),
                     weightInGrams: Number(data.numberOfPieces) * FormatString.Weight(data.gramsPerPiece),
@@ -81,7 +84,7 @@ export function PricingPerPieceForm({ pricing, onChange }: PricingFormProps) {
                 control={control}
                 rules={{
                     required: true,
-                    validate: (value) => RegexPatterns.Money.test(value) && Number(value) > 0,
+                    pattern: RegexPatterns.Money,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput

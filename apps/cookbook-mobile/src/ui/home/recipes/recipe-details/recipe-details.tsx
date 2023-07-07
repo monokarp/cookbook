@@ -16,6 +16,7 @@ import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { IngridientSelect } from "./ingridient-select/ingridient-select";
 import { styles } from "./recipe-details.style";
+import { Product } from "../../../../domain/types/product/product";
 
 export function RecipeDetails({ route, navigation }) {
     const { t } = useTranslation();
@@ -53,7 +54,19 @@ export function RecipeDetails({ route, navigation }) {
             ...recipe,
             positions: [
                 ...recipe.positions,
-                new Ingridient({ product: products[0], serving: { units: 0, measuring: ProductMeasuring.Grams } })
+                new Ingridient({
+                    product: new Product({
+                        id: '',
+                        name: t('validation.required.selectProduct'),
+                        pricing: {
+                            measuring: ProductMeasuring.Grams,
+                            price: 0,
+                            weightInGrams: 1,
+                            numberOfUnits: 1,
+                        }
+                    }),
+                    serving: { units: 0, measuring: ProductMeasuring.Grams }
+                })
             ]
         }));
     };

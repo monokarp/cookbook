@@ -10,6 +10,7 @@ import { ExportToClipboard } from '../common/clipboard-export';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
+import { FormMode } from '../common/form-mode.enum';
 
 
 export function ProductsView({ navigation }) {
@@ -49,7 +50,7 @@ export function ProductsView({ navigation }) {
             <View style={styles.item}>
               <SummaryListItem
                 item={item}
-                itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item })}
+                itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item, mode: FormMode.Edit })}
                 deleteRequested={() => tryDeleteProduct(item)}
                 exportRequested={() => clipboardExport.product(item)}
               />
@@ -62,7 +63,7 @@ export function ProductsView({ navigation }) {
       <Button
         style={styles.button}
         mode='outlined'
-        onPress={() => navigation.navigate(RootViews.ProductDetails, { product: repo.Create() })}
+        onPress={() => navigation.navigate(RootViews.ProductDetails, { product: repo.Create(), mode: FormMode.New })}
       >
         <Text style={{ fontSize: 18 }}>{t('product.addNew')}</Text>
       </Button>

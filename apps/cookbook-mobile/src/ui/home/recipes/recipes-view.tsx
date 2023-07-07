@@ -7,6 +7,7 @@ import { RecipesRepository } from '../../../core/repositories/recipes.repository
 import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
 import { SummaryListItem } from '../common/list-item';
+import { useProductsStore } from '../products/products.store';
 import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
 
@@ -16,11 +17,12 @@ export function RecipesView({ navigation }) {
 
   const repo = useInjection(RecipesRepository);
 
+  const { products } = useProductsStore((state) => state);
   const { recipes, setRecipes } = useRecipesStore((state) => state);
 
   useEffect(() => {
     repo.All().then(setRecipes);
-  }, []);
+  }, [products]);
 
   return (
     <View style={styles.container}>

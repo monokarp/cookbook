@@ -44,16 +44,17 @@
         "addNew": "Добавить рецепт",
         "details": {
             "title": "Детали рецепта",
-            "servingSizeInGrams": "Грамм",
-            "servingSizeInUnits": "Штук"
+            "servingSizeInGrams": "Кило",
+            "servingSizeInUnits": "Штуки"
         },
-        "ingridientPrice": "Стоимость ингридиента"
+        "ingridientPrice": "Стоимость ингредиента"
     },
     "validation": {
         "required": {
             "integerGTE": "Ожидается целое число не менее {{gte}}",
             "decimalGTE": "Ожидается десятичное число c точностью до тысячных, не менее {{gte}}",
-            "aplhanumeric": "Ожидаются буквы и пробелы"
+            "aplhanumeric": "Ожидаются буквы и пробелы",
+            "selectProduct": "Выберите продукт"
         }
     },
     "errors":{

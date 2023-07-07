@@ -7,24 +7,28 @@ import { FormatNumber, FormatString } from "../../../../../domain/util";
 import { useUnsub } from "../../../../../ui/custom-hooks";
 import { styles } from "../product-defails.style";
 import { PricingFormProps } from "./props";
+import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
+import { FormMode } from "../../../common/form-mode.enum";
 
 
-export function PricingByWeightForm({ pricing, onChange }: PricingFormProps) {
+export function PricingByWeightForm({ pricing, onChange, mode }: PricingFormProps) {
     const { t } = useTranslation();
+
+    const isEdit = mode === FormMode.Edit;
 
     const { control, watch, formState: { errors }, trigger } = useForm({
         defaultValues: {
-            totalGrams: FormatNumber.Weight(pricing.weightInGrams),
-            totalPrice: FormatNumber.Money(pricing.price)
+            totalGrams: isEdit ? FormatNumber.Weight(pricing.weightInGrams) : '',
+            totalPrice: isEdit ? FormatNumber.Money(pricing.price) : '',
         },
-        mode: 'onChange'
+        mode: 'onTouched'
     });
 
     useUnsub(watch, (data) => {
         trigger().then(isValid => {
             if (isValid) {
                 onChange({
-                    measuring: pricing.measuring,
+                    measuring: ProductMeasuring.Grams,
                     price: Number(data.totalPrice),
                     weightInGrams: FormatString.Weight(data.totalGrams),
                     numberOfUnits: 1,
