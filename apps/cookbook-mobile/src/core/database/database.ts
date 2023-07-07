@@ -22,7 +22,7 @@ export class Database {
         }
     }
 
-    public async Init(): Promise<void> {
+    public async Init(): Promise<{ didRunMigrations: boolean }> {
         if (this.sqliteDb) {
             return;
         }
@@ -45,6 +45,8 @@ export class Database {
 
             console.log(`Migration info saved`);
         }
+
+        return { didRunMigrations: !!pendingMigrations.length };
     }
 
     public async Transaction(queries: Query[]): Promise<void> {

@@ -15,17 +15,19 @@ export function LoadingScreen({ navigation }) {
 
     const [isReady, setIsReady] = useState(false);
 
-    useEffect(() => {
-        if (!isReady) {
-            console.log('Init database');
-            db.Init()
-                .then(() => seedData.Seed())
-                .then(() => {
-                    setIsReady(true);
-                    navigation.navigate(RootViews.Login);
-                });
-        }
-    }, [isReady]);
+    async function seedDb() {
+        console.log('Init database');
+
+        const { didRunMigrations } = await db.Init();
+
+        if (didRunMigrations) { await seedData.Seed(); }
+
+        setIsReady(true);
+
+        navigation.navigate(RootViews.Login);
+    };
+
+    useEffect(() => { if (!isReady) { seedDb() } }, [isReady]);
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

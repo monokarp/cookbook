@@ -1,41 +1,16 @@
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
 import { RegexPatterns } from "../../../../../constants";
-import { FormatNumber, FormatString } from "../../../../../domain/util";
-import { useUnsub } from "../../../../../ui/custom-hooks";
 import { styles } from "../product-defails.style";
-import { PricingFormProps } from "./props";
-import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
-import { FormMode } from "../../../common/form-mode.enum";
+import { ProductDetailsFormData } from "../form-data-facade";
 
 
-export function PricingByWeightForm({ pricing, onChange, mode }: PricingFormProps) {
+export function PricingByWeightForm() {
     const { t } = useTranslation();
 
-    const isEdit = mode === FormMode.Edit;
-
-    const { control, watch, formState: { errors }, trigger } = useForm({
-        defaultValues: {
-            totalGrams: isEdit ? FormatNumber.Weight(pricing.weightInGrams) : '',
-            totalPrice: isEdit ? FormatNumber.Money(pricing.price) : '',
-        },
-        mode: 'onTouched'
-    });
-
-    useUnsub(watch, (data) => {
-        trigger().then(isValid => {
-            if (isValid) {
-                onChange({
-                    measuring: ProductMeasuring.Grams,
-                    price: Number(data.totalPrice),
-                    weightInGrams: FormatString.Weight(data.totalGrams),
-                    numberOfUnits: 1,
-                });
-            }
-        });
-    });
+    const { control, formState: { errors } } = useFormContext<ProductDetailsFormData>();
 
     return (
         <View>
@@ -56,9 +31,9 @@ export function PricingByWeightForm({ pricing, onChange, mode }: PricingFormProp
                         value={value}
                     />
                 )}
-                name="totalGrams"
+                name="weight"
             />
-            {errors.totalGrams && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {errors.weight && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
 
             <Text style={styles.inputLabel}>{t('product.pricing.totalPrice')}</Text>
             <Controller
@@ -77,9 +52,9 @@ export function PricingByWeightForm({ pricing, onChange, mode }: PricingFormProp
                         value={value}
                     />
                 )}
-                name="totalPrice"
+                name="price"
             />
-            {errors.totalPrice && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {errors.price && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
         </View>
     );
 }
