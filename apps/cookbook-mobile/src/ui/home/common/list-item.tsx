@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import { Button, Dialog, List, Portal } from "react-native-paper";
+import { List } from "react-native-paper";
+import { ConfirmDeletionModal } from "./confirmation-modal";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -11,12 +11,8 @@ export interface SummaryListItemProps {
 }
 
 export function SummaryListItem({ item, itemSelected, deleteRequested, exportRequested }) {
-    const { t } = useTranslation();
-
     const [visible, setVisible] = useState(false);
-
     const show = () => setVisible(true);
-
     const dismiss = () => setVisible(false);
 
     const confirmDelete = () => {
@@ -32,17 +28,7 @@ export function SummaryListItem({ item, itemSelected, deleteRequested, exportReq
                 onLongPress={show}
                 right={props => <Pressable onPress={exportRequested}><List.Icon {...props} icon="content-copy" /></Pressable>}
             />
-            <Portal>
-                <Dialog visible={visible} onDismiss={dismiss}>
-                    <Dialog.Title>{t('lists.deleteItemPrompt')}</Dialog.Title>
-                    <Dialog.Content>
-                        <Dialog.Actions>
-                            <Button onPress={dismiss}>{t('common.cancel')}</Button>
-                            <Button onPress={confirmDelete}>{t('common.yes')}</Button>
-                        </Dialog.Actions>
-                    </Dialog.Content>
-                </Dialog>
-            </Portal>
+            <ConfirmDeletionModal isVisible={visible} confirm={confirmDelete} dismiss={dismiss} />
         </View>
     );
 }

@@ -8,5 +8,5 @@ interface ProdctsStore {
 
 export const useProductsStore = create<ProdctsStore>((set) => ({
     products: [],
-    setProducts: (newProducts) => set(() => ({ products: newProducts })),
+    setProducts: (newProducts) => set(() => ({ products: newProducts.sort((a, b) => a.name.localeCompare(b.name)) })),
 }));

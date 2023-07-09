@@ -70,6 +70,10 @@ export class RecipesRepository {
                         ]
                     ] as Query
             ),
+            [
+                `DELETE FROM [Ingridients] WHERE [RecipeId] = ? AND [PositionNumber] > ?;`,
+                [recipe.id, recipe.positions.length]
+            ]
         ]);
     }
 

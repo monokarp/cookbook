@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, List, Portal, Text, TextInput, Button } from "react-native-paper";
-import { useProductsStore } from "../../../../products/products.store";
+import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
 import { Product } from "../../../../../../domain/types/product/product";
 import { FormatNumber } from "../../../../../../domain/util";
+import { useProductsStore } from "../../../../products/products.store";
 
 export interface ProductSelectProps {
     selectedProduct: Product | null,
     ingridientPrice: number,
     onSelect: (product: Product) => void,
+    onLongPress?: () => void,
 }
 
-export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: ProductSelectProps) {
+export function ProductSelect({ selectedProduct, ingridientPrice, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
     const { products } = useProductsStore();
@@ -29,20 +30,23 @@ export function ProductSelect({ selectedProduct, ingridientPrice, onSelect }: Pr
 
     return (
         <View>
-            <Pressable onPress={show}>
-                <Card style={{height:'100%'}}>
-                    <Card.Title title={
-                        selectedProduct
-                            ? selectedProduct.name
-                            : t('product.search.noneSelected')
-                    } />
-                    {
-                        selectedProduct.id &&
-                        <Card.Content>
-                            <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${FormatNumber.Money(ingridientPrice)}`}</Text>
-                        </Card.Content>
-                    }
-                </Card>
+            <Pressable onPress={show} onLongPress={onLongPress}>
+                {
+                    selectedProduct?.id
+                        ?
+                        <Card>
+                            <Card.Title title={selectedProduct.name} />
+                            <Card.Content>
+                                <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${FormatNumber.Money(ingridientPrice)}`}</Text>
+                            </Card.Content>
+                        </Card>
+                        :
+                        <Card style={{ height: '100%', justifyContent: 'center' }}>
+                            <Card.Content>
+                                <Text variant="labelLarge">{t('product.search.noneSelected')}</Text>
+                            </Card.Content>
+                        </Card>
+                }
             </Pressable>
 
             <Portal>

@@ -10,13 +10,12 @@ import { ProductDetailsFormData } from "../form-data-facade";
 export function PricingByWeightForm() {
     const { t } = useTranslation();
 
-    const { control, formState: { errors } } = useFormContext<ProductDetailsFormData>();
+    const { formState: { errors } } = useFormContext<ProductDetailsFormData>();
 
     return (
         <View>
             <Text style={styles.inputLabel}>{t('product.details.totalWeight')}</Text>
             <Controller
-                control={control}
                 rules={{
                     required: true,
                     validate: (value) => RegexPatterns.Weight.test(value) && Number(value) > 0,
@@ -37,7 +36,6 @@ export function PricingByWeightForm() {
 
             <Text style={styles.inputLabel}>{t('product.pricing.totalPrice')}</Text>
             <Controller
-                control={control}
                 rules={{
                     required: true,
                     pattern: RegexPatterns.Money,
