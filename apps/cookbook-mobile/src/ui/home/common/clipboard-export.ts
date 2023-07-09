@@ -50,7 +50,7 @@ export class ExportToClipboard {
     private summarizePosition(entity: Position): string {
         return [
             entity.product.name,
-            `${entity.serving.units} ${entity.serving.measuring}}`,
+            `${entity.serving.units} ${this.t(`product.measuring${entity.serving.measuring}`)}`,
             `${this.t('product.pricing.totalPrice')} - ${entity.price()}`,
         ].join('\n');
     }

@@ -8,7 +8,7 @@
         "cancel": "Cancel",
         "yes": "Yes"
     },
-    "lists":{
+    "lists": {
         "deleteItemPrompt": "Delete this item?"
     },
     "views": {
@@ -16,7 +16,11 @@
         "products": "Products view"
     },
     "product": {
-        "search":{
+        "measuring": {
+            "grams": "grams",
+            "units": "pieces"
+        },
+        "search": {
             "byName": "Search product by name",
             "noneSelected": "No product selected"
         },
@@ -57,7 +61,7 @@
             "selectProduct": "Please select a product"
         }
     },
-    "errors":{
+    "errors": {
         "product": {
             "cantDelete": "Unable to delete this product",
             "fkViolation": "There are recipes that use this product. Please remove them first."

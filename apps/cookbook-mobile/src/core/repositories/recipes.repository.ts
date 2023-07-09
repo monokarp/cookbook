@@ -119,10 +119,12 @@ function MapRecipePosition(row: RecipeRow): Position {
 }
 
 function MapRecipe(rows: RecipeRow[]): Recipe {
+    const isEmptyRecipe = rows.length === 1 && rows[0].PositionNumber === null;
+
     return new Recipe({
         id: rows[0].Id,
         name: rows[0].Name,
-        positions: rows.map(MapRecipePosition)
+        positions: isEmptyRecipe ? [] : rows.map(MapRecipePosition)
     });
 }
 

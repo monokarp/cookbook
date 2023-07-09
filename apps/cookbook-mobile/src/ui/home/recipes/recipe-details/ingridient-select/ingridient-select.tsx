@@ -85,7 +85,7 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
                 <View style={styles.servingUnitsWrapper}>
                     <Controller
                         name={`ingridients.${index}.units`}
-                        defaultValue={FormatNumber.ServingUnits(selectedIngridient.serving)}
+                        defaultValue={selectedIngridient.serving.units ? FormatNumber.ServingUnits(selectedIngridient.serving) : ''}
                         rules={{
                             required: true,
                             validate: (value) => {

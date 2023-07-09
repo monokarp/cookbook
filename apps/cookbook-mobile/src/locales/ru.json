@@ -16,6 +16,10 @@
         "products": "Продукты"
     },
     "product": {
+        "measuring": {
+            "grams": "грамм",
+            "units": "штук"
+        },
         "search":{
             "byName": "Поиск продукта по имени",
             "noneSelected": "Не выбран продукт"
