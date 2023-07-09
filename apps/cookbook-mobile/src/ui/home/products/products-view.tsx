@@ -2,7 +2,7 @@ import { useInjection } from 'inversify-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, View } from 'react-native';
-import { Button, Portal, Snackbar, Text } from 'react-native-paper';
+import { Button, Portal, Snackbar, Text, TextInput } from 'react-native-paper';
 import { ProductsRepository } from '../../../core/repositories/products.repository';
 import { Product } from '../../../domain/types/product/product';
 import { RootViews } from '../../root-views.enum';
@@ -19,7 +19,8 @@ export function ProductsView({ navigation }) {
 
   const repo = useInjection(ProductsRepository);
 
-  const { products, setProducts } = useProductsStore((state) => state);
+  const { products, setProducts, filteredProducts, filter } = useProductsStore((state) => state);
+
   const [snackbarMessage, setSnackbarMessage] = useState(null);
 
   async function tryDeleteProduct(item: Product) {
@@ -43,9 +44,16 @@ export function ProductsView({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        mode='outlined'
+        label={t('product.search.byName')}
+        defaultValue=''
+        onChange={event => filter(event.nativeEvent.text)}
+      />
+
       <View style={{ flex: 9 }}>
         <FlatList
-          data={products}
+          data={filteredProducts}
           renderItem={({ item }) =>
             <View style={styles.item}>
               <SummaryListItem

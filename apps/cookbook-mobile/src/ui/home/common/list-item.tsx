@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, View } from "react-native";
-import { List } from "react-native-paper";
+import { List, TouchableRipple } from "react-native-paper";
 import { ConfirmDeletionModal } from "./confirmation-modal";
 
 export interface SummaryListItemProps {
@@ -26,7 +26,12 @@ export function SummaryListItem({ item, itemSelected, deleteRequested, exportReq
                 title={item.name}
                 onPress={itemSelected}
                 onLongPress={show}
-                right={props => <Pressable onPress={exportRequested}><List.Icon {...props} icon="content-copy" /></Pressable>}
+                right={
+                    props =>
+                        <TouchableRipple style={{ padding: 15, paddingLeft: 0 }} onPress={exportRequested}>
+                            <List.Icon {...props} icon="content-copy" />
+                        </TouchableRipple>
+                }
             />
             <ConfirmDeletionModal isVisible={visible} confirm={confirmDelete} dismiss={dismiss} />
         </View>

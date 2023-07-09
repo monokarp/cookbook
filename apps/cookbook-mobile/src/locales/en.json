@@ -21,7 +21,7 @@
             "units": "pieces"
         },
         "search": {
-            "byName": "Search product by name",
+            "byName": "Search by name",
             "noneSelected": "No product selected"
         },
         "name": "Product name",

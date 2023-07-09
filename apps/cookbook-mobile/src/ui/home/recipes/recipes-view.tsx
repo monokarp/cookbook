@@ -1,8 +1,8 @@
 import { useInjection } from 'inversify-react-native';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Text, View } from 'react-native';
-import { Button } from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import { RecipesRepository } from '../../../core/repositories/recipes.repository';
 import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
@@ -18,7 +18,7 @@ export function RecipesView({ navigation }) {
   const repo = useInjection(RecipesRepository);
 
   const { products } = useProductsStore((state) => state);
-  const { recipes, setRecipes } = useRecipesStore((state) => state);
+  const { recipes, filteredRecipes, setRecipes, filter } = useRecipesStore((state) => state);
 
   useEffect(() => {
     repo.All().then(setRecipes);
@@ -26,9 +26,16 @@ export function RecipesView({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TextInput
+        mode='outlined'
+        label={t('product.search.byName')}
+        defaultValue=''
+        onChange={event => filter(event.nativeEvent.text)}
+      />
+
       <View style={{ flex: 9 }}>
         <FlatList
-          data={recipes}
+          data={filteredRecipes}
           renderItem={({ item }) =>
             <View style={styles.item}>
               <SummaryListItem
