@@ -8,12 +8,12 @@ import { useProductsStore } from "../../../../products/products.store";
 
 export interface ProductSelectProps {
     selectedProduct: Product | null,
-    ingridientPrice: number,
+    ingredientPrice: number,
     onSelect: (product: Product) => void,
     onLongPress?: () => void,
 }
 
-export function ProductSelect({ selectedProduct, ingridientPrice, onSelect, onLongPress }: ProductSelectProps) {
+export function ProductSelect({ selectedProduct, ingredientPrice, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
     const { products } = useProductsStore();
@@ -37,7 +37,7 @@ export function ProductSelect({ selectedProduct, ingridientPrice, onSelect, onLo
                         <Card>
                             <Card.Title title={selectedProduct.name} />
                             <Card.Content>
-                                <Text variant="labelSmall">{`${t('recipe.ingridientPrice')} ${FormatNumber.Money(ingridientPrice)}`}</Text>
+                                <Text variant="labelSmall">{`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}</Text>
                             </Card.Content>
                         </Card>
                         :

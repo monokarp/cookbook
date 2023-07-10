@@ -51,7 +51,7 @@
             "servingSizeInGrams": "Кило",
             "servingSizeInUnits": "Штуки"
         },
-        "ingridientPrice": "Стоимость ингредиента"
+        "ingredientPrice": "Стоимость ингредиента"
     },
     "validation": {
         "required": {

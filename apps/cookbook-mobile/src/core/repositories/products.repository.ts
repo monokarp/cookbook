@@ -24,7 +24,7 @@ export class ProductsRepository {
 
     public async All(): Promise<Product[]> {
         const [result] = await this.database.ExecuteSql(`
-            SELECT [Id], [Name], [Measuring], [Price], [WeightInGrams], [NumberOfUnits]
+            SELECT [Id] as [ProductId], [Name] as [ProductName], [Measuring], [Price], [WeightInGrams], [NumberOfUnits]
             FROM [Products]
             LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id];
         `);
@@ -34,7 +34,7 @@ export class ProductsRepository {
 
     public async One(id: string): Promise<Product | null> {
         const [result] = await this.database.ExecuteSql(`
-            SELECT [Id], [Name], [Measuring], [Price], [WeightInGrams], [NumberOfUnits]
+            SELECT [Id] as [ProductId], [Name] as [ProductName], [Measuring], [Price], [WeightInGrams], [NumberOfUnits]
             FROM [Products]
             LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id]
             WHERE [Id] = ?;
@@ -73,10 +73,10 @@ export class ProductsRepository {
     }
 }
 
-function MapProductRow(row: ProductRow): Product {
+export function MapProductRow(row: ProductRow): Product {
     return new Product({
-        id: row.Id,
-        name: row.Name,
+        id: row.ProductId,
+        name: row.ProductName,
         pricing: new ProductPricing({
             measuring: row.Measuring,
             price: row.Price,
@@ -86,9 +86,9 @@ function MapProductRow(row: ProductRow): Product {
     });
 }
 
-interface ProductRow {
-    Id: string;
-    Name: string;
+export interface ProductRow {
+    ProductId: string;
+    ProductName: string;
     Measuring: ProductMeasuring;
     Price: number;
     WeightInGrams: number;

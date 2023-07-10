@@ -10,19 +10,19 @@ import { ProductsRepository } from "../../../../core/repositories/products.repos
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { Product } from "../../../../domain/types/product/product";
 import { ProductMeasuring } from "../../../../domain/types/product/product-pricing";
-import { Ingridient } from "../../../../domain/types/recipe/ingridient";
+import { Ingredient } from "../../../../domain/types/recipe/ingredient";
 import { Recipe } from "../../../../domain/types/recipe/recipe";
 import { FormatNumber } from "../../../../domain/util";
 import { useUnsub } from "../../../custom-hooks";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
-import { IngridientFormData, IngridientSelect, MapFormDataToIngridient } from "./ingridient-select/ingridient-select";
+import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
 import { styles } from "./recipe-details.style";
 
 
 export interface RecipeDetailsFormData {
     recipeName: string,
-    ingridients: IngridientFormData[],
+    ingredients: IngredientFormData[],
 };
 
 export function RecipeDetails({ route, navigation }) {
@@ -37,13 +37,13 @@ export function RecipeDetails({ route, navigation }) {
 
     const form = useForm({ mode: 'onTouched' });
 
-    useFieldArray({ control: form.control, name: 'ingridients' });
+    useFieldArray({ control: form.control, name: 'ingredients' });
 
     useUnsub(form.watch, (data: RecipeDetailsFormData) => {
         const updatedRecipe = new Recipe({
             id: recipe.id,
             name: data.recipeName,
-            positions: data.ingridients.map((ingridient, index) => MapFormDataToIngridient(ingridient, recipe.positions[index])),
+            positions: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient, recipe.positions[index])),
         });
 
         setRecipe(updatedRecipe);
@@ -57,12 +57,12 @@ export function RecipeDetails({ route, navigation }) {
         navigation.goBack();
     };
 
-    function addEmptyIngridient() {
+    function addEmptyIngredient() {
         setRecipe(new Recipe({
             ...recipe,
             positions: [
                 ...recipe.positions,
-                new Ingridient({
+                new Ingredient({
                     product: new Product({
                         id: '',
                         name: t('validation.required.selectProduct'),
@@ -79,7 +79,7 @@ export function RecipeDetails({ route, navigation }) {
         }));
     };
 
-    function deleteIngridient(index: number) {
+    function deleteIngredient(index: number) {
         setRecipe(new Recipe({
             ...recipe,
             positions: recipe.positions.filter((_, i) => i !== index)
@@ -122,10 +122,10 @@ export function RecipeDetails({ route, navigation }) {
                     keyExtractor={(item, index) => index.toString()}
                     data={recipe.positions}
                     renderItem={({ item, index }) =>
-                        <IngridientSelect
-                            selectedIngridient={item}
+                        <IngredientSelect
+                            selectedIngredient={item}
                             index={index}
-                            requestRemoval={() => deleteIngridient(index)}
+                            requestRemoval={() => deleteIngredient(index)}
                         />
                     }
                 />
@@ -133,7 +133,7 @@ export function RecipeDetails({ route, navigation }) {
                 <FAB
                     icon="plus"
                     style={{ marginTop: 10 }}
-                    onPress={addEmptyIngridient}
+                    onPress={addEmptyIngredient}
                 />
 
                 <Button style={{ marginTop: 'auto', marginBottom: 15 }} mode="outlined" onPress={form.handleSubmit(onSubmit)}>{t('common.save')}</Button>

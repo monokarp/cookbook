@@ -1,5 +1,6 @@
 import { roundMoney } from "../../util";
-import { Ingridient } from "./ingridient";
+import { Prepack, PrepackDto } from "./prepack";
+import { Ingredient, IngredientDto } from "./ingredient";
 
 
 export class Recipe {
@@ -18,4 +19,14 @@ export class Recipe {
     }
 }
 
-export type Position = Ingridient;
+export function isPrepack(position: PositionDto): position is PrepackDto {
+    return (position as PrepackDto).finalWeight !== undefined;
+}
+
+export function isIngredient(position: PositionDto): position is IngredientDto {
+    return (position as IngredientDto).serving !== undefined;
+}
+
+export type Position = Ingredient | Prepack;
+
+export type PositionDto = IngredientDto | PrepackDto;

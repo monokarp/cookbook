@@ -1,6 +1,6 @@
 import { MoneyRoundingPrecision, WeightRoundingPrecision } from "../constants";
 import { ProductMeasuring } from "./types/product/product-pricing";
-import { Serving } from "./types/recipe/ingridient";
+import { Serving } from "./types/recipe/ingredient";
 
 export function roundMoney(value: number): number {
     return Number(value.toFixed(MoneyRoundingPrecision));

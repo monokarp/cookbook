@@ -51,7 +51,7 @@
             "servingSizeInGrams": "Kilos",
             "servingSizeInUnits": "Units"
         },
-        "ingridientPrice": "Ingridient price"
+        "ingredientPrice": "Ingredient price"
     },
     "validation": {
         "required": {

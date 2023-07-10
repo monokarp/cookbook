@@ -1,14 +1,14 @@
 import { roundMoney } from "../../util";
-import { Product } from "../product/product";
+import { Product, ProductDto } from "../product/product";
 import { ProductMeasuring } from "../product/product-pricing";
 
 
-export class Ingridient {
+export class Ingredient implements IngredientDto {
     public readonly product: Product;
     public readonly serving: Serving;
 
-    constructor(data: { product: Product, serving: Serving }) {
-        this.product = data.product;
+    constructor(data: IngredientDto) {
+        this.product = new Product(data.product);
         this.serving = data.serving;
     }
 
@@ -19,6 +19,11 @@ export class Ingridient {
                 : this.serving.units * this.product.pricing.pricePerUnit()
         );
     }
+}
+
+export interface IngredientDto {
+    product: ProductDto;
+    serving: Serving;
 }
 
 export interface Serving {

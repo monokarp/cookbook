@@ -1,15 +1,18 @@
 import { inject, injectable } from "inversify";
 import { Product, ProductDto } from "../../domain/types/product/product";
 import { ProductMeasuring } from "../../domain/types/product/product-pricing";
-import { Ingridient } from "../../domain/types/recipe/ingridient";
+import { Ingredient } from "../../domain/types/recipe/ingredient";
 import { Recipe } from "../../domain/types/recipe/recipe";
 import { ProductsRepository } from "../repositories/products.repository";
 import { RecipesRepository } from "../repositories/recipes.repository";
+import { PrepackRepository } from "../repositories/prepack.repository";
+import { Prepack } from "../../domain/types/recipe/prepack";
 
 @injectable()
 export class SeedData {
     @inject(ProductsRepository) private readonly productsRepo!: ProductsRepository;
     @inject(RecipesRepository) private readonly recipesRepo!: RecipesRepository;
+    @inject(PrepackRepository) private readonly prepacksRepo!: PrepackRepository;
 
     private readonly products: ProductDto[] = [
         {
@@ -44,19 +47,43 @@ export class SeedData {
         },
     ];
 
-    private readonly recipes: Recipe[] = [
-        new Recipe({
-            id: '905379dc-f444-4a9f-8d1b-fbc0576188ce',
-            name: 'Яблоко c бананом',
-            positions: [
-                new Ingridient({
+    private readonly prepacks: Prepack[] = [
+        new Prepack({
+            id: '13435459-4493-4326-b7f9-ff18b2630590',
+            name: 'Яблоко c бананом ПФ',
+            finalWeight: 130,
+            ingredients: [
+                new Ingredient({
                     product: new Product(this.products[0]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
                         units: 100
                     }
                 }),
-                new Ingridient({
+                new Ingredient({
+                    product: new Product(this.products[1]),
+                    serving: {
+                        measuring: ProductMeasuring.Units,
+                        units: 3
+                    }
+                })
+            ]
+        })
+    ];
+
+    private readonly recipes: Recipe[] = [
+        new Recipe({
+            id: '905379dc-f444-4a9f-8d1b-fbc0576188ce',
+            name: 'Яблоко c бананом',
+            positions: [
+                new Ingredient({
+                    product: new Product(this.products[0]),
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 100
+                    }
+                }),
+                new Ingredient({
                     product: new Product(this.products[1]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
@@ -69,14 +96,14 @@ export class SeedData {
             id: 'b0250c1d-c8aa-4dfa-873f-4a64490028bf',
             name: 'Банан с морковкой',
             positions: [
-                new Ingridient({
+                new Ingredient({
                     product: new Product(this.products[1]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
                         units: 100
                     }
                 }),
-                new Ingridient({
+                new Ingredient({
                     product: new Product(this.products[2]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
@@ -90,6 +117,10 @@ export class SeedData {
     public async Seed(): Promise<void> {
         for (const product of this.products) {
             await this.productsRepo.Save(product);
+        }
+
+        for (const prepack of this.prepacks) {
+            await this.prepacksRepo.Save(prepack);
         }
 
         for (const recipe of this.recipes) {

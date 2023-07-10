@@ -4,32 +4,32 @@ import { View } from "react-native";
 import { Switch, Text, TextInput } from "react-native-paper";
 import { RegexPatterns } from "../../../../../constants";
 import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
-import { Ingridient } from "../../../../../domain/types/recipe/ingridient";
+import { Ingredient } from "../../../../../domain/types/recipe/ingredient";
 import { FormatNumber, FormatString } from "../../../../../domain/util";
-import { useUnsub } from "../../../../../ui/custom-hooks";
-import { styles } from "./ingridient-select.style";
+import { useUnsub } from "../../../../custom-hooks";
+import { styles } from "./ingredient-select.style";
 import { ProductSelect } from "./product-select/product-select";
 import { Product } from "../../../../../domain/types/product/product";
 import { useState } from "react";
 import { ConfirmDeletionModal } from "../../../common/confirmation-modal";
 
-export interface IngridientSelectProps {
-    selectedIngridient: Ingridient,
+export interface IngredientSelectProps {
+    selectedIngredient: Ingredient,
     index: number,
     requestRemoval: () => void,
 }
 
-export interface IngridientFormData {
+export interface IngredientFormData {
     selectedProduct: Product,
     units: string,
     measuringType?: string,
 };
 
-export function MapFormDataToIngridient(formData: IngridientFormData, fallback: Ingridient): Ingridient {
+export function MapFormDataToIngredient(formData: IngredientFormData, fallback: Ingredient): Ingredient {
     const measuring = formData.measuringType as ProductMeasuring ?? fallback.serving.measuring;
     const units = measuring === ProductMeasuring.Units ? Number(formData.units) : FormatString.Weight(formData.units);
 
-    return new Ingridient({
+    return new Ingredient({
         product: formData.selectedProduct,
         serving: {
             units,
@@ -38,7 +38,7 @@ export function MapFormDataToIngridient(formData: IngridientFormData, fallback: 
     })
 }
 
-export function IngridientSelect({ selectedIngridient, index, requestRemoval }: IngridientSelectProps) {
+export function IngredientSelect({ selectedIngredient, index, requestRemoval }: IngredientSelectProps) {
     const { t } = useTranslation();
 
     const [visible, setVisible] = useState(false);
@@ -47,16 +47,16 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
 
     const { watch, trigger, getValues, formState: { errors } } = useFormContext();
 
-    useUnsub(watch, () => trigger(`ingridients.${index}.units`));
+    useUnsub(watch, () => trigger(`ingredients.${index}.units`));
 
-    const formIngridient = (): Ingridient => {
-        if (!getValues().ingridients) { return selectedIngridient; }
+    const formIngredient = (): Ingredient => {
+        if (!getValues().ingredients) { return selectedIngredient; }
 
-        const formData: IngridientFormData = getValues().ingridients[index];
+        const formData: IngredientFormData = getValues().ingredients[index];
 
-        if (!formData) { return selectedIngridient; }
+        if (!formData) { return selectedIngredient; }
 
-        return MapFormDataToIngridient(formData, selectedIngridient);
+        return MapFormDataToIngredient(formData, selectedIngredient);
     }
 
     return (
@@ -65,15 +65,15 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
 
                 <View style={styles.pickerWrapper}>
                     <Controller
-                        name={`ingridients.${index}.selectedProduct`}
-                        defaultValue={selectedIngridient.product}
+                        name={`ingredients.${index}.selectedProduct`}
+                        defaultValue={selectedIngredient.product}
                         rules={{
                             required: true,
                             validate: (value) => !!value.id,
                         }}
                         render={({ field: { onChange, value } }) => (
                             <ProductSelect
-                                ingridientPrice={value?.id ? formIngridient()?.price() : 0}
+                                ingredientPrice={value?.id ? formIngredient()?.price() : 0}
                                 selectedProduct={value}
                                 onSelect={onChange}
                                 onLongPress={show}
@@ -84,12 +84,12 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
 
                 <View style={styles.servingUnitsWrapper}>
                     <Controller
-                        name={`ingridients.${index}.units`}
-                        defaultValue={selectedIngridient.serving.units ? FormatNumber.ServingUnits(selectedIngridient.serving) : ''}
+                        name={`ingredients.${index}.units`}
+                        defaultValue={selectedIngredient.serving.units ? FormatNumber.ServingUnits(selectedIngredient.serving) : ''}
                         rules={{
                             required: true,
                             validate: (value) => {
-                                const regex = formIngridient()?.serving.measuring === ProductMeasuring.Units
+                                const regex = formIngredient()?.serving.measuring === ProductMeasuring.Units
                                     ? RegexPatterns.Money
                                     : RegexPatterns.Weight;
 
@@ -99,7 +99,7 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
                                 mode="outlined"
-                                label={t((formIngridient()?.serving.measuring === ProductMeasuring.Units) ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
+                                label={t((formIngredient()?.serving.measuring === ProductMeasuring.Units) ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
                                 style={styles.servingSizeInput}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
@@ -112,10 +112,10 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
 
                 <View style={styles.servingMeasureWrapper}>
                     {
-                        formIngridient()?.product.pricing.measuring === ProductMeasuring.Units &&
+                        formIngredient()?.product.pricing.measuring === ProductMeasuring.Units &&
                         <Controller
-                            name={`ingridients.${index}.measuringType`}
-                            defaultValue={selectedIngridient.serving.measuring}
+                            name={`ingredients.${index}.measuringType`}
+                            defaultValue={selectedIngredient.serving.measuring}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <Switch
                                     value={value === ProductMeasuring.Units}
@@ -128,8 +128,8 @@ export function IngridientSelect({ selectedIngridient, index, requestRemoval }: 
                     }
                 </View>
             </View>
-            {errors.ingridients && errors.ingridients[index]?.selectedProduct && <Text style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>}
-            {errors.ingridients && errors.ingridients[index]?.units && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {errors.ingredients && errors.ingredients[index]?.selectedProduct && <Text style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>}
+            {errors.ingredients && errors.ingredients[index]?.units && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
 
             <ConfirmDeletionModal isVisible={visible} confirm={requestRemoval} dismiss={dismiss} />
         </View>
