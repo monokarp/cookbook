@@ -1,6 +1,7 @@
+import { NamedEntity } from "../named-entity";
 import { ProductPricing, ProductPricingDto } from "./product-pricing";
 
-export class Product {
+export class Product implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
     public readonly pricing: ProductPricing;

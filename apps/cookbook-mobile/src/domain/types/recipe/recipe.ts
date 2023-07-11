@@ -1,9 +1,10 @@
 import { roundMoney } from "../../util";
 import { Prepack, PrepackDto } from "./prepack";
 import { Ingredient, IngredientDto } from "./ingredient";
+import { NamedEntity } from "../named-entity";
 
 
-export class Recipe {
+export class Recipe implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
     public readonly positions: Position[];

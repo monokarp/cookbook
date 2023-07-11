@@ -13,7 +13,8 @@
     },
     "views": {
         "recipes": "Recipes view",
-        "products": "Products view"
+        "products": "Products view",
+        "prepacks": "Prepacks view"
     },
     "product": {
         "measuring": {
@@ -52,6 +53,12 @@
             "servingSizeInUnits": "Units"
         },
         "ingredientPrice": "Ingredient price"
+    },
+    "prepack": {
+        "addNew": "Add new prepack",
+        "details":{
+            "title": "Prepack details",
+        }
     },
     "validation": {
         "required": {

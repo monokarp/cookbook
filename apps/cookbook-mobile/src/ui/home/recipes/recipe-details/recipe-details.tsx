@@ -16,8 +16,8 @@ import { FormatNumber } from "../../../../domain/util";
 import { useUnsub } from "../../../custom-hooks";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
-import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
 import { styles } from "./recipe-details.style";
+import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
 
 
 export interface RecipeDetailsFormData {

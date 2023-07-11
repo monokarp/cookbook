@@ -1,8 +1,10 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import { Product } from "../../../domain/types/product/product";
 import { ProductMeasuring, ProductPricing } from "../../../domain/types/product/product-pricing";
-import { Position, Recipe } from "../../../domain/types/recipe/recipe";
+import { Position, Recipe, isIngredient, isPrepack } from "../../../domain/types/recipe/recipe";
 import { roundMoney } from "../../../domain/util";
+import { Prepack } from '../../../domain/types/recipe/prepack';
+import { Ingredient } from '../../../domain/types/recipe/ingredient';
 
 
 export class ExportToClipboard {
@@ -18,6 +20,10 @@ export class ExportToClipboard {
 
     public recipe(recipe: Recipe): void {
         Clipboard.setString(this.summarizeRecipe(recipe));
+    }
+
+    public prepack(prepack: Prepack): void {
+        Clipboard.setString(this.summarizePrepack(prepack));
     }
 
     private summarizeProduct(entity: Product): string {
@@ -48,10 +54,29 @@ export class ExportToClipboard {
     }
 
     private summarizePosition(entity: Position): string {
+        if (isIngredient(entity)) {
+            return this.summarizeIngredient(entity);
+        }
+
+        if (isPrepack(entity)) {
+            return this.summarizePrepack(entity);
+        }
+
+        throw new Error('Unknown position type');
+    }
+
+    private summarizeIngredient(entity: Ingredient): string {
         return [
             entity.product.name,
-            `${entity.serving.units} ${this.t(`product.measuring${entity.serving.measuring}`)}`,
+            `${entity.serving.units} ${this.t(`product.measuring.${entity.serving.measuring}`)}`,
             `${this.t('product.pricing.totalPrice')} - ${entity.price()}`,
         ].join('\n');
+    }
+
+    private summarizePrepack(entity: Prepack): string {
+        return [
+            entity.name,
+            ...entity.ingredients.map(one => this.summarizeIngredient(one)),
+        ].join('\n\n');
     }
 }

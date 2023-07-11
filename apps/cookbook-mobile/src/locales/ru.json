@@ -13,7 +13,8 @@
     },
     "views": {
         "recipes": "Рецепты",
-        "products": "Продукты"
+        "products": "Продукты",
+        "prepacks": "П / Ф"
     },
     "product": {
         "measuring": {
@@ -52,6 +53,12 @@
             "servingSizeInUnits": "Штуки"
         },
         "ingredientPrice": "Стоимость ингредиента"
+    },
+    "prepack": {
+        "addNew": "Добавить полуфабрикат",
+        "details":{
+            "title": "Детали полуфабриката"
+        }
     },
     "validation": {
         "required": {

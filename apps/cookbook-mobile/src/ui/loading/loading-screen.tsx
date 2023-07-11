@@ -20,7 +20,9 @@ export function LoadingScreen({ navigation }) {
 
         const { didRunMigrations } = await db.Init();
 
-        if (didRunMigrations) { await seedData.Seed(); }
+        // if (didRunMigrations) {
+            await seedData.Seed();
+        // }
 
         setIsReady(true);
 
