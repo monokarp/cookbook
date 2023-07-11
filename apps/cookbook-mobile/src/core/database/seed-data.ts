@@ -63,8 +63,8 @@ export class SeedData {
                 new Ingredient({
                     product: new Product(this.products[1]),
                     serving: {
-                        measuring: ProductMeasuring.Units,
-                        units: 3
+                        measuring: ProductMeasuring.Grams,
+                        units: 200
                     }
                 })
             ]

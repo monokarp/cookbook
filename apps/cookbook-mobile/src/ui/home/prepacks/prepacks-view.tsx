@@ -17,7 +17,7 @@ export function PrepacksView({ navigation }) {
 
     const repo = useInjection(PrepackRepository);
 
-    const { products } = useProductsStore();
+    const { items: products } = useProductsStore();
     const { filteredItems: filteredPrepacks, set: setPrepacks, filter, deleteItem } = usePrepacksStore();
 
     useEffect(() => {

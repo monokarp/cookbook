@@ -7,10 +7,10 @@ import { ProductsRepository } from '../../../core/repositories/products.reposito
 import { Product } from '../../../domain/types/product/product';
 import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
+import { FormMode } from '../common/form-mode.enum';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
-import { FormMode } from '../common/form-mode.enum';
 
 
 export function ProductsView({ navigation }) {
@@ -19,7 +19,7 @@ export function ProductsView({ navigation }) {
 
   const repo = useInjection(ProductsRepository);
 
-  const { products, setProducts, filteredProducts, filter } = useProductsStore((state) => state);
+  const { set: setProducts, filteredItems: filteredProducts, filter, deleteItem } = useProductsStore();
 
   const [snackbarMessage, setSnackbarMessage] = useState(null);
 
@@ -27,7 +27,7 @@ export function ProductsView({ navigation }) {
     try {
       await repo.Delete(item.id);
 
-      setProducts(products.filter(p => p.id !== item.id));
+      deleteItem(item.id);
     } catch (e) {
       switch (e.code) {
         case 0: setSnackbarMessage(t('errors.product.fkViolation')); break;

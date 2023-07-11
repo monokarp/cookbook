@@ -32,8 +32,8 @@ export function RecipeDetails({ route, navigation }) {
 
     const [recipe, setRecipe] = useState(route.params.recipe);
 
-    const { setRecipes } = useRecipesStore();
-    const { setProducts } = useProductsStore();
+    const { set: setRecipes } = useRecipesStore();
+    const { set: setProducts } = useProductsStore();
 
     const form = useForm({ mode: 'onTouched' });
 
@@ -62,19 +62,7 @@ export function RecipeDetails({ route, navigation }) {
             ...recipe,
             positions: [
                 ...recipe.positions,
-                new Ingredient({
-                    product: new Product({
-                        id: '',
-                        name: t('validation.required.selectProduct'),
-                        pricing: {
-                            measuring: ProductMeasuring.Grams,
-                            price: 0,
-                            weightInGrams: 1,
-                            numberOfUnits: 1,
-                        }
-                    }),
-                    serving: { units: 0, measuring: ProductMeasuring.Grams }
-                })
+                Ingredient.Empty()
             ]
         }));
     };
@@ -111,7 +99,7 @@ export function RecipeDetails({ route, navigation }) {
                         )}
                         name="recipeName"
                     />
-                    {form.formState.errors.recipeName && <Text style={styles.validationErrorLabel}>{t('validation.required.aplhanumeric')}</Text>}
+                    {form.formState.errors.recipeName && <Text style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>}
                     <Text variant="labelLarge" style={{ margin: 5 }}>
                         {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(recipe.totalPrice())}`}
                     </Text>

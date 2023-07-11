@@ -75,7 +75,6 @@ export class PrepackRepository {
     }
 
     public async Save(prepack: Prepack): Promise<void> {
-        console.log('Saving prepack', prepack)
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight]) VALUES (?, ?, ?);`,

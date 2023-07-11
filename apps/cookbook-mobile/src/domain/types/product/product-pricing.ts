@@ -19,11 +19,11 @@ export class ProductPricing implements ProductPricingDto {
     }
 
     public pricePerGram(): number {
-        return roundMoney(this.price / this.weightInGrams);
+        return this.weightInGrams ? roundMoney(this.price / this.weightInGrams) : 0;
     }
 
     public pricePerUnit(): number {
-        return roundMoney(this.price / this.numberOfUnits);
+        return this.numberOfUnits ? roundMoney(this.price / this.numberOfUnits) : 0;
     }
 }
 

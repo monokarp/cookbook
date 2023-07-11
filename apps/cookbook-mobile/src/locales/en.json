@@ -55,16 +55,18 @@
         "ingredientPrice": "Ingredient price"
     },
     "prepack": {
+        "name": "Prepack name",
+        "finalWeight": "Final weight",
         "addNew": "Add new prepack",
         "details":{
-            "title": "Prepack details",
+            "title": "Prepack details"
         }
     },
     "validation": {
         "required": {
             "integerGTE": "Required integer greater than or equal to {{gte}}",
             "decimalGTE": "Required decimal (precision up to 3 digits) greater than or equal to {{gte}}",
-            "aplhanumeric": "Required letters or whitespaces",
+            "alphanumeric": "Required letters or whitespaces",
             "selectProduct": "Please select a product"
         }
     },

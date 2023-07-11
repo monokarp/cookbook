@@ -16,7 +16,7 @@ export interface ProductSelectProps {
 export function ProductSelect({ selectedProduct, ingredientPrice, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
-    const { products } = useProductsStore();
+    const { items: products } = useProductsStore();
 
     const [visible, setVisible] = useState(false);
     const [displayedProducts, setDisplayedProducts] = useState(products);

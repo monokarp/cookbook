@@ -62,7 +62,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                     )}
                     name="productName"
                 />
-                {form.formState.errors.productName && <Text style={styles.validationErrorLabel}>{t('validation.required.aplhanumeric')}</Text>}
+                {form.formState.errors.productName && <Text style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>}
 
                 <Text style={styles.inputLabel}>{t('product.pricing.type')}</Text>
                 <Controller

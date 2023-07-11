@@ -1,5 +1,5 @@
 import { useInjection } from 'inversify-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Text, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
@@ -17,8 +17,8 @@ export function RecipesView({ navigation }) {
 
   const repo = useInjection(RecipesRepository);
 
-  const { products } = useProductsStore((state) => state);
-  const { recipes, filteredRecipes, setRecipes, filter } = useRecipesStore((state) => state);
+  const { items: products } = useProductsStore();
+  const { filteredItems: filteredRecipes, set: setRecipes, filter, deleteItem } = useRecipesStore();
 
   useEffect(() => {
     repo.All().then(setRecipes);
@@ -41,7 +41,7 @@ export function RecipesView({ navigation }) {
               <SummaryListItem
                 item={item}
                 itemSelected={() => navigation.navigate(RootViews.RecipeDetails, { recipe: item })}
-                deleteRequested={() => repo.Delete(item.id).then(() => setRecipes(recipes.filter(p => p.id !== item.id)))}
+                deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
                 exportRequested={() => clipboardExport.recipe(item)}
               />
             </View>

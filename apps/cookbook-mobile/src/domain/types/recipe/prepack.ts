@@ -9,6 +9,15 @@ export class Prepack implements NamedEntity {
     public readonly ingredients: Ingredient[];
     public readonly finalWeight: number;
 
+    public static Empty(): Prepack {
+        return new Prepack({
+            id: '',
+            name: '',
+            finalWeight: 0,
+            ingredients: []
+        });
+    }
+
     constructor(data: PrepackDto) {
         this.id = data.id;
         this.name = data.name;

@@ -7,6 +7,13 @@ export class Ingredient implements IngredientDto {
     public readonly product: Product;
     public readonly serving: Serving;
 
+    public static Empty(): Ingredient {
+        return new Ingredient({
+            product: Product.Empty(),
+            serving: { units: 0, measuring: ProductMeasuring.Grams }
+        });
+    }
+
     constructor(data: IngredientDto) {
         this.product = new Product(data.product);
         this.serving = data.serving;
