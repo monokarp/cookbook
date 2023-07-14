@@ -1,10 +1,10 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import { Product } from "../../../domain/types/product/product";
 import { ProductMeasuring, ProductPricing } from "../../../domain/types/product/product-pricing";
-import { Position, Recipe, isIngredient, isPrepack } from "../../../domain/types/recipe/recipe";
+import { Position, Recipe, isProductIngredient, isPrepackIngredient } from "../../../domain/types/recipe/recipe";
 import { roundMoney } from "../../../domain/util";
 import { Prepack } from '../../../domain/types/recipe/prepack';
-import { Ingredient } from '../../../domain/types/recipe/ingredient';
+import { ProductIngredient } from '../../../domain/types/recipe/product-ingredient';
 
 
 export class ExportToClipboard {
@@ -54,18 +54,18 @@ export class ExportToClipboard {
     }
 
     private summarizePosition(entity: Position): string {
-        if (isIngredient(entity)) {
+        if (isProductIngredient(entity)) {
             return this.summarizeIngredient(entity);
         }
 
-        if (isPrepack(entity)) {
-            return this.summarizePrepack(entity);
+        if (isPrepackIngredient(entity)) {
+            return this.summarizePrepack(entity.prepack);
         }
 
         throw new Error('Unknown position type');
     }
 
-    private summarizeIngredient(entity: Ingredient): string {
+    private summarizeIngredient(entity: ProductIngredient): string {
         return [
             entity.product.name,
             `${entity.serving.units} ${this.t(`product.measuring.${entity.serving.measuring}`)}`,

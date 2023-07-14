@@ -1,41 +1,67 @@
+import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Switch, Text, TextInput } from "react-native-paper";
 import { RegexPatterns } from "../../../../../constants";
-import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
-import { Ingredient } from "../../../../../domain/types/recipe/ingredient";
-import { FormatNumber, FormatString } from "../../../../../domain/util";
-import { useUnsub } from "../../../../custom-hooks";
-import { styles } from "./ingredient-select.style";
-import { ProductSelect } from "./product-select/product-select";
 import { Product } from "../../../../../domain/types/product/product";
-import { useState } from "react";
+import { ProductMeasuring } from "../../../../../domain/types/product/product-pricing";
+import { Prepack } from "../../../../../domain/types/recipe/prepack";
+import { PrepackIngredient } from "../../../../../domain/types/recipe/prepack-ingredient";
+import { ProductIngredient } from "../../../../../domain/types/recipe/product-ingredient";
+import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProduct, isProductIngredient } from "../../../../../domain/types/recipe/recipe";
+import { FormatString } from "../../../../../domain/util";
+import { useUnsub } from "../../../../custom-hooks";
 import { ConfirmDeletionModal } from "../../../common/confirmation-modal";
+import { styles } from "./ingredient-select.style";
+import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
 
 export interface IngredientSelectProps {
-    selectedIngredient: Ingredient,
+    selectedIngredient: Position,
     index: number,
     requestRemoval: () => void,
 }
 
 export interface IngredientFormData {
-    selectedProduct: Product,
+    selectedItem: IngredientBase,
     units: string,
-    measuringType?: string,
+    measuringType: string,
 };
 
-export function MapFormDataToIngredient(formData: IngredientFormData, fallback: Ingredient): Ingredient {
-    const measuring = formData.measuringType as ProductMeasuring ?? fallback.serving.measuring;
-    const units = measuring === ProductMeasuring.Units ? Number(formData.units) : FormatString.Weight(formData.units);
+export function MapFormDataToIngredient(formData: IngredientFormData): Position {
+    if (isProduct(formData.selectedItem)) {
+        const measuring = formData.measuringType as ProductMeasuring ?? formData.selectedItem.pricing.measuring;
+        const units = measuring === ProductMeasuring.Units ? Number(formData.units ?? '') : FormatString.Weight(formData.units ?? '');
 
-    return new Ingredient({
-        product: formData.selectedProduct,
-        serving: {
-            units,
-            measuring
-        }
-    })
+        return new ProductIngredient({
+            product: formData.selectedItem as Product,
+            serving: {
+                units,
+                measuring
+            }
+        })
+    }
+
+    if (isPrepack(formData.selectedItem)) {
+        return new PrepackIngredient({
+            prepack: formData.selectedItem as Prepack,
+            weightInGrams: FormatString.Weight(formData.units ?? ''),
+        })
+    }
+
+    throw new Error('Unknown ingredient type');
+}
+
+function getBase(position: Position): IngredientBase {
+    if (isProductIngredient(position)) {
+        return position.product;
+    }
+
+    if (isPrepackIngredient(position)) {
+        return position.prepack;
+    }
+
+    throw new Error('Unknown ingredient type');
 }
 
 export function IngredientSelect({ selectedIngredient, index, requestRemoval }: IngredientSelectProps) {
@@ -49,15 +75,21 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval }: 
 
     useUnsub(watch, () => trigger(`ingredients.${index}.units`));
 
-    const formIngredient = (): Ingredient => {
+    const getFormIngredient = (): Position => {
         if (!getValues().ingredients) { return selectedIngredient; }
 
         const formData: IngredientFormData = getValues().ingredients[index];
 
-        if (!formData) { return selectedIngredient; }
+        if (!formData || !formData.selectedItem) { return selectedIngredient; }
 
-        return MapFormDataToIngredient(formData, selectedIngredient);
+        return MapFormDataToIngredient(formData);
     }
+
+    const isFormIngredientServedInUnits = (): boolean => {
+        const formIngredient = getFormIngredient();
+
+        return isProductIngredient(formIngredient) && formIngredient.serving.measuring === ProductMeasuring.Units;
+    };
 
     return (
         <View>
@@ -65,16 +97,17 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval }: 
 
                 <View style={styles.pickerWrapper}>
                     <Controller
-                        name={`ingredients.${index}.selectedProduct`}
-                        defaultValue={selectedIngredient.product}
+                        name={`ingredients.${index}.selectedItem`}
+                        defaultValue={getBase(selectedIngredient)}
                         rules={{
                             required: true,
                             validate: (value) => !!value.id,
                         }}
                         render={({ field: { onChange, value } }) => (
-                            <ProductSelect
-                                ingredientPrice={value?.id ? formIngredient()?.price() : 0}
-                                selectedProduct={value}
+                            <IngredientBaseSelect
+                                ingredientPrice={getFormIngredient().price()}
+                                // ingredientPrice={value?.id ? getFormIngredient()?.price() : 0}
+                                selectedItem={value}
                                 onSelect={onChange}
                                 onLongPress={show}
                             />
@@ -85,11 +118,10 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval }: 
                 <View style={styles.servingUnitsWrapper}>
                     <Controller
                         name={`ingredients.${index}.units`}
-                        defaultValue={selectedIngredient.serving.units ? FormatNumber.ServingUnits(selectedIngredient.serving) : ''}
                         rules={{
                             required: true,
                             validate: (value) => {
-                                const regex = formIngredient()?.serving.measuring === ProductMeasuring.Units
+                                const regex = isFormIngredientServedInUnits()
                                     ? RegexPatterns.Money
                                     : RegexPatterns.Weight;
 
@@ -99,7 +131,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval }: 
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
                                 mode="outlined"
-                                label={t((formIngredient()?.serving.measuring === ProductMeasuring.Units) ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
+                                label={t(isFormIngredientServedInUnits() ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
                                 style={styles.servingSizeInput}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
@@ -112,11 +144,10 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval }: 
 
                 <View style={styles.servingMeasureWrapper}>
                     {
-                        formIngredient()?.product.pricing.measuring === ProductMeasuring.Units &&
+                        isProductIngredient(selectedIngredient) && selectedIngredient.product.pricing.measuring === ProductMeasuring.Units &&
                         <Controller
                             name={`ingredients.${index}.measuringType`}
-                            defaultValue={selectedIngredient.serving.measuring}
-                            render={({ field: { onChange, onBlur, value } }) => (
+                            render={({ field: { onChange, value } }) => (
                                 <Switch
                                     value={value === ProductMeasuring.Units}
                                     onValueChange={value => {

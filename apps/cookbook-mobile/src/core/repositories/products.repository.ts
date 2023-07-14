@@ -67,8 +67,8 @@ export class ProductsRepository {
 
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
-            ['DELETE FROM [ProductPricing]  WHERE [ProductId] = ?;', [id]],
-            ['DELETE FROM [Products]  WHERE [Id] = ?;', [id]],
+            ['DELETE FROM [ProductPricing] WHERE [ProductId] = ?;', [id]],
+            ['DELETE FROM [Products] WHERE [Id] = ?;', [id]],
         ]);
     }
 }

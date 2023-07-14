@@ -1,12 +1,13 @@
 import { inject, injectable } from "inversify";
 import { Product, ProductDto } from "../../domain/types/product/product";
 import { ProductMeasuring } from "../../domain/types/product/product-pricing";
-import { Ingredient } from "../../domain/types/recipe/ingredient";
+import { ProductIngredient } from "../../domain/types/recipe/product-ingredient";
 import { Recipe } from "../../domain/types/recipe/recipe";
 import { ProductsRepository } from "../repositories/products.repository";
 import { RecipesRepository } from "../repositories/recipes.repository";
 import { PrepackRepository } from "../repositories/prepack.repository";
 import { Prepack } from "../../domain/types/recipe/prepack";
+import { PrepackIngredient } from "../../domain/types/recipe/prepack-ingredient";
 
 @injectable()
 export class SeedData {
@@ -50,21 +51,42 @@ export class SeedData {
     private readonly prepacks: Prepack[] = [
         new Prepack({
             id: '13435459-4493-4326-b7f9-ff18b2630590',
-            name: 'Яблоко c бананом ПФ',
+            name: 'Яблоко c бананом',
             finalWeight: 130,
             ingredients: [
-                new Ingredient({
+                new ProductIngredient({
                     product: new Product(this.products[0]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
                         units: 100
                     }
                 }),
-                new Ingredient({
+                new ProductIngredient({
                     product: new Product(this.products[1]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
                         units: 200
+                    }
+                })
+            ]
+        }),
+        new Prepack({
+            id: '526d1a69-2a24-4b10-a747-8a6cda882d3e',
+            name: 'Банан c морковкой',
+            finalWeight: 50,
+            ingredients: [
+                new ProductIngredient({
+                    product: new Product(this.products[1]),
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 100
+                    }
+                }),
+                new ProductIngredient({
+                    product: new Product(this.products[2]),
+                    serving: {
+                        measuring: ProductMeasuring.Units,
+                        units: 2
                     }
                 })
             ]
@@ -76,14 +98,14 @@ export class SeedData {
             id: '905379dc-f444-4a9f-8d1b-fbc0576188ce',
             name: 'Яблоко c бананом',
             positions: [
-                new Ingredient({
+                new ProductIngredient({
                     product: new Product(this.products[0]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
                         units: 100
                     }
                 }),
-                new Ingredient({
+                new ProductIngredient({
                     product: new Product(this.products[1]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
@@ -96,14 +118,14 @@ export class SeedData {
             id: 'b0250c1d-c8aa-4dfa-873f-4a64490028bf',
             name: 'Банан с морковкой',
             positions: [
-                new Ingredient({
+                new ProductIngredient({
                     product: new Product(this.products[1]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
                         units: 100
                     }
                 }),
-                new Ingredient({
+                new ProductIngredient({
                     product: new Product(this.products[2]),
                     serving: {
                         measuring: ProductMeasuring.Grams,
@@ -112,6 +134,23 @@ export class SeedData {
                 })
             ]
         }),
+        new Recipe({
+            id: '4493f114-3fca-4a3b-aab4-ad48e3ca6372',
+            name: 'Морковка с П/Ф',
+            positions: [
+                new ProductIngredient({
+                    product: new Product(this.products[2]),
+                    serving: {
+                        measuring: ProductMeasuring.Units,
+                        units: 3
+                    }
+                }),
+                new PrepackIngredient({
+                    prepack: this.prepacks[0],
+                    weightInGrams: 200
+                })
+            ]
+        })
     ];
 
     public async Seed(): Promise<void> {

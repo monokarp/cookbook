@@ -1,12 +1,12 @@
 import { create } from 'zustand';
 import { Prepack } from '../../../../domain/types/recipe/prepack';
-import { Ingredient } from '../../../../domain/types/recipe/ingredient';
+import { ProductIngredient } from '../../../../domain/types/recipe/product-ingredient';
 import { createContext } from 'react';
 
 export interface PrepackDetailsState {
     prepack: Prepack,
     setPrepack: (value: Prepack) => void
-    addIngredient: (value: Ingredient) => void,
+    addIngredient: (value: ProductIngredient) => void,
     removeIngredient: (index: number) => void
 }
 
@@ -18,8 +18,7 @@ export function createPrepackDetailsStore(prepack: Prepack) {
     return create<PrepackDetailsState>((set) => ({
         prepack,
         setPrepack: (value: Prepack) => set({ prepack: value }),
-        addIngredient: (value: Ingredient) => {
-            console.log('adding ingredient')
+        addIngredient: (value: ProductIngredient) => {
             set(state => ({
                 prepack: new Prepack({
                     ...state.prepack,

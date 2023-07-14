@@ -8,10 +8,9 @@ import { Button, FAB, Text, TextInput } from "react-native-paper";
 import { RegexPatterns } from "../../../../constants";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
-import { Product } from "../../../../domain/types/product/product";
 import { ProductMeasuring } from "../../../../domain/types/product/product-pricing";
-import { Ingredient } from "../../../../domain/types/recipe/ingredient";
-import { Recipe } from "../../../../domain/types/recipe/recipe";
+import { ProductIngredient } from "../../../../domain/types/recipe/product-ingredient";
+import { Recipe, isPrepackIngredient, isProductIngredient } from "../../../../domain/types/recipe/recipe";
 import { FormatNumber } from "../../../../domain/util";
 import { useUnsub } from "../../../custom-hooks";
 import { useProductsStore } from "../../products/products.store";
@@ -35,15 +34,41 @@ export function RecipeDetails({ route, navigation }) {
     const { set: setRecipes } = useRecipesStore();
     const { set: setProducts } = useProductsStore();
 
-    const form = useForm({ mode: 'onTouched' });
+    const form = useForm({
+        mode: 'onTouched',
+        defaultValues: {
+            recipeName: recipe.name,
+            ingredients: recipe.positions.map(position => {
+                if (isProductIngredient(position)) {
+                    return {
+                        selectedItem: position.product,
+                        units: position.serving.measuring === ProductMeasuring.Units
+                            ? FormatNumber.Units(position.serving.units)
+                            : FormatNumber.Weight(position.serving.units),
+                        measuringType: position.serving.measuring,
+                    };
+                }
 
-    useFieldArray({ control: form.control, name: 'ingredients' });
+                if (isPrepackIngredient(position)) {
+                    return {
+                        selectedItem: position.prepack,
+                        units: FormatNumber.Weight(position.weightInGrams),
+                        measuringType: ProductMeasuring.Grams,
+                    };
+                }
+
+                throw new Error('Unknown ingredient type');
+            })
+        }
+    });
+
+    const { remove } = useFieldArray({ control: form.control, name: 'ingredients' });
 
     useUnsub(form.watch, (data: RecipeDetailsFormData) => {
         const updatedRecipe = new Recipe({
             id: recipe.id,
             name: data.recipeName,
-            positions: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient, recipe.positions[index])),
+            positions: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient)),
         });
 
         setRecipe(updatedRecipe);
@@ -62,12 +87,13 @@ export function RecipeDetails({ route, navigation }) {
             ...recipe,
             positions: [
                 ...recipe.positions,
-                Ingredient.Empty()
+                ProductIngredient.Empty()
             ]
         }));
     };
 
     function deleteIngredient(index: number) {
+        remove(index);
         setRecipe(new Recipe({
             ...recipe,
             positions: recipe.positions.filter((_, i) => i !== index)
@@ -107,7 +133,17 @@ export function RecipeDetails({ route, navigation }) {
 
                 <FlatList
                     style={{ flexGrow: 0 }}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => {
+                        if (isProductIngredient(item)) {
+                            return `${index}_${item.product.id}`;
+                        }
+
+                        if (isPrepackIngredient(item)) {
+                            return `${index}_${item.prepack.id}`;
+                        }
+
+                        return index.toString();
+                    }}
                     data={recipe.positions}
                     renderItem={({ item, index }) =>
                         <IngredientSelect

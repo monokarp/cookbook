@@ -2,7 +2,7 @@ export interface Entity {
     Id: string;
 }
 
-export function GroupById<T extends Entity>(rows: T[]): T[][] {
+export function GroupById<T extends Entity>(rows: T[]): Map<string, T[]> {
     const groups = new Map<string, T[]>();
 
     rows.forEach(row => {
@@ -13,5 +13,5 @@ export function GroupById<T extends Entity>(rows: T[]): T[][] {
         groups.set(row.Id, group);
     });
 
-    return Array.from(groups.values());
+    return groups;
 }

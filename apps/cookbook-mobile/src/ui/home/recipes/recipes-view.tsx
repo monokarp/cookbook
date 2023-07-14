@@ -21,7 +21,9 @@ export function RecipesView({ navigation }) {
   const { filteredItems: filteredRecipes, set: setRecipes, filter, deleteItem } = useRecipesStore();
 
   useEffect(() => {
-    repo.All().then(setRecipes);
+    repo.All().then(all=>{
+      setRecipes(all);
+    });
   }, [products]);
 
   return (

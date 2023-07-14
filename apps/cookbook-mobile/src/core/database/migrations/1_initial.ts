@@ -47,7 +47,7 @@ export const initialMigration: Migration = {
             `);
 
             tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS [RecipeIngredients] (
+                CREATE TABLE IF NOT EXISTS [RecipeProductIngredients] (
                     [RecipeId] TEXT NOT NULL,
                     [PositionNumber] INTEGER NOT NULL,
                     [ProductId] TEXT NOT NULL,
@@ -61,9 +61,10 @@ export const initialMigration: Migration = {
             `);
 
             tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS [RecipePrepacks] (
+                CREATE TABLE IF NOT EXISTS [RecipePrepackIngredients] (
                     [RecipeId] TEXT NOT NULL,
                     [PositionNumber] INTEGER NOT NULL,
+                    [WeightInGrams] INTEGER NOT NULL,
                     [PrepackId] TEXT NOT NULL,
                     PRIMARY KEY ([RecipeId], [PositionNumber]),
                     FOREIGN KEY ([PrepackId]) REFERENCES [Prepacks]([Id])
@@ -71,7 +72,7 @@ export const initialMigration: Migration = {
             `);
 
             tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS [PrepackIngredients] (
+                CREATE TABLE IF NOT EXISTS [PrepackProductIngredients] (
                     [PrepackId] TEXT NOT NULL,
                     [PositionNumber] INTEGER NOT NULL,
                     [ProductId] TEXT NOT NULL,

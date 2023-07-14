@@ -1,42 +1,45 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
-import { Product } from "../../../../../../domain/types/product/product";
+import { Avatar, Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
+import { IngredientBase, isPrepack } from "../../../../../../domain/types/recipe/recipe";
 import { FormatNumber } from "../../../../../../domain/util";
+import { usePrepacksStore } from "../../../../prepacks/prepacks.store";
 import { useProductsStore } from "../../../../products/products.store";
 
 export interface ProductSelectProps {
-    selectedProduct: Product | null,
+    selectedItem: IngredientBase | null,
     ingredientPrice: number,
-    onSelect: (product: Product) => void,
+    onSelect: (item: IngredientBase) => void,
     onLongPress?: () => void,
 }
 
-export function ProductSelect({ selectedProduct, ingredientPrice, onSelect, onLongPress }: ProductSelectProps) {
+export function IngredientBaseSelect({ selectedItem, ingredientPrice, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
     const { items: products } = useProductsStore();
+    const { items: prepacks } = usePrepacksStore();
 
     const [visible, setVisible] = useState(false);
-    const [displayedProducts, setDisplayedProducts] = useState(products);
+    const [displayedItems, setDisplayedItems] = useState([...products, ...prepacks]);
 
     const show = () => setVisible(true);
 
     const dismiss = () => {
         setVisible(false);
-        setDisplayedProducts(products);
+        setDisplayedItems([...products, ...prepacks]);
     }
 
     return (
         <View>
             <Pressable onPress={show} onLongPress={onLongPress}>
                 {
-                    selectedProduct?.id
+                    selectedItem?.id
                         ?
                         <Card>
-                            <Card.Title title={selectedProduct.name} />
+                            <Card.Title title={selectedItem.name} />
                             <Card.Content>
+                                {isPrepack(selectedItem) && <Text variant="labelSmall">{t('recipe.details.isPrepack')}</Text>}
                                 <Text variant="labelSmall">{`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}</Text>
                             </Card.Content>
                         </Card>
@@ -55,14 +58,14 @@ export function ProductSelect({ selectedProduct, ingredientPrice, onSelect, onLo
                         label={t('product.search.byName')}
                         onChange={
                             event => {
-                                const filteredProducts = products.filter(one => one.name.toLocaleLowerCase().includes(event.nativeEvent.text.toLocaleLowerCase()));
+                                const filteredItems = [...products, ...prepacks].filter(one => one.name.toLocaleLowerCase().includes(event.nativeEvent.text.toLocaleLowerCase()));
 
-                                setDisplayedProducts(filteredProducts);
+                                setDisplayedItems(filteredItems);
                             }}
                     />
                     <Dialog.Content>
                         <FlatList
-                            data={displayedProducts}
+                            data={displayedItems}
                             renderItem={info =>
                                 <Pressable
                                     onTouchEnd={() => {

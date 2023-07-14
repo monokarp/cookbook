@@ -48,6 +48,7 @@
         "name": "Имя рецепта",
         "addNew": "Добавить рецепт",
         "details": {
+            "isPrepack": "П / Ф",
             "title": "Детали рецепта",
             "servingSizeInGrams": "Кило",
             "servingSizeInUnits": "Штуки"

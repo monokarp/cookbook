@@ -48,6 +48,7 @@
         "name": "Recipe name",
         "addNew": "Add new recipe",
         "details": {
+            "isPrepack": "Prepack",
             "title": "Recipe details",
             "servingSizeInGrams": "Kilos",
             "servingSizeInUnits": "Units"
