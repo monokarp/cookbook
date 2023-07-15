@@ -1,23 +1,23 @@
 
+import { RegexPatterns } from "@cookbook/domain/constants";
+import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
+import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
+import { Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { FormatNumber } from "@cookbook/domain/util";
 import { useInjection } from "inversify-react-native";
 import { useEffect, useState } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
-import { RegexPatterns } from "../../../../constants";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
-import { ProductMeasuring } from "../../../../domain/types/product/product-pricing";
-import { ProductIngredient } from "../../../../domain/types/recipe/product-ingredient";
-import { Recipe, isPrepackIngredient, isProductIngredient } from "../../../../domain/types/recipe/recipe";
-import { FormatNumber } from "../../../../domain/util";
 import { useUnsub } from "../../../custom-hooks";
+import { useKeyboardVisible } from "../../common/use-kb-visible";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
-import { styles } from "./recipe-details.style";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
-import { useKeyboardVisible } from "../../common/use-kb-visible";
+import { styles } from "./recipe-details.style";
 
 
 export interface RecipeDetailsFormData {

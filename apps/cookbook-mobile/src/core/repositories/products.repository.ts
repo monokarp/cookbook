@@ -1,7 +1,7 @@
+import { Product, ProductDto } from '@cookbook/domain/types/product/product';
+import { ProductMeasuring, ProductPricing } from '@cookbook/domain/types/product/product-pricing';
 import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
-import { Product, ProductDto } from '../../domain/types/product/product';
-import { ProductMeasuring, ProductPricing } from '../../domain/types/product/product-pricing';
 import { Database } from '../database/database';
 
 @injectable()

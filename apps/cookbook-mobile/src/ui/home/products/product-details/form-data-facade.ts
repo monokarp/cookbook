@@ -1,6 +1,6 @@
-import { Product } from '../../../../domain/types/product/product';
-import { ProductMeasuring, ProductPricingDto } from '../../../../domain/types/product/product-pricing';
-import { FormatNumber, FormatString } from '../../../../domain/util';
+import { Product } from '@cookbook/domain/types/product/product';
+import { ProductMeasuring, ProductPricingDto } from '@cookbook/domain/types/product/product-pricing';
+import { FormatNumber, FormatString } from '@cookbook/domain/util';
 import { FormMode } from '../../common/form-mode.enum';
 
 

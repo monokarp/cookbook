@@ -1,11 +1,11 @@
+import { RegexPatterns } from "@cookbook/domain/constants";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
-import { RegexPatterns } from "../../../../../constants";
-import { styles } from "../product-defails.style";
-import { ProductDetailsFormData } from "../form-data-facade";
 import { TestIds } from "../../../../../ui/test-ids.enum";
+import { ProductDetailsFormData } from "../form-data-facade";
+import { styles } from "../product-defails.style";
 
 
 export function PricingPerPieceForm() {

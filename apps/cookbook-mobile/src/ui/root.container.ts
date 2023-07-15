@@ -1,9 +1,9 @@
 import { Container } from 'inversify';
 import { Database } from '../core/database/database';
 import { SeedData } from '../core/database/seed-data';
+import { PrepackRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
-import { PrepackRepository } from '../core/repositories/prepack.repository';
 
 export function buildRootContainer() {
     const container = new Container();

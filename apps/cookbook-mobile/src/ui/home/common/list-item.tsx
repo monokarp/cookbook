@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { Pressable, View } from "react-native";
+import { View } from "react-native";
 import { List, TouchableRipple } from "react-native-paper";
-import { ConfirmDeletionModal } from "./confirmation-modal";
 import { TestIds } from "../../test-ids.enum";
+import { ConfirmDeletionModal } from "./confirmation-modal";
 
 export interface SummaryListItemProps {
     item: { name: string };

@@ -1,17 +1,17 @@
+import { Product } from '@cookbook/domain/types/product/product';
 import { useInjection } from 'inversify-react-native';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, View } from 'react-native';
 import { Button, Portal, Snackbar, Text, TextInput } from 'react-native-paper';
 import { ProductsRepository } from '../../../core/repositories/products.repository';
-import { Product } from '../../../domain/types/product/product';
 import { RootViews } from '../../root-views.enum';
+import { TestIds } from '../../test-ids.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
 import { FormMode } from '../common/form-mode.enum';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
-import { TestIds } from '../../test-ids.enum';
 
 
 export function ProductsView({ navigation }) {

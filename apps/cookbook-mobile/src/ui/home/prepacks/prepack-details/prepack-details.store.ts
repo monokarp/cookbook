@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { Prepack } from '../../../../domain/types/recipe/prepack';
-import { ProductIngredient } from '../../../../domain/types/recipe/product-ingredient';
+import { Prepack } from '@cookbook/domain/types/recipe/prepack';
+import { ProductIngredient } from '@cookbook/domain/types/recipe/product-ingredient';
 import { createContext } from 'react';
+import { create } from 'zustand';
 
 export interface PrepackDetailsState {
     prepack: Prepack,

@@ -1,10 +1,10 @@
+import { Product } from "@cookbook/domain/types/product/product";
+import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product/product-pricing";
+import { Prepack } from '@cookbook/domain/types/recipe/prepack';
+import { ProductIngredient } from '@cookbook/domain/types/recipe/product-ingredient';
+import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { roundMoney } from "@cookbook/domain/util";
 import Clipboard from '@react-native-clipboard/clipboard';
-import { Product } from "../../../domain/types/product/product";
-import { ProductMeasuring, ProductPricing } from "../../../domain/types/product/product-pricing";
-import { Position, Recipe, isProductIngredient, isPrepackIngredient } from "../../../domain/types/recipe/recipe";
-import { roundMoney } from "../../../domain/util";
-import { Prepack } from '../../../domain/types/recipe/prepack';
-import { ProductIngredient } from '../../../domain/types/recipe/product-ingredient';
 
 
 export class ExportToClipboard {

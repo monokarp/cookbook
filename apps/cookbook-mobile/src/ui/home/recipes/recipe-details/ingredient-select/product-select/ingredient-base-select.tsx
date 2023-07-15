@@ -1,9 +1,9 @@
+import { IngredientBase, isPrepack } from "@cookbook/domain/types/recipe/recipe";
+import { FormatNumber } from "@cookbook/domain/util";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Avatar, Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
-import { IngredientBase, isPrepack } from "../../../../../../domain/types/recipe/recipe";
-import { FormatNumber } from "../../../../../../domain/util";
+import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
 import { usePrepacksStore } from "../../../../prepacks/prepacks.store";
 import { useProductsStore } from "../../../../products/products.store";
 

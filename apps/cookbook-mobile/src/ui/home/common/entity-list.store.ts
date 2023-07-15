@@ -1,5 +1,5 @@
+import { NamedEntity } from '@cookbook/domain/types/named-entity';
 import { create } from 'zustand';
-import { NamedEntity } from '../../../domain/types/named-entity';
 
 export interface EntityListStore<T extends NamedEntity> {
     items: T[];

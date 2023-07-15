@@ -1,4 +1,4 @@
-import { MoneyRoundingPrecision, WeightRoundingPrecision } from "../constants";
+import { MoneyRoundingPrecision, WeightRoundingPrecision } from "./constants";
 import { ProductMeasuring } from "./types/product/product-pricing";
 import { Serving } from "./types/recipe/product-ingredient";
 

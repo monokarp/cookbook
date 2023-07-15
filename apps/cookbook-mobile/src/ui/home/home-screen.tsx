@@ -1,10 +1,10 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useTranslation } from 'react-i18next';
+import { TestIds } from '../test-ids.enum';
 import { HomeTabs } from './home-tabs.enum';
+import { PrepacksView } from './prepacks/prepacks-view';
 import { ProductsView } from './products/products-view';
 import { RecipesView } from './recipes/recipes-view';
-import { PrepacksView } from './prepacks/prepacks-view';
-import { TestIds } from '../test-ids.enum';
 
 
 const Tab = createMaterialTopTabNavigator();

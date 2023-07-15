@@ -1,13 +1,13 @@
+import { Product, ProductDto } from "@cookbook/domain/types/product/product";
+import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
+import { Prepack } from "@cookbook/domain/types/recipe/prepack";
+import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredient";
+import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
+import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { inject, injectable } from "inversify";
-import { Product, ProductDto } from "../../domain/types/product/product";
-import { ProductMeasuring } from "../../domain/types/product/product-pricing";
-import { ProductIngredient } from "../../domain/types/recipe/product-ingredient";
-import { Recipe } from "../../domain/types/recipe/recipe";
+import { PrepackRepository } from "../repositories/prepack.repository";
 import { ProductsRepository } from "../repositories/products.repository";
 import { RecipesRepository } from "../repositories/recipes.repository";
-import { PrepackRepository } from "../repositories/prepack.repository";
-import { Prepack } from "../../domain/types/recipe/prepack";
-import { PrepackIngredient } from "../../domain/types/recipe/prepack-ingredient";
 
 @injectable()
 export class SeedData {
