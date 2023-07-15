@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@cookbook/domain/*": ["libs/domain/src/*"]
+      "@cookbook/domain/*": ["libs/domain/src/*"],
+      "@cookbook/ui/*": ["libs/ui/src/*"]
     }
   },
   "exclude": ["node_modules", "tmp"]

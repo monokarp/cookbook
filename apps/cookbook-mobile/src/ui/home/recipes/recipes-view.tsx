@@ -1,3 +1,4 @@
+import { TestIds } from '@cookbook/ui/test-ids.enum';
 import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -5,7 +6,6 @@ import { FlatList, Text, View } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import { RecipesRepository } from '../../../core/repositories/recipes.repository';
 import { RootViews } from '../../root-views.enum';
-import { TestIds } from '../../test-ids.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
 import { SummaryListItem } from '../common/list-item';
 import { useProductsStore } from '../products/products.store';

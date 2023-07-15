@@ -1,6 +1,6 @@
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 import { useTranslation } from "react-i18next";
 import { Button, Dialog, Portal } from "react-native-paper";
-import { TestIds } from "../../test-ids.enum";
 
 export interface ConfirmDeletionModalProps {
     visible: boolean;

@@ -1,7 +1,7 @@
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 import { useState } from "react";
 import { View } from "react-native";
 import { List, TouchableRipple } from "react-native-paper";
-import { TestIds } from "../../test-ids.enum";
 import { ConfirmDeletionModal } from "./confirmation-modal";
 
 export interface SummaryListItemProps {
