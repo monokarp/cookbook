@@ -39,6 +39,12 @@
         "deviceId": "46ab969d"
       }
     },
+    "run-android-e2e": {
+      "executor": "@nx/react-native:run-android",
+      "options": {
+        "deviceId": "emulator-5554"
+      }
+    },
     "build-android": {
       "executor": "@nx/react-native:build-android",
       "outputs": [

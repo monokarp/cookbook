@@ -41,7 +41,7 @@
     "emulator": {
       "type": "android.emulator",
       "device": {
-        "avdName": "Pixel_4a_API_30"
+        "avdName": "Nexus_6_API_31_E2E"
       }
     }
   },

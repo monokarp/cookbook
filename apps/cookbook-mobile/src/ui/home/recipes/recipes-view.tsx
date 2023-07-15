@@ -10,6 +10,7 @@ import { SummaryListItem } from '../common/list-item';
 import { useProductsStore } from '../products/products.store';
 import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
+import { TestIds } from '../../test-ids';
 
 export function RecipesView({ navigation }) {
   const { t } = useTranslation();
@@ -27,7 +28,7 @@ export function RecipesView({ navigation }) {
   }, [products]);
 
   return (
-    <View style={styles.container}>
+    <View testID={TestIds.RecipesView} style={styles.container}>
       <TextInput
         mode='outlined'
         label={t('product.search.byName')}
