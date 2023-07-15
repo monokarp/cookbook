@@ -5,6 +5,7 @@ import { Text, TextInput } from 'react-native-paper';
 import { RegexPatterns } from "../../../../../constants";
 import { styles } from "../product-defails.style";
 import { ProductDetailsFormData } from "../form-data-facade";
+import { TestIds } from "../../../../../ui/test-ids.enum";
 
 
 export function PricingPerPieceForm() {
@@ -22,6 +23,7 @@ export function PricingPerPieceForm() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                        testID={TestIds.ProductDetails.UnitsInput}
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -41,6 +43,7 @@ export function PricingPerPieceForm() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                        testID={TestIds.ProductDetails.WeightInput}
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -60,6 +63,7 @@ export function PricingPerPieceForm() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                        testID={TestIds.ProductDetails.PriceInput}
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}

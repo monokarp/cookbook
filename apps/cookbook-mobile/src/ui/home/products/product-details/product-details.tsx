@@ -14,6 +14,7 @@ import { FormDataFacade, ProductDetailsFormData } from './form-data-facade';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
 import { styles } from './product-defails.style';
+import { TestIds } from '../../../test-ids.enum';
 
 export function ProductDetails({ route: { params: { product, mode } }, navigation }) {
     const { t } = useTranslation();
@@ -53,6 +54,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
+                            testID={TestIds.ProductDetails.NameInput}
                             style={styles.input}
                             mode='outlined'
                             onBlur={onBlur}
@@ -79,10 +81,12 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                                 {
                                     value: ProductMeasuring.Grams,
                                     label: t('product.pricing.pricedByWeight'),
+                                    testID: TestIds.ProductDetails.PricingToggle.Weight
                                 },
                                 {
                                     value: ProductMeasuring.Units,
                                     label: t('product.pricing.pricedPerPiece'),
+                                    testID: TestIds.ProductDetails.PricingToggle.Units
                                 },
                             ]}
                         />

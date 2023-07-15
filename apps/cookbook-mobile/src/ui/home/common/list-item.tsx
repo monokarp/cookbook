@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pressable, View } from "react-native";
 import { List, TouchableRipple } from "react-native-paper";
 import { ConfirmDeletionModal } from "./confirmation-modal";
+import { TestIds } from "../../test-ids.enum";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -23,6 +24,7 @@ export function SummaryListItem({ item, itemSelected, deleteRequested, exportReq
     return (
         <View>
             <List.Item
+                testID={TestIds.ListItem}
                 title={item.name}
                 onPress={itemSelected}
                 onLongPress={show}

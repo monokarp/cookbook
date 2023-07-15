@@ -10,7 +10,7 @@ import { SummaryListItem } from '../common/list-item';
 import { useProductsStore } from '../products/products.store';
 import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
-import { TestIds } from '../../test-ids';
+import { TestIds } from '../../test-ids.enum';
 
 export function RecipesView({ navigation }) {
   const { t } = useTranslation();

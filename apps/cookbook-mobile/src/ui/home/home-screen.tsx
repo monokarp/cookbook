@@ -4,6 +4,7 @@ import { HomeTabs } from './home-tabs.enum';
 import { ProductsView } from './products/products-view';
 import { RecipesView } from './recipes/recipes-view';
 import { PrepacksView } from './prepacks/prepacks-view';
+import { TestIds } from '../test-ids.enum';
 
 
 const Tab = createMaterialTopTabNavigator();
@@ -13,9 +14,9 @@ export function HomeScreen() {
 
   return (
     <Tab.Navigator>
-      <Tab.Screen name={HomeTabs.Recipes} component={RecipesView} options={{ title: t('views.recipes') }} />
-      <Tab.Screen name={HomeTabs.Prepacks} component={PrepacksView} options={{ title: t('views.prepacks') }} />
-      <Tab.Screen name={HomeTabs.Products} component={ProductsView} options={{ title: t('views.products') }} />
+      <Tab.Screen name={HomeTabs.Recipes} component={RecipesView} options={{ tabBarTestID: TestIds.Navigation.Recipes, title: t('views.recipes') }} />
+      <Tab.Screen name={HomeTabs.Prepacks} component={PrepacksView} options={{ tabBarTestID: TestIds.Navigation.Prepacks, title: t('views.prepacks') }} />
+      <Tab.Screen name={HomeTabs.Products} component={ProductsView} options={{ tabBarTestID: TestIds.Navigation.Products, title: t('views.products') }} />
     </Tab.Navigator>
   );
 }

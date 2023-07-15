@@ -11,6 +11,7 @@ import { FormMode } from '../common/form-mode.enum';
 import { SummaryListItem } from '../common/list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
+import { TestIds } from '../../test-ids.enum';
 
 
 export function ProductsView({ navigation }) {
@@ -43,8 +44,9 @@ export function ProductsView({ navigation }) {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View testID={TestIds.ProductsView.Container} style={styles.container}>
       <TextInput
+        testID={TestIds.ProductsView.SearchInput}
         mode='outlined'
         label={t('product.search.byName')}
         defaultValue=''
@@ -69,6 +71,7 @@ export function ProductsView({ navigation }) {
       </View>
 
       <Button
+        testID={TestIds.ProductsView.Add}
         style={styles.button}
         mode='outlined'
         onPress={() => navigation.navigate(RootViews.ProductDetails, { product: repo.Create(), mode: FormMode.New })}
@@ -78,6 +81,7 @@ export function ProductsView({ navigation }) {
 
       <Portal>
         <Snackbar
+          testID={TestIds.ProductsView.Toast}
           visible={snackbarMessage}
           onDismiss={() => setSnackbarMessage(null)}
           action={{

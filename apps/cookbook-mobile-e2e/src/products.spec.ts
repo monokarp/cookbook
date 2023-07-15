@@ -1,6 +1,6 @@
 import { device, element, by, expect } from 'detox';
 
-xdescribe('CookbookMobile', () => {
+describe('Products view', () => {
   beforeAll(async () => {
     await device.reloadReactNative();
   });
