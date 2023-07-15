@@ -41,7 +41,7 @@
     "emulator": {
       "type": "android.emulator",
       "device": {
-        "avdName": "Nexus_6_API_31_E2E"
+        "avdName": "Pixel_6_API_31"
       }
     }
   },

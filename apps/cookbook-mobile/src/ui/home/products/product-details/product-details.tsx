@@ -20,7 +20,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
 
     const repo = useInjection(ProductsRepository);
 
-    const { setProducts } = useProductsStore();
+    const { set: setProducts } = useProductsStore();
 
     const [measuringType, setMeasuringType] = useState(product.pricing.measuring);
 

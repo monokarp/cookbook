@@ -18,6 +18,7 @@ import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
 
 export interface IngredientSelectProps {
     selectedIngredient: Position,
+    allowAddingPrepacks: boolean,
     index: number,
     requestRemoval: () => void,
 }
@@ -30,7 +31,7 @@ export interface IngredientFormData {
 
 export function MapFormDataToIngredient(formData: IngredientFormData): Position {
     if (isProduct(formData.selectedItem)) {
-        const measuring = formData.measuringType as ProductMeasuring ?? formData.selectedItem.pricing.measuring;
+        const measuring = formData.measuringType as ProductMeasuring ?? ProductMeasuring.Grams;
         const units = measuring === ProductMeasuring.Units ? Number(formData.units ?? '') : FormatString.Weight(formData.units ?? '');
 
         return new ProductIngredient({
@@ -64,7 +65,7 @@ function getBase(position: Position): IngredientBase {
     throw new Error('Unknown ingredient type');
 }
 
-export function IngredientSelect({ selectedIngredient, index, requestRemoval }: IngredientSelectProps) {
+export function IngredientSelect({ selectedIngredient, index, requestRemoval, allowAddingPrepacks }: IngredientSelectProps) {
     const { t } = useTranslation();
 
     const [visible, setVisible] = useState(false);
@@ -105,8 +106,8 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval }: 
                         }}
                         render={({ field: { onChange, value } }) => (
                             <IngredientBaseSelect
+                                allowPrepacks={allowAddingPrepacks}
                                 ingredientPrice={getFormIngredient().price()}
-                                // ingredientPrice={value?.id ? getFormIngredient()?.price() : 0}
                                 selectedItem={value}
                                 onSelect={onChange}
                                 onLongPress={show}

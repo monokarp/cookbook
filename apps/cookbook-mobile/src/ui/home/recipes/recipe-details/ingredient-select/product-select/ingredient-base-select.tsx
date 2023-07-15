@@ -9,25 +9,28 @@ import { useProductsStore } from "../../../../products/products.store";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
+    allowPrepacks: boolean,
     ingredientPrice: number,
     onSelect: (item: IngredientBase) => void,
     onLongPress?: () => void,
 }
 
-export function IngredientBaseSelect({ selectedItem, ingredientPrice, onSelect, onLongPress }: ProductSelectProps) {
+export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepacks, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
     const { items: products } = useProductsStore();
     const { items: prepacks } = usePrepacksStore();
 
     const [visible, setVisible] = useState(false);
-    const [displayedItems, setDisplayedItems] = useState([...products, ...prepacks]);
+
+    const itemList = () => allowPrepacks ? [...products, ...prepacks] : products;
+    const [displayedItems, setDisplayedItems] = useState(itemList());
 
     const show = () => setVisible(true);
 
     const dismiss = () => {
         setVisible(false);
-        setDisplayedItems([...products, ...prepacks]);
+        setDisplayedItems(itemList());
     }
 
     return (

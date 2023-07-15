@@ -17,6 +17,7 @@ import { styles } from "./prepack-details.style";
 import { Prepack } from "../../../../domain/types/recipe/prepack";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { ProductMeasuring } from "../../../../domain/types/product/product-pricing";
+import { useKeyboardVisible } from "../../common/use-kb-visible";
 
 interface PrepackDetailsFormData {
     name: string,
@@ -38,8 +39,9 @@ export function PrepackDetails({ route, navigation }) {
     const { set: setPrepacks } = usePrepacksStore();
     const { set: setProducts } = useProductsStore();
 
+    const isKbVisible = useKeyboardVisible();
+
     const form = useForm({
-        mode: 'onTouched',
         defaultValues: {
             name: prepack.name,
             finalWeight: FormatNumber.Weight(prepack.finalWeight),
@@ -146,6 +148,7 @@ export function PrepackDetails({ route, navigation }) {
                     data={ingredients}
                     renderItem={({ item, index }) =>
                         <IngredientSelect
+                            allowAddingPrepacks={false}
                             selectedIngredient={item}
                             index={index}
                             requestRemoval={() => deleteIngredient(index)}
@@ -154,12 +157,21 @@ export function PrepackDetails({ route, navigation }) {
                 />
 
                 <FAB
+                    visible={!isKbVisible}
                     icon="plus"
                     style={{ marginTop: 10 }}
                     onPress={addEmptyIngredient}
                 />
 
-                <Button style={{ marginTop: 'auto', marginBottom: 15 }} mode="outlined" onPress={form.handleSubmit(onSubmit)}>{t('common.save')}</Button>
+                {
+                    !isKbVisible && <Button
+                        style={{ marginTop: 'auto', marginBottom: 15 }}
+                        mode="outlined"
+                        onPress={form.handleSubmit(onSubmit)}
+                    >
+                        {t('common.save')}
+                    </Button>
+                }
             </View>
         </FormProvider>
     );

@@ -17,6 +17,7 @@ import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { styles } from "./recipe-details.style";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
+import { useKeyboardVisible } from "../../common/use-kb-visible";
 
 
 export interface RecipeDetailsFormData {
@@ -31,11 +32,12 @@ export function RecipeDetails({ route, navigation }) {
 
     const [recipe, setRecipe] = useState(route.params.recipe);
 
+    const isKbVisible = useKeyboardVisible();
+
     const { set: setRecipes } = useRecipesStore();
     const { set: setProducts } = useProductsStore();
 
     const form = useForm({
-        mode: 'onTouched',
         defaultValues: {
             recipeName: recipe.name,
             ingredients: recipe.positions.map(position => {
@@ -147,6 +149,7 @@ export function RecipeDetails({ route, navigation }) {
                     data={recipe.positions}
                     renderItem={({ item, index }) =>
                         <IngredientSelect
+                            allowAddingPrepacks={true}
                             selectedIngredient={item}
                             index={index}
                             requestRemoval={() => deleteIngredient(index)}
@@ -155,12 +158,21 @@ export function RecipeDetails({ route, navigation }) {
                 />
 
                 <FAB
+                    visible={!isKbVisible}
                     icon="plus"
                     style={{ marginTop: 10 }}
                     onPress={addEmptyIngredient}
                 />
 
-                <Button style={{ marginTop: 'auto', marginBottom: 15 }} mode="outlined" onPress={form.handleSubmit(onSubmit)}>{t('common.save')}</Button>
+                {
+                    !isKbVisible && <Button
+                        style={{ marginTop: 'auto', marginBottom: 15 }}
+                        mode="outlined"
+                        onPress={form.handleSubmit(onSubmit)}
+                    >
+                        {t('common.save')}
+                    </Button>
+                }
             </View>
         </FormProvider>
     );

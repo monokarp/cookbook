@@ -14,15 +14,19 @@ export function entityListStoreFactory<T extends NamedEntity>() {
         items: [],
         filteredItems: [],
         set: (entities: T[]) => set(() => ({
-            items: entities,
-            filteredItems: entities,
+            items: entities.sort(byName),
+            filteredItems: entities.sort(byName),
         })),
         filter: (value: string) => set((state) => ({
-            filteredItems: state.items.filter((item) => item.name.toLowerCase().includes(value.toLowerCase())),
+            filteredItems: state.items.filter((item) => item.name.toLowerCase().includes(value.toLowerCase())).sort(byName),
         })),
         deleteItem: (id: string) => set((state) => ({
-            items: state.items.filter((item) => item.id !== id),
-            filteredItems: state.items.filter((item) => item.id !== id),
+            items: state.items.filter((item) => item.id !== id).sort(byName),
+            filteredItems: state.items.filter((item) => item.id !== id).sort(byName),
         }))
     }));
+}
+
+function byName(a: NamedEntity, b: NamedEntity) {
+    return a.name.localeCompare(b.name);
 }
