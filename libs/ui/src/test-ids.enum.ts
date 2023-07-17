@@ -1,5 +1,5 @@
 export const TestIds = {
-    Login:{
+    Login: {
         LoginButton: 'login-button',
     },
     RecipesView: 'recipes-view',
@@ -37,6 +37,24 @@ export const TestIds = {
         ToastMessage: 'prepacks-view-toast-message',
     },
     PrepackDetails: {
+        NameInput: 'prepack-details-name-input',
+        WeightInput: 'prepack-details-weight-input',
+        AddIngredient: 'prepack-details-add-ingredient',
+        Submit: 'prepack-details-submit',
+    },
+    IngredientSelect: {
+        UnitsInput: 'ingredient-select-units-input',
+        UnitsToggle: 'ingredient-select-units-toggle',
+        Ingredient:{
+            Button: 'ingredient-select-ingredient-button',
+            Name: 'ingredient-select-ingredient-name',
+            NamePlaceholder: 'ingredient-select-ingredient-name-placeholder',
+            Price: 'ingredient-select-ingredient-price',
+            Modal:{
+                NameSearchInput: 'ingredient-select-ingredient-modal-name-search-input',
+                ListItem: 'ingredient-select-ingredient-modal-list-item',
+            }
+        }
     },
     ListItem: {
         Label: 'list-item-label',

@@ -18,6 +18,7 @@ import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from ".
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 
 interface PrepackDetailsFormData {
     name: string,
@@ -25,7 +26,7 @@ interface PrepackDetailsFormData {
     ingredients: IngredientFormData[],
 }
 
-export function PrepackDetails({ route, navigation }) {
+export function PrepackDetails({ navigation }) {
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(PrepackRepository);
@@ -102,6 +103,7 @@ export function PrepackDetails({ route, navigation }) {
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
+                                testID={TestIds.PrepackDetails.NameInput}
                                 label={t('prepack.name')}
                                 style={styles.input}
                                 onBlur={onBlur}
@@ -128,6 +130,7 @@ export function PrepackDetails({ route, navigation }) {
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
+                                testID={TestIds.PrepackDetails.WeightInput}
                                 label={t('prepack.finalWeight')}
                                 style={styles.input}
                                 onBlur={onBlur}
@@ -162,6 +165,7 @@ export function PrepackDetails({ route, navigation }) {
                 />
 
                 <FAB
+                    testID={TestIds.PrepackDetails.AddIngredient}
                     visible={!isKbVisible}
                     icon="plus"
                     style={{ marginTop: 10 }}
@@ -169,7 +173,9 @@ export function PrepackDetails({ route, navigation }) {
                 />
 
                 {
-                    !isKbVisible && <Button
+                    !isKbVisible &&
+                    <Button
+                        testID={TestIds.PrepackDetails.Submit}
                         style={{ marginTop: 'auto', marginBottom: 15 }}
                         mode="outlined"
                         onPress={form.handleSubmit(onSubmit)}

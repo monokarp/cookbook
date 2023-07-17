@@ -15,6 +15,7 @@ import { useSubscription } from "../../../../custom-hooks";
 import { ConfirmDeletionModal } from "../../../common/confirmation-modal";
 import { styles } from "./ingredient-select.style";
 import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 
 export interface IngredientSelectProps {
     selectedIngredient: Position,
@@ -131,6 +132,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
+                                testID={TestIds.IngredientSelect.UnitsInput}
                                 mode="outlined"
                                 label={t(isFormIngredientServedInUnits() ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
                                 style={styles.servingSizeInput}
@@ -150,6 +152,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                             name={`ingredients.${index}.measuringType`}
                             render={({ field: { onChange, value } }) => (
                                 <Switch
+                                    testID={TestIds.IngredientSelect.UnitsToggle}
                                     value={value === ProductMeasuring.Units}
                                     onValueChange={value => {
                                         onChange(value ? ProductMeasuring.Units : ProductMeasuring.Grams);

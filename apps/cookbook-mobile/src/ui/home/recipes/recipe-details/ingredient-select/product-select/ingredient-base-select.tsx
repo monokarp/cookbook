@@ -6,6 +6,7 @@ import { FlatList, Pressable, View } from "react-native";
 import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
 import { usePrepacksStore } from "../../../../prepacks/prepacks.store";
 import { useProductsStore } from "../../../../products/products.store";
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
@@ -35,21 +36,21 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
 
     return (
         <View>
-            <Pressable onPress={show} onLongPress={onLongPress}>
+            <Pressable testID={TestIds.IngredientSelect.Ingredient.Button} onPress={show} onLongPress={onLongPress}>
                 {
                     selectedItem?.id
                         ?
                         <Card>
-                            <Card.Title title={selectedItem.name} />
+                            <Card.Title testID={TestIds.IngredientSelect.Ingredient.Name} title={selectedItem.name} />
                             <Card.Content>
                                 {isPrepack(selectedItem) && <Text variant="labelSmall">{t('recipe.details.isPrepack')}</Text>}
-                                <Text variant="labelSmall">{`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}</Text>
+                                <Text testID={TestIds.IngredientSelect.Ingredient.Price} variant="labelSmall">{`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}</Text>
                             </Card.Content>
                         </Card>
                         :
                         <Card style={{ height: '100%', justifyContent: 'center' }}>
                             <Card.Content>
-                                <Text variant="labelLarge">{t('product.search.noneSelected')}</Text>
+                                <Text testID={TestIds.IngredientSelect.Ingredient.NamePlaceholder} variant="labelLarge">{t('product.search.noneSelected')}</Text>
                             </Card.Content>
                         </Card>
                 }
@@ -58,6 +59,7 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
             <Portal>
                 <Dialog visible={visible} onDismiss={dismiss}>
                     <TextInput
+                        testID={TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput}
                         label={t('product.search.byName')}
                         onChange={
                             event => {
@@ -71,11 +73,12 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
                             data={displayedItems}
                             renderItem={info =>
                                 <Pressable
+                                    testID={TestIds.IngredientSelect.Ingredient.Modal.ListItem}
                                     onTouchEnd={() => {
                                         onSelect(info.item);
                                         dismiss();
                                     }}>
-                                    <List.Item title={info.item.name} />
+                                    <Text style={{ padding: 20, fontWeight: '400', fontSize: 18 }}>{info.item.name}</Text>
                                 </Pressable>
                             }
                             keyExtractor={product => product.id}
