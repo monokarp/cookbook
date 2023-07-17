@@ -10,6 +10,7 @@ import { SummaryListItem } from "../common/summary-list-item";
 import { styles } from "../products/products-view.style";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 
 export function PrepacksView({ navigation }) {
     const { t } = useTranslation();
@@ -27,6 +28,7 @@ export function PrepacksView({ navigation }) {
     return (
         <View style={styles.container}>
             <TextInput
+                testID={TestIds.PrepacksView.SearchInput}
                 mode='outlined'
                 label={t('product.search.byName')}
                 defaultValue=''
@@ -52,6 +54,7 @@ export function PrepacksView({ navigation }) {
             </View>
 
             <Button
+                testID={TestIds.PrepacksView.AddNewButton}
                 style={styles.button}
                 mode='outlined'
                 onPress={() => navigation.navigate(RootViews.PrepackDetails, { prepack: repo.Create() })}

@@ -7,14 +7,10 @@ describe('Products view', () => {
     await device.reloadReactNative();
   });
 
-  it('should display login page', async () => {
-    await waitUntilVisible(TestIds.LoginView);
-
-    await expect(element(by.id(TestIds.LoginButton))).toBeVisible();
-  });
-
   it('should login and land on recipes', async () => {
-    await element(by.id(TestIds.LoginButton)).tap();
+    await waitUntilVisible(TestIds.Login.LoginButton);
+
+    await element(by.id(TestIds.Login.LoginButton)).tap();
 
     await waitUntilVisible(TestIds.RecipesView);
   });
@@ -68,6 +64,16 @@ describe('Products view', () => {
     await element(by.id(TestIds.ProductDetails.Submit)).tap();
 
     await waitUntilVisible(TestIds.ProductsView.Container);
+
+    await assertDisplayedSummaryListItems(['Банан', 'Морковка', 'Новый', 'Яблоко']);
+  });
+
+  it('filters the list by input value inclusion', async () => {
+    await element(by.id(TestIds.ProductsView.SearchInput)).replaceText('н');
+
+    await assertDisplayedSummaryListItems(['Банан', 'Новый']);
+
+    await element(by.id(TestIds.ProductsView.SearchInput)).clearText();
 
     await assertDisplayedSummaryListItems(['Банан', 'Морковка', 'Новый', 'Яблоко']);
   });

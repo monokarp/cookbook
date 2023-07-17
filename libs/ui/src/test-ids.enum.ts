@@ -1,7 +1,7 @@
 export const TestIds = {
-    LoginView: 'login-view',
-    LoginButton: 'login-button',
-    LoginButtonLabel: 'login-button-label',
+    Login:{
+        LoginButton: 'login-button',
+    },
     RecipesView: 'recipes-view',
     Navigation: {
         Recipes: 'navigation-recipes',
@@ -29,6 +29,13 @@ export const TestIds = {
         UnitsInput: 'product-details-units-input',
         UnitsInputError: 'product-details-units-input-error',
         Submit: 'product-details-submit',
+    },
+    PrepacksView: {
+        Container: 'prepacks-view',
+        SearchInput: 'prepacks-view-search-input',
+        AddNewButton: 'prepacks-view-add',
+    },
+    PrepackDetails: {
     },
     ListItem: {
         Label: 'list-item-label',

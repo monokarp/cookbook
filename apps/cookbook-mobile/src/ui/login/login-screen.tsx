@@ -8,9 +8,9 @@ export function LoginScreen({ navigation }) {
   const { t } = useTranslation();
 
   return (
-    <View testID={TestIds.LoginView} style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <Button
-        testID={TestIds.LoginButton}
+        testID={TestIds.Login.LoginButton}
         mode='outlined'
         onPress={() =>
           navigation.navigate(RootViews.Home)

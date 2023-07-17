@@ -1,19 +1,17 @@
+import { TestIds } from '@cookbook/ui/test-ids.enum';
 import { device, element, by, expect } from 'detox';
+import { waitUntilVisible } from './util';
 
 xdescribe('CookbookMobile', () => {
   beforeAll(async () => {
     await device.reloadReactNative();
   });
 
-  it('should display login page', async () => {
-    await waitFor(element(by.id('login-view'))).toBeVisible().withTimeout(3000);
-
-    await expect(element(by.id('login-button'))).toBeVisible();
-  });
-
   it('should login and land on recipes', async () => {
-    await element(by.id('login-button')).tap();
+    await waitUntilVisible(TestIds.Login.LoginButton);
 
-    await waitFor(element(by.id('recipes-view'))).toBeVisible().withTimeout(5000);
+    await element(by.id(TestIds.Login.LoginButton)).tap();
+
+    await waitUntilVisible(TestIds.RecipesView);
   });
 });
