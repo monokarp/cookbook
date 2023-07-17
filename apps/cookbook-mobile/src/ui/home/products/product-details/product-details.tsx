@@ -44,7 +44,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
 
     return (
         <FormProvider {...form}>
-            <View style={styles.container}>
+            <View testID={TestIds.ProductDetails.Container} style={styles.container}>
                 <Text style={styles.inputLabel}>{t('product.name')}</Text>
                 <Controller
                     control={form.control}
@@ -64,7 +64,15 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                     )}
                     name="productName"
                 />
-                {form.formState.errors.productName && <Text style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>}
+                {
+                    form.formState.errors.productName &&
+                    <Text
+                        testID={TestIds.ProductDetails.NameInputError}
+                        style={styles.validationErrorLabel}
+                    >
+                        {t('validation.required.alphanumeric')}
+                    </Text>
+                }
 
                 <Text style={styles.inputLabel}>{t('product.pricing.type')}</Text>
                 <Controller
@@ -108,7 +116,12 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                     }()
                 }
 
-                <Button onPress={form.handleSubmit(onSubmit)}>{t('common.save')}</Button>
+                <Button
+                    testID={TestIds.ProductDetails.Submit}
+                    onPress={form.handleSubmit(onSubmit)}
+                >
+                    {t('common.save')}
+                </Button>
             </View>
         </FormProvider>
     );

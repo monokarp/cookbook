@@ -6,7 +6,7 @@ import { Button, Text, TextInput } from "react-native-paper";
 import { PrepackRepository } from "../../../core/repositories/prepack.repository";
 import { RootViews } from "../../root-views.enum";
 import { ExportToClipboard } from "../common/clipboard-export";
-import { SummaryListItem } from "../common/list-item";
+import { SummaryListItem } from "../common/summary-list-item";
 import { styles } from "../products/products-view.style";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
@@ -36,10 +36,11 @@ export function PrepacksView({ navigation }) {
             <View style={{ flex: 9 }}>
                 <FlatList
                     data={filteredPrepacks}
-                    renderItem={({ item }) =>
+                    renderItem={({ item, index }) =>
                         <View style={styles.item}>
                             <SummaryListItem
                                 item={item}
+                                index={index}
                                 itemSelected={() => navigation.navigate(RootViews.PrepackDetails, { prepack: item })}
                                 deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
                                 exportRequested={() => clipboardExport.prepack(item)}

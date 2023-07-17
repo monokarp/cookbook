@@ -11,7 +11,7 @@ import { FlatList, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
 import { PrepackRepository } from "../../../../core/repositories/prepack.repository";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
-import { useUnsub } from "../../../custom-hooks";
+import { useSubscription } from "../../../custom-hooks";
 import { useKeyboardVisible } from "../../common/use-kb-visible";
 import { useProductsStore } from "../../products/products.store";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "../../recipes/recipe-details/ingredient-select/ingredient-select";
@@ -59,7 +59,7 @@ export function PrepackDetails({ route, navigation }) {
 
     const { remove } = useFieldArray({ control: form.control, name: 'ingredients' });
 
-    useUnsub(form.watch, (data: PrepackDetailsFormData) => {
+    useSubscription(form.watch, (data: PrepackDetailsFormData) => {
         const updatedPrepack = new Prepack({
             id: prepack.id,
             name: data.name,

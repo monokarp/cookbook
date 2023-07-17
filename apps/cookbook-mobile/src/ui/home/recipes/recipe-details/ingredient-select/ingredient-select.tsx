@@ -11,7 +11,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Switch, Text, TextInput } from "react-native-paper";
-import { useUnsub } from "../../../../custom-hooks";
+import { useSubscription } from "../../../../custom-hooks";
 import { ConfirmDeletionModal } from "../../../common/confirmation-modal";
 import { styles } from "./ingredient-select.style";
 import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
@@ -74,7 +74,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
 
     const { watch, trigger, getValues, formState: { errors } } = useFormContext();
 
-    useUnsub(watch, () => trigger(`ingredients.${index}.units`));
+    useSubscription(watch, () => trigger(`ingredients.${index}.units`));
 
     const getFormIngredient = (): Position => {
         if (!getValues().ingredients) { return selectedIngredient; }

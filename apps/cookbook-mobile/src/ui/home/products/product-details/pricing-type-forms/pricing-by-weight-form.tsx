@@ -23,7 +23,7 @@ export function PricingByWeightForm() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                    testID={TestIds.ProductDetails.WeightInput}
+                        testID={TestIds.ProductDetails.WeightInput}
                         style={styles.input}
                         mode='outlined'
                         onBlur={onBlur}
@@ -34,7 +34,15 @@ export function PricingByWeightForm() {
                 )}
                 name="weight"
             />
-            {errors.weight && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {
+                errors.weight &&
+                <Text
+                    testID={TestIds.ProductDetails.WeightInputError}
+                    style={styles.validationErrorLabel}
+                >
+                    {t('validation.required.decimalGTE', { gte: 0 })}
+                </Text>
+            }
 
             <Text style={styles.inputLabel}>{t('product.pricing.totalPrice')}</Text>
             <Controller
@@ -44,7 +52,7 @@ export function PricingByWeightForm() {
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                    testID={TestIds.ProductDetails.PriceInput}
+                        testID={TestIds.ProductDetails.PriceInput}
                         style={styles.input}
                         mode='outlined'
                         onBlur={onBlur}
@@ -55,7 +63,15 @@ export function PricingByWeightForm() {
                 )}
                 name="price"
             />
-            {errors.price && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {
+                errors.price &&
+                <Text
+                    testID={TestIds.ProductDetails.PriceInputError}
+                    style={styles.validationErrorLabel}
+                >
+                    {t('validation.required.decimalGTE', { gte: 0 })}
+                </Text>
+            }
         </View>
     );
 }

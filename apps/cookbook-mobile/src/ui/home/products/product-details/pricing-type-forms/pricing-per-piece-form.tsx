@@ -33,7 +33,15 @@ export function PricingPerPieceForm() {
                 )}
                 name="numberOfPieces"
             />
-            {errors.numberOfPieces && <Text style={styles.validationErrorLabel}>{t('validation.required.integerGTE', { gte: 1 })}</Text>}
+            {
+                errors.numberOfPieces &&
+                <Text
+                    testID={TestIds.ProductDetails.UnitsInputError}
+                    style={styles.validationErrorLabel}
+                >
+                    {t('validation.required.integerGTE', { gte: 1 })}
+                </Text>
+            }
 
             <Text style={styles.inputLabel}>{t('product.details.gramsPerPiece')}</Text>
             <Controller
@@ -53,7 +61,14 @@ export function PricingPerPieceForm() {
                 )}
                 name="weight"
             />
-            {errors.weight && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {
+                errors.weight &&
+                <Text
+                    testID={TestIds.ProductDetails.WeightInputError}
+                    style={styles.validationErrorLabel}
+                >
+                    {t('validation.required.decimalGTE', { gte: 0 })}
+                </Text>}
 
             <Text style={styles.inputLabel}>{t('product.pricing.totalPrice')}</Text>
             <Controller
@@ -73,7 +88,14 @@ export function PricingPerPieceForm() {
                 )}
                 name="price"
             />
-            {errors.price && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {
+                errors.price &&
+                <Text
+                    testID={TestIds.ProductDetails.PriceInputError}
+                    style={styles.validationErrorLabel}
+                >
+                    {t('validation.required.decimalGTE', { gte: 0 })}
+                </Text>}
         </View>
     );
 }

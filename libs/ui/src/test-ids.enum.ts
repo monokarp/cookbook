@@ -3,7 +3,7 @@ export const TestIds = {
     LoginButton: 'login-button',
     LoginButtonLabel: 'login-button-label',
     RecipesView: 'recipes-view',
-    Navigation:{
+    Navigation: {
         Recipes: 'navigation-recipes',
         Products: 'navigation-products',
         Prepacks: 'navigation-prepacks',
@@ -11,22 +11,30 @@ export const TestIds = {
     ProductsView: {
         Container: 'products-view',
         SearchInput: 'products-view-search-input',
-        Add: 'products-view-add',
+        AddNewButton: 'products-view-add',
         Toast: 'products-view-toast',
     },
-    ProductDetails:{
+    ProductDetails: {
         Container: 'product-details',
         NameInput: 'product-details-name-input',
-        PricingToggle:{
+        NameInputError: 'product-details-name-input-error',
+        PricingToggle: {
             Weight: 'product-details-pricing-toggle-weight',
             Units: 'product-details-pricing-toggle-units',
         },
         WeightInput: 'product-details-weight-input',
+        WeightInputError: 'product-details-weight-input-error',
         PriceInput: 'product-details-price-input',
+        PriceInputError: 'product-details-price-input-error',
         UnitsInput: 'product-details-units-input',
+        UnitsInputError: 'product-details-units-input-error',
+        Submit: 'product-details-submit',
     },
-    ListItem: 'list-item',
-    ConfirmDeleteModal:{
+    ListItem: {
+        Label: 'list-item-label',
+        ClipboardExport: 'list-item-clipboard-export',
+    },
+    ConfirmDeleteModal: {
         Container: 'confirm-delete-modal',
         Confirm: 'confirm-delete-modal-confirm',
         Cancel: 'confirm-delete-modal-cancel',

@@ -7,7 +7,7 @@ import { Button, TextInput } from 'react-native-paper';
 import { RecipesRepository } from '../../../core/repositories/recipes.repository';
 import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
-import { SummaryListItem } from '../common/list-item';
+import { SummaryListItem } from '../common/summary-list-item';
 import { useProductsStore } from '../products/products.store';
 import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
@@ -39,10 +39,11 @@ export function RecipesView({ navigation }) {
       <View style={{ flex: 9 }}>
         <FlatList
           data={filteredRecipes}
-          renderItem={({ item }) =>
+          renderItem={({ item, index }) =>
             <View style={styles.item}>
               <SummaryListItem
                 item={item}
+                index={index}
                 itemSelected={() => navigation.navigate(RootViews.RecipeDetails, { recipe: item })}
                 deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
                 exportRequested={() => clipboardExport.recipe(item)}

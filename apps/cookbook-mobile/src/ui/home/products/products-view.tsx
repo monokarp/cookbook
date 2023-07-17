@@ -9,7 +9,7 @@ import { ProductsRepository } from '../../../core/repositories/products.reposito
 import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
 import { FormMode } from '../common/form-mode.enum';
-import { SummaryListItem } from '../common/list-item';
+import { SummaryListItem } from '../common/summary-list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
 
@@ -56,10 +56,11 @@ export function ProductsView({ navigation }) {
       <View style={{ flex: 9 }}>
         <FlatList
           data={filteredProducts}
-          renderItem={({ item }) =>
+          renderItem={({ item, index }) =>
             <View style={styles.item}>
               <SummaryListItem
                 item={item}
+                index={index}
                 itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item, mode: FormMode.Edit })}
                 deleteRequested={() => tryDeleteProduct(item)}
                 exportRequested={() => clipboardExport.product(item)}
@@ -71,7 +72,7 @@ export function ProductsView({ navigation }) {
       </View>
 
       <Button
-        testID={TestIds.ProductsView.Add}
+        testID={TestIds.ProductsView.AddNewButton}
         style={styles.button}
         mode='outlined'
         onPress={() => navigation.navigate(RootViews.ProductDetails, { product: repo.Create(), mode: FormMode.New })}

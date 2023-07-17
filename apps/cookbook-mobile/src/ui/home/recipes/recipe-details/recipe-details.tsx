@@ -12,7 +12,7 @@ import { FlatList, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
-import { useUnsub } from "../../../custom-hooks";
+import { useSubscription } from "../../../custom-hooks";
 import { useKeyboardVisible } from "../../common/use-kb-visible";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
@@ -66,7 +66,7 @@ export function RecipeDetails({ route, navigation }) {
 
     const { remove } = useFieldArray({ control: form.control, name: 'ingredients' });
 
-    useUnsub(form.watch, (data: RecipeDetailsFormData) => {
+    useSubscription(form.watch, (data: RecipeDetailsFormData) => {
         const updatedRecipe = new Recipe({
             id: recipe.id,
             name: data.recipeName,
