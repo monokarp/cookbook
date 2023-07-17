@@ -82,14 +82,13 @@ export function ProductsView({ navigation }) {
 
       <Portal>
         <Snackbar
-          testID={TestIds.ProductsView.Toast}
           visible={snackbarMessage}
           onDismiss={() => setSnackbarMessage(null)}
           action={{
             label: t('common.ok')
           }}
         >
-          {snackbarMessage}
+          <Text style={{ color: 'white' }} testID={TestIds.ProductsView.ToastMessage}>{snackbarMessage}</Text>
         </Snackbar>
       </Portal>
     </View>

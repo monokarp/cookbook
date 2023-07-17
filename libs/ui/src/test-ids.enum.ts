@@ -12,7 +12,7 @@ export const TestIds = {
         Container: 'products-view',
         SearchInput: 'products-view-search-input',
         AddNewButton: 'products-view-add',
-        Toast: 'products-view-toast',
+        ToastMessage: 'products-view-toast-message',
     },
     ProductDetails: {
         Container: 'product-details',
