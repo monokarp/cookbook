@@ -34,6 +34,7 @@ export const TestIds = {
         Container: 'prepacks-view',
         SearchInput: 'prepacks-view-search-input',
         AddNewButton: 'prepacks-view-add',
+        ToastMessage: 'prepacks-view-toast-message',
     },
     PrepackDetails: {
     },

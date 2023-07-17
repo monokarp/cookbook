@@ -1,8 +1,8 @@
 import { useInjection } from "inversify-react-native";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { Button, Portal, Snackbar, Text, TextInput } from "react-native-paper";
 import { PrepackRepository } from "../../../core/repositories/prepack.repository";
 import { RootViews } from "../../root-views.enum";
 import { ExportToClipboard } from "../common/clipboard-export";
@@ -18,12 +18,29 @@ export function PrepacksView({ navigation }) {
 
     const repo = useInjection(PrepackRepository);
 
+    const [snackbarMessage, setSnackbarMessage] = useState(null);
+
     const { items: products } = useProductsStore();
     const { filteredItems: filteredPrepacks, set: setPrepacks, filter, deleteItem } = usePrepacksStore();
 
     useEffect(() => {
         repo.All().then(setPrepacks);
     }, [products]);
+
+    const deletePrepack = async (id: string) => {
+        try {
+            await repo.Delete(id);
+
+            deleteItem(id);
+        } catch (e) {
+            switch (e.code) {
+                case 0: setSnackbarMessage(t('errors.prepack.fkViolation')); break;
+                default: setSnackbarMessage(t('errors.prepack.cantDelete'));
+            }
+
+            setTimeout(() => setSnackbarMessage(null), 3000);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -44,7 +61,7 @@ export function PrepacksView({ navigation }) {
                                 item={item}
                                 index={index}
                                 itemSelected={() => navigation.navigate(RootViews.PrepackDetails, { prepack: item })}
-                                deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
+                                deleteRequested={() => deletePrepack(item.id)}
                                 exportRequested={() => clipboardExport.prepack(item)}
                             />
                         </View>
@@ -61,6 +78,18 @@ export function PrepacksView({ navigation }) {
             >
                 <Text style={{ fontSize: 18 }}>{t('prepack.addNew')}</Text>
             </Button>
+
+            <Portal>
+                <Snackbar
+                    visible={snackbarMessage}
+                    onDismiss={() => setSnackbarMessage(null)}
+                    action={{
+                        label: t('common.ok')
+                    }}
+                >
+                    <Text style={{ color: 'white' }} testID={TestIds.PrepacksView.ToastMessage}>{snackbarMessage}</Text>
+                </Snackbar>
+            </Portal>
         </View>
     );
 }

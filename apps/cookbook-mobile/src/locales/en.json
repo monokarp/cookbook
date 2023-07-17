@@ -75,6 +75,10 @@
         "product": {
             "cantDelete": "Unable to delete this product",
             "fkViolation": "There are recipes that use this product. Please remove them first."
+        },
+        "prepack": {
+            "cantDelete": "Unable to delete this prepack",
+            "fkViolation": "There are recipes that use this prepack. Please remove them first."
         }
     }
 }

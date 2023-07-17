@@ -44,7 +44,7 @@ export function PrepackDetails({ route, navigation }) {
     const form = useForm({
         defaultValues: {
             name: prepack.name,
-            finalWeight: FormatNumber.Weight(prepack.finalWeight),
+            finalWeight: prepack.finalWeight ? FormatNumber.Weight(prepack.finalWeight) : '',
             ingredients: prepack.ingredients.map(ingredient => {
                 return {
                     selectedItem: ingredient.product,
@@ -118,8 +118,13 @@ export function PrepackDetails({ route, navigation }) {
 
                     <Controller
                         rules={{
-                            required: true,
-                            validate: (value) => RegexPatterns.Weight.test(value) && Number(value) > 0,
+                            validate: (value) => {
+                                const isValidWeight = RegexPatterns.Weight.test(value) && Number(value) > 0;
+
+                                return prepack.ingredients.length
+                                    ? isValidWeight
+                                    : isValidWeight || value === '';
+                            },
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
