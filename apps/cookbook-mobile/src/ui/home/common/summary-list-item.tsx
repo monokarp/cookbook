@@ -7,13 +7,14 @@ import { styles } from "./summary-list-item.style";
 
 export interface SummaryListItemProps {
     item: { name: string };
+    itemTestId: string;
     index: number;
     itemSelected: () => void;
     deleteRequested: () => void;
     exportRequested: () => void;
 }
 
-export function SummaryListItem({ item, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
+export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
     const [visible, setVisible] = useState(false);
     const show = () => setVisible(true);
     const dismiss = () => setVisible(false);
@@ -27,7 +28,7 @@ export function SummaryListItem({ item, itemSelected, deleteRequested, exportReq
         <View>
             <View style={styles.container}>
                 <Pressable style={styles.textWrapper} onPress={itemSelected} onLongPress={show}>
-                    <Text testID={`${TestIds.ListItem.Label}-${index}`} style={styles.text}>{item.name}</Text>
+                    <Text testID={`${itemTestId}-${index}`} style={styles.text}>{item.name}</Text>
                 </Pressable>
                 <TouchableRipple testID={`${TestIds.ListItem.ClipboardExport}-${index}`} style={styles.button} onPress={exportRequested}>
                     <List.Icon icon="content-copy" />

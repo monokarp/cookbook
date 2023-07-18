@@ -28,7 +28,7 @@ export function RecipesView({ navigation }) {
   }, [products]);
 
   return (
-    <View testID={TestIds.RecipesView} style={styles.container}>
+    <View testID={TestIds.RecipesView.Container} style={styles.container}>
       <TextInput
         mode='outlined'
         label={t('product.search.byName')}
@@ -43,6 +43,7 @@ export function RecipesView({ navigation }) {
             <View style={styles.item}>
               <SummaryListItem
                 item={item}
+                itemTestId={TestIds.RecipesView.ListItem}
                 index={index}
                 itemSelected={() => navigation.navigate(RootViews.RecipeDetails, { recipe: item })}
                 deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}

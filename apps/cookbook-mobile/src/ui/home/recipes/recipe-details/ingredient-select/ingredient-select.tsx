@@ -163,8 +163,14 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                     }
                 </View>
             </View>
-            {errors.ingredients && errors.ingredients[index]?.selectedProduct && <Text style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>}
-            {errors.ingredients && errors.ingredients[index]?.units && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>}
+            {
+                errors.ingredients && errors.ingredients[index]?.selectedProduct &&
+                <Text testID={TestIds.IngredientSelect.Ingredient.RequiredError} style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>
+            }
+            {
+                errors.ingredients && errors.ingredients[index]?.units &&
+                <Text testID={TestIds.IngredientSelect.Ingredient.UnitsError} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
+            }
 
             <ConfirmDeletionModal isVisible={visible} confirm={requestRemoval} dismiss={dismiss} />
         </View>

@@ -115,7 +115,7 @@ export function PrepackDetails({ navigation }) {
                     />
                     {
                         form.formState.errors.name
-                        && <Text style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>
+                        && <Text testID={TestIds.PrepackDetails.NameInputError} style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>
                     }
 
                     <Controller
@@ -135,6 +135,7 @@ export function PrepackDetails({ navigation }) {
                                 style={styles.input}
                                 onBlur={onBlur}
                                 onChangeText={onChange}
+                                keyboardType='numeric'
                                 value={value}
                             />
                         )}
@@ -142,7 +143,7 @@ export function PrepackDetails({ navigation }) {
                     />
                     {
                         form.formState.errors.finalWeight
-                        && <Text style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
+                        && <Text testID={TestIds.PrepackDetails.WeightInputError} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
                     }
 
                     <Text variant="labelLarge" style={{ margin: 5 }}>

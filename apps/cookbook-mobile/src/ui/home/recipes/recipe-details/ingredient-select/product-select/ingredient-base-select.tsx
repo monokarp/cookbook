@@ -1,12 +1,13 @@
 import { IngredientBase, isPrepack } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
-import { useState } from "react";
+import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, List, Portal, Text, TextInput } from "react-native-paper";
+import { Card, Dialog, Portal, Text, TextInput } from "react-native-paper";
 import { usePrepacksStore } from "../../../../prepacks/prepacks.store";
 import { useProductsStore } from "../../../../products/products.store";
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { useIngredientBaseStore } from "./ingredient-base.store";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
@@ -24,14 +25,17 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
 
     const [visible, setVisible] = useState(false);
 
-    const itemList = () => allowPrepacks ? [...products, ...prepacks] : products;
-    const [displayedItems, setDisplayedItems] = useState(itemList());
+    const { set, filteredItems, filter } = useIngredientBaseStore();
+
+    useEffect(() => {
+        set(allowPrepacks ? [...products, ...prepacks] : products);
+    }, [products, prepacks, allowPrepacks]);
 
     const show = () => setVisible(true);
 
     const dismiss = () => {
         setVisible(false);
-        setDisplayedItems(itemList());
+        filter('');
     }
 
     return (
@@ -62,23 +66,19 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
                         testID={TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput}
                         label={t('product.search.byName')}
                         onChange={
-                            event => {
-                                const filteredItems = [...products, ...prepacks].filter(one => one.name.toLocaleLowerCase().includes(event.nativeEvent.text.toLocaleLowerCase()));
-
-                                setDisplayedItems(filteredItems);
-                            }}
+                            event => filter(event.nativeEvent.text)}
                     />
                     <Dialog.Content>
                         <FlatList
-                            data={displayedItems}
-                            renderItem={info =>
+                            data={filteredItems}
+                            renderItem={({ item, index }) =>
                                 <Pressable
-                                    testID={TestIds.IngredientSelect.Ingredient.Modal.ListItem}
+                                    testID={`${TestIds.IngredientSelect.Ingredient.Modal.ListItem}-${index}`}
                                     onTouchEnd={() => {
-                                        onSelect(info.item);
+                                        onSelect(item);
                                         dismiss();
                                     }}>
-                                    <Text style={{ padding: 20, fontWeight: '400', fontSize: 18 }}>{info.item.name}</Text>
+                                    <Text style={{ padding: 20, fontWeight: '400', fontSize: 18 }}>{item.name}</Text>
                                 </Pressable>
                             }
                             keyExtractor={product => product.id}

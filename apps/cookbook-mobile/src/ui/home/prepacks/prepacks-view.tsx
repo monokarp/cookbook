@@ -43,7 +43,7 @@ export function PrepacksView({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <View testID={TestIds.PrepacksView.Container} style={styles.container}>
             <TextInput
                 testID={TestIds.PrepacksView.SearchInput}
                 mode='outlined'
@@ -59,6 +59,7 @@ export function PrepacksView({ navigation }) {
                         <View style={styles.item}>
                             <SummaryListItem
                                 item={item}
+                                itemTestId={TestIds.PrepacksView.ListItem}
                                 index={index}
                                 itemSelected={() => navigation.navigate(RootViews.PrepackDetails, { prepack: item })}
                                 deleteRequested={() => deletePrepack(item.id)}

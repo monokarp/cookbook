@@ -2,7 +2,10 @@ export const TestIds = {
     Login: {
         LoginButton: 'login-button',
     },
-    RecipesView: 'recipes-view',
+    RecipesView: {
+        Container: 'recipes-view',
+        ListItem: 'recipes-view-list-item',
+    },
     Navigation: {
         Recipes: 'navigation-recipes',
         Products: 'navigation-products',
@@ -10,6 +13,7 @@ export const TestIds = {
     },
     ProductsView: {
         Container: 'products-view',
+        ListItem: 'products-view-list-item',
         SearchInput: 'products-view-search-input',
         AddNewButton: 'products-view-add',
         ToastMessage: 'products-view-toast-message',
@@ -32,13 +36,16 @@ export const TestIds = {
     },
     PrepacksView: {
         Container: 'prepacks-view',
+        ListItem: 'prepacks-view-list-item',
         SearchInput: 'prepacks-view-search-input',
         AddNewButton: 'prepacks-view-add',
         ToastMessage: 'prepacks-view-toast-message',
     },
     PrepackDetails: {
         NameInput: 'prepack-details-name-input',
+        NameInputError: 'prepack-details-name-input-error',
         WeightInput: 'prepack-details-weight-input',
+        WeightInputError: 'prepack-details-weight-input-error',
         AddIngredient: 'prepack-details-add-ingredient',
         Submit: 'prepack-details-submit',
     },
@@ -53,11 +60,12 @@ export const TestIds = {
             Modal:{
                 NameSearchInput: 'ingredient-select-ingredient-modal-name-search-input',
                 ListItem: 'ingredient-select-ingredient-modal-list-item',
-            }
+            },
+            RequiredError: 'ingredient-select-ingredient-required-error',
+            UnitsError: 'ingredient-select-ingredient-units-error',
         }
     },
     ListItem: {
-        Label: 'list-item-label',
         ClipboardExport: 'list-item-clipboard-export',
     },
     ConfirmDeleteModal: {

@@ -60,6 +60,7 @@ export function ProductsView({ navigation }) {
             <View style={styles.item}>
               <SummaryListItem
                 item={item}
+                itemTestId={TestIds.ProductsView.ListItem}
                 index={index}
                 itemSelected={() => navigation.navigate(RootViews.ProductDetails, { product: item, mode: FormMode.Edit })}
                 deleteRequested={() => tryDeleteProduct(item)}

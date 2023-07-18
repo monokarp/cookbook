@@ -3,26 +3,26 @@ import { element, by, expect } from 'detox';
 
 const DefaultTimeout = 4000;
 
-export function waitUntilVisible(testId: string) {
+export function untilVisible(testId: string) {
     return waitFor(element(by.id(testId))).toBeVisible().withTimeout(DefaultTimeout);
 }
 
-export function waitUntilNotVisible(testId: string) {
+export function untilNotVisible(testId: string) {
     return waitFor(element(by.id(testId))).not.toBeVisible().withTimeout(DefaultTimeout);
 }
 
-export function waitUntilGone(testId: string) {
+export function untilGone(testId: string) {
     return waitFor(element(by.id(testId))).not.toExist().withTimeout(DefaultTimeout);
 }
 
-export async function assertDisplayedSummaryListItems(listItemText: string[]) {
+export async function assertListItems(testId: string, listItemText: string[]) {
     let idx = 0;
 
     for (const text of listItemText) {
-        await waitFor(collectionElement(TestIds.ListItem.Label).at(idx++)).toHaveText(text).withTimeout(DefaultTimeout);
+        await waitFor(collectionElement(testId).at(idx++)).toHaveText(text);
     }
 
-    await expect(collectionElement(TestIds.ListItem.Label).at(idx)).not.toExist();
+    await expect(collectionElement(testId).at(idx)).not.toExist();
 }
 
 export function collectionElement(testId: string) {
