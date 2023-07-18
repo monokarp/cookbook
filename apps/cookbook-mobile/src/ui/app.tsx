@@ -13,6 +13,7 @@ import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
+import { ToastMessage } from './home/common/toast/toast';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
@@ -34,6 +35,7 @@ const App = () => {
             <Stack.Screen name={RootViews.PrepackDetails} component={PrepackDetailsWithContext} options={{ headerTitle: t('prepack.details.title') }} />
           </Stack.Navigator>
         </NavigationContainer>
+        <ToastMessage />
       </Provider>
     </PaperProvider>
   );
