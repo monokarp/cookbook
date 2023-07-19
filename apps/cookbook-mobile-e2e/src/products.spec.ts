@@ -1,7 +1,6 @@
-import { TestIds } from '@cookbook/ui/test-ids.enum';
+import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
 import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
-
 
 describe('Products view', () => {
   beforeAll(async () => {

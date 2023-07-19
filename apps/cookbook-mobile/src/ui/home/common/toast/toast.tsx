@@ -1,4 +1,4 @@
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds } from "@cookbook/ui/test-ids";
 import { useTranslation } from "react-i18next";
 import { Portal, Snackbar, Text } from "react-native-paper";
 import { useToast } from "./toast.store";

@@ -1,6 +1,6 @@
 import { IngredientBase, isPrepack } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable, View } from "react-native";
@@ -11,13 +11,14 @@ import { useIngredientBaseStore } from "./ingredient-base.store";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
+    index: number,
     allowPrepacks: boolean,
     ingredientPrice: number,
     onSelect: (item: IngredientBase) => void,
     onLongPress?: () => void,
 }
 
-export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepacks, onSelect, onLongPress }: ProductSelectProps) {
+export function IngredientBaseSelect({ selectedItem, index, ingredientPrice, allowPrepacks, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
     const { items: products } = useProductsStore();
@@ -40,26 +41,46 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
 
     return (
         <View>
-            <Pressable testID={TestIds.IngredientSelect.Ingredient.Button} onPress={show} onLongPress={onLongPress}>
+            <Pressable
+                testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
+                onPress={show}
+                onLongPress={onLongPress}
+            >
                 {
                     selectedItem?.id
                         ?
                         <Card>
-                            <Card.Title testID={TestIds.IngredientSelect.Ingredient.Name} title={selectedItem.name} />
+                            <Card.Title
+                                testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
+                                title={selectedItem.name}
+                            />
                             <Card.Content>
                                 {
                                     isPrepack(selectedItem) &&
-                                    <Text testID={TestIds.IngredientSelect.Ingredient.IsPrepackLabel} variant="labelSmall">
+                                    <Text
+                                        testID={collectionElementId(TestIds.IngredientSelect.Ingredient.IsPrepackLabel, index)}
+                                        variant="labelSmall"
+                                    >
                                         {t('recipe.details.isPrepack')}
                                     </Text>
                                 }
-                                <Text testID={TestIds.IngredientSelect.Ingredient.Price} variant="labelSmall">{`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}</Text>
+                                <Text
+                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Price, index)}
+                                    variant="labelSmall"
+                                >
+                                    {`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}
+                                </Text>
                             </Card.Content>
                         </Card>
                         :
                         <Card style={{ height: '100%', justifyContent: 'center' }}>
                             <Card.Content>
-                                <Text testID={TestIds.IngredientSelect.Ingredient.NamePlaceholder} variant="labelLarge">{t('product.search.noneSelected')}</Text>
+                                <Text
+                                    testID={TestIds.IngredientSelect.Ingredient.NamePlaceholder}
+                                    variant="labelLarge"
+                                >
+                                    {t('product.search.noneSelected')}
+                                </Text>
                             </Card.Content>
                         </Card>
                 }
@@ -78,7 +99,7 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
                             data={filteredItems}
                             renderItem={({ item, index }) =>
                                 <Pressable
-                                    testID={`${TestIds.IngredientSelect.Ingredient.Modal.ListItem}-${index}`}
+                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Modal.ListItem, index)}
                                     onTouchEnd={() => {
                                         onSelect(item);
                                         dismiss();

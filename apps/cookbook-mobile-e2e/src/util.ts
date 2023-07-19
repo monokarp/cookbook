@@ -1,18 +1,18 @@
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { collectionElementId } from "@cookbook/ui/test-ids";
 import { element, by, expect } from 'detox';
 
 const DefaultTimeout = 4000;
 
-export function untilVisible(testId: string) {
-    return waitFor(element(by.id(testId))).toBeVisible().withTimeout(DefaultTimeout);
+export function untilVisible(testId: string, index?: number) {
+    return waitFor(findElement(testId, index)).toBeVisible().withTimeout(DefaultTimeout);
 }
 
-export function untilNotVisible(testId: string) {
-    return waitFor(element(by.id(testId))).not.toBeVisible().withTimeout(DefaultTimeout);
+export function untilNotVisible(testId: string, index?: number) {
+    return waitFor(findElement(testId, index)).not.toBeVisible().withTimeout(DefaultTimeout);
 }
 
-export function untilGone(testId: string) {
-    return waitFor(element(by.id(testId))).not.toExist().withTimeout(DefaultTimeout);
+export function untilGone(testId: string, index?: number) {
+    return waitFor(findElement(testId, index)).not.toExist().withTimeout(DefaultTimeout);
 }
 
 export async function assertListItems(testId: string, listItemText: string[]) {
@@ -28,7 +28,13 @@ export async function assertListItems(testId: string, listItemText: string[]) {
 export function collectionElement(testId: string) {
     return {
         at: (index: number) => {
-            return element(by.id(`${testId}-${index}`));
+            return element(by.id(collectionElementId(testId, index)));
         }
     };
+}
+
+function findElement(testId: string, index?: number) {
+    return Number.isInteger(index)
+        ? collectionElement(testId).at(index)
+        : element(by.id(testId))
 }

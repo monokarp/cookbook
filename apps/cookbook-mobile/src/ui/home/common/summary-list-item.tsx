@@ -1,4 +1,4 @@
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds } from "@cookbook/ui/test-ids";
 import { useState } from "react";
 import { Pressable, View, Text } from "react-native";
 import { List, TouchableRipple } from "react-native-paper";

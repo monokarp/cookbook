@@ -1,3 +1,7 @@
+export function collectionElementId(id: string, index: number): string {
+    return `${id}-${index}`;
+}
+
 export const TestIds = {
     Login: {
         LoginButton: 'login-button',
@@ -8,7 +12,7 @@ export const TestIds = {
         ListItem: 'recipes-view-list-item',
         AddNewButton: 'recipes-view-add',
     },
-    RecipeDetails:{
+    RecipeDetails: {
         NameInput: 'recipe-details-name-input',
         NameInputError: 'recipe-details-name-input-error',
         AddIngredient: 'recipe-details-add-ingredient',
@@ -60,13 +64,13 @@ export const TestIds = {
     IngredientSelect: {
         UnitsInput: 'ingredient-select-units-input',
         UnitsToggle: 'ingredient-select-units-toggle',
-        Ingredient:{
+        Ingredient: {
             Button: 'ingredient-select-ingredient-button',
             Name: 'ingredient-select-ingredient-name',
             NamePlaceholder: 'ingredient-select-ingredient-name-placeholder',
             Price: 'ingredient-select-ingredient-price',
             IsPrepackLabel: 'ingredient-select-ingredient-is-prepack-label',
-            Modal:{
+            Modal: {
                 NameSearchInput: 'ingredient-select-ingredient-modal-name-search-input',
                 ListItem: 'ingredient-select-ingredient-modal-list-item',
             },

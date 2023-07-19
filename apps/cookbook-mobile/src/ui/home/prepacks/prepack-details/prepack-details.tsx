@@ -18,7 +18,7 @@ import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from ".
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds } from "@cookbook/ui/test-ids";
 
 interface PrepackDetailsFormData {
     name: string,

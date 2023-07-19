@@ -1,6 +1,6 @@
-import { TestIds } from '@cookbook/ui/test-ids.enum';
+import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
-import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
+import { assertListItems, collectionElement, untilGone, untilNotVisible, untilVisible } from './util';
 
 describe('Recipes view', () => {
     beforeAll(async () => {
@@ -52,22 +52,22 @@ describe('Recipes view', () => {
     it('adds empty ingredient to recipe', async () => {
         await element(by.id(TestIds.RecipeDetails.AddIngredient)).tap();
 
-        await untilVisible(TestIds.IngredientSelect.Ingredient.Button);
+        await untilVisible(TestIds.IngredientSelect.Ingredient.Button, 0);
     });
 
     it('opens ingredient base selection modal', async () => {
-        await element(by.id(TestIds.IngredientSelect.Ingredient.Button)).tap();
+        await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(0).tap();
 
         await untilVisible(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput);
         await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Яблоко', 'Яблоко с бананом']);
     });
 
     it('adds a prepack ingredient base to the recipe', async () => {
-        await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(1).tap();
-        await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+        await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(4).tap();
+        await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
 
-        await element(by.id(TestIds.IngredientSelect.UnitsInput)).typeText('0.100\n');
-        await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+        await collectionElement(TestIds.IngredientSelect.UnitsInput).at(0).typeText('0.100\n');
+        await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
 
         await untilVisible(TestIds.RecipeDetails.Submit);
     });
@@ -75,12 +75,11 @@ describe('Recipes view', () => {
     it('adds another empty ingredient to recipe', async () => {
         await element(by.id(TestIds.RecipeDetails.AddIngredient)).tap();
 
-        await untilVisible(TestIds.IngredientSelect.Ingredient.Button);
+        await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(1);
     });
 
-    // @TODO replace this with a indexed selector
     it('opens ingredient base selection modal', async () => {
-        await element(by.id(TestIds.IngredientSelect.Ingredient.Button)).atIndex(1).tap();
+        await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(1).tap();
 
         await untilVisible(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput);
         await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Яблоко', 'Яблоко с бананом']);
@@ -88,27 +87,27 @@ describe('Recipes view', () => {
 
     it('adds a product ingredient base to the recipe', async () => {
         await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(2).tap();
-        await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+        await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
     });
 
     it('displays units toggle for a priced-per-unit product', async () => {
-        await untilVisible(TestIds.IngredientSelect.UnitsToggle);
+        await untilVisible(TestIds.IngredientSelect.UnitsToggle, 1);
 
-        await element(by.id(TestIds.IngredientSelect.UnitsInput)).atIndex(1).typeText('0.100\n');
-        await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+        await collectionElement(TestIds.IngredientSelect.UnitsInput).at(1).typeText('0.100\n');
+        await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
     });
 
     it('updates validation rules when units toggle is changed', async () => {
-        await element(by.id(TestIds.IngredientSelect.UnitsToggle)).tap();
-        await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+        await collectionElement(TestIds.IngredientSelect.UnitsToggle).at(1).tap();
+        await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
 
-        await element(by.id(TestIds.IngredientSelect.UnitsInput)).atIndex(1).replaceText('3');
-        await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+        await collectionElement(TestIds.IngredientSelect.UnitsInput).at(1).replaceText('3');
+        await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
     });
 
     it('displays prepack label only on prepack ingredients', async () => {
-        // @TODO slap an index onto this
-        await untilVisible(TestIds.IngredientSelect.Ingredient.IsPrepackLabel);
+        await untilVisible(TestIds.IngredientSelect.Ingredient.IsPrepackLabel, 0);
+        await untilGone(TestIds.IngredientSelect.Ingredient.IsPrepackLabel, 1);
     });
 
     it('should save updated prepack', async () => {

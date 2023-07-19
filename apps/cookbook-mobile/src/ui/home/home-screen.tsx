@@ -1,4 +1,4 @@
-import { TestIds } from '@cookbook/ui/test-ids.enum';
+import { TestIds } from '@cookbook/ui/test-ids';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { useTranslation } from 'react-i18next';
 import { HomeTabs } from './home-tabs.enum';

@@ -1,4 +1,4 @@
-import { TestIds } from '@cookbook/ui/test-ids.enum';
+import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
 import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
 
@@ -52,15 +52,14 @@ describe('Prepacks view', () => {
   it('adds empty ingredient to prepack', async () => {
     await element(by.id(TestIds.PrepackDetails.AddIngredient)).tap();
 
-    await untilVisible(TestIds.IngredientSelect.Ingredient.Button);
+    await untilVisible(TestIds.IngredientSelect.Ingredient.Button, 0);
   });
 
   it('opens ingredient base selection modal', async () => {
-    await element(by.id(TestIds.IngredientSelect.Ingredient.Button)).tap();
+    await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(0).tap();
 
     await untilVisible(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput);
     await assertIngredientProducts(['Банан', 'Морковка', 'Яблоко']);
-
   });
 
   it('filters ingredient bases by name', async () => {
@@ -73,10 +72,10 @@ describe('Prepacks view', () => {
 
   it('adds first ingredient base to prepack', async () => {
     await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(0).tap();
-    await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+    await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
 
-    await element(by.id(TestIds.IngredientSelect.UnitsInput)).typeText('0.100\n');
-    await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError);
+    await collectionElement(TestIds.IngredientSelect.UnitsInput).at(0).typeText('0.100\n');
+    await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
 
     await untilVisible(TestIds.PrepackDetails.Submit);
   });

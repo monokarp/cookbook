@@ -3,7 +3,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Text, TextInput } from 'react-native-paper';
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds } from "@cookbook/ui/test-ids";
 import { ProductDetailsFormData } from "../form-data-facade";
 import { styles } from "../product-defails.style";
 

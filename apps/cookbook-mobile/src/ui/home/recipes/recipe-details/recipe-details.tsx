@@ -18,7 +18,7 @@ import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
 import { styles } from "./recipe-details.style";
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds } from "@cookbook/ui/test-ids";
 
 
 export interface RecipeDetailsFormData {

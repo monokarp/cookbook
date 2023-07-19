@@ -1,4 +1,4 @@
-import { TestIds } from '@cookbook/ui/test-ids.enum';
+import { TestIds } from '@cookbook/ui/test-ids';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button } from 'react-native-paper';

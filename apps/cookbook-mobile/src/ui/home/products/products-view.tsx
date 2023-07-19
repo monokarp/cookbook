@@ -1,5 +1,5 @@
 import { Product } from '@cookbook/domain/types/product/product';
-import { TestIds } from '@cookbook/ui/test-ids.enum';
+import { TestIds } from '@cookbook/ui/test-ids';
 import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';

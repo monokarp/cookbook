@@ -15,7 +15,7 @@ import { useSubscription } from "../../../../custom-hooks";
 import { ConfirmDeletionModal } from "../../../common/confirmation-modal";
 import { styles } from "./ingredient-select.style";
 import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
-import { TestIds } from "@cookbook/ui/test-ids.enum";
+import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 
 export interface IngredientSelectProps {
     selectedIngredient: Position,
@@ -107,6 +107,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                         }}
                         render={({ field: { onChange, value } }) => (
                             <IngredientBaseSelect
+                                index={index}
                                 allowPrepacks={allowAddingPrepacks}
                                 ingredientPrice={getFormIngredient().price()}
                                 selectedItem={value}
@@ -132,7 +133,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
-                                testID={TestIds.IngredientSelect.UnitsInput}
+                                testID={collectionElementId(TestIds.IngredientSelect.UnitsInput, index)}
                                 mode="outlined"
                                 label={t(isFormIngredientServedInUnits() ? 'recipe.details.servingSizeInUnits' : 'recipe.details.servingSizeInGrams')}
                                 style={styles.servingSizeInput}
@@ -152,7 +153,7 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                             name={`ingredients.${index}.measuringType`}
                             render={({ field: { onChange, value } }) => (
                                 <Switch
-                                    testID={TestIds.IngredientSelect.UnitsToggle}
+                                    testID={collectionElementId(TestIds.IngredientSelect.UnitsToggle, index)}
                                     value={value === ProductMeasuring.Units}
                                     onValueChange={value => {
                                         onChange(value ? ProductMeasuring.Units : ProductMeasuring.Grams);
@@ -165,11 +166,11 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
             </View>
             {
                 errors.ingredients && errors.ingredients[index]?.selectedProduct &&
-                <Text testID={TestIds.IngredientSelect.Ingredient.RequiredError} style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>
+                <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.RequiredError, index)} style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>
             }
             {
                 errors.ingredients && errors.ingredients[index]?.units &&
-                <Text testID={TestIds.IngredientSelect.Ingredient.UnitsError} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
+                <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.UnitsError, index)} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
             }
 
             <ConfirmDeletionModal isVisible={visible} confirm={requestRemoval} dismiss={dismiss} />
