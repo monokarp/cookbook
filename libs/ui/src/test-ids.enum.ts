@@ -4,7 +4,15 @@ export const TestIds = {
     },
     RecipesView: {
         Container: 'recipes-view',
+        SearchInput: 'recipes-view-search-input',
         ListItem: 'recipes-view-list-item',
+        AddNewButton: 'recipes-view-add',
+    },
+    RecipeDetails:{
+        NameInput: 'recipe-details-name-input',
+        NameInputError: 'recipe-details-name-input-error',
+        AddIngredient: 'recipe-details-add-ingredient',
+        Submit: 'recipe-details-submit',
     },
     Navigation: {
         Recipes: 'navigation-recipes',
@@ -57,6 +65,7 @@ export const TestIds = {
             Name: 'ingredient-select-ingredient-name',
             NamePlaceholder: 'ingredient-select-ingredient-name-placeholder',
             Price: 'ingredient-select-ingredient-price',
+            IsPrepackLabel: 'ingredient-select-ingredient-is-prepack-label',
             Modal:{
                 NameSearchInput: 'ingredient-select-ingredient-modal-name-search-input',
                 ListItem: 'ingredient-select-ingredient-modal-list-item',

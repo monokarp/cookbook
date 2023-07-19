@@ -47,7 +47,12 @@ export function IngredientBaseSelect({ selectedItem, ingredientPrice, allowPrepa
                         <Card>
                             <Card.Title testID={TestIds.IngredientSelect.Ingredient.Name} title={selectedItem.name} />
                             <Card.Content>
-                                {isPrepack(selectedItem) && <Text variant="labelSmall">{t('recipe.details.isPrepack')}</Text>}
+                                {
+                                    isPrepack(selectedItem) &&
+                                    <Text testID={TestIds.IngredientSelect.Ingredient.IsPrepackLabel} variant="labelSmall">
+                                        {t('recipe.details.isPrepack')}
+                                    </Text>
+                                }
                                 <Text testID={TestIds.IngredientSelect.Ingredient.Price} variant="labelSmall">{`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredientPrice)}`}</Text>
                             </Card.Content>
                         </Card>

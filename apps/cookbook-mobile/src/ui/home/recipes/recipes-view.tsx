@@ -22,7 +22,7 @@ export function RecipesView({ navigation }) {
   const { filteredItems: filteredRecipes, set: setRecipes, filter, deleteItem } = useRecipesStore();
 
   useEffect(() => {
-    repo.All().then(all=>{
+    repo.All().then(all => {
       setRecipes(all);
     });
   }, [products]);
@@ -30,6 +30,7 @@ export function RecipesView({ navigation }) {
   return (
     <View testID={TestIds.RecipesView.Container} style={styles.container}>
       <TextInput
+        testID={TestIds.RecipesView.SearchInput}
         mode='outlined'
         label={t('product.search.byName')}
         defaultValue=''
@@ -56,6 +57,7 @@ export function RecipesView({ navigation }) {
       </View>
 
       <Button
+        testID={TestIds.RecipesView.AddNewButton}
         style={styles.button}
         mode='outlined'
         onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: repo.Create() })}

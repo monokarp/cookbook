@@ -18,6 +18,7 @@ import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";
 import { styles } from "./recipe-details.style";
+import { TestIds } from "@cookbook/ui/test-ids.enum";
 
 
 export interface RecipeDetailsFormData {
@@ -118,6 +119,7 @@ export function RecipeDetails({ route, navigation }) {
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
+                                testID={TestIds.RecipeDetails.NameInput}
                                 label={t('recipe.name')}
                                 style={styles.input}
                                 onBlur={onBlur}
@@ -128,7 +130,7 @@ export function RecipeDetails({ route, navigation }) {
                         name="recipeName"
                     />
                     {form.formState.errors.recipeName && <Text style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>}
-                    <Text variant="labelLarge" style={{ margin: 5 }}>
+                    <Text testID={TestIds.RecipeDetails.NameInputError} variant="labelLarge" style={{ margin: 5 }}>
                         {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(recipe.totalPrice())}`}
                     </Text>
                 </View>
@@ -158,6 +160,7 @@ export function RecipeDetails({ route, navigation }) {
                 />
 
                 <FAB
+                    testID={TestIds.RecipeDetails.AddIngredient}
                     visible={!isKbVisible}
                     icon="plus"
                     style={{ marginTop: 10 }}
@@ -165,7 +168,9 @@ export function RecipeDetails({ route, navigation }) {
                 />
 
                 {
-                    !isKbVisible && <Button
+                    !isKbVisible &&
+                    <Button
+                        testID={TestIds.RecipeDetails.Submit}
                         style={{ marginTop: 'auto', marginBottom: 15 }}
                         mode="outlined"
                         onPress={form.handleSubmit(onSubmit)}
