@@ -145,8 +145,8 @@ export class RecipesRepository {
     public async Save(recipe: Recipe): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name]) VALUES (?, ?);`,
-                [recipe.id, recipe.name,]
+                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
+                [recipe.id, recipe.name, new Date().toISOString()]
             ],
             [
                 `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,

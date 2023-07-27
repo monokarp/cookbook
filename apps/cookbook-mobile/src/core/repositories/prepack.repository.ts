@@ -74,8 +74,8 @@ export class PrepacksRepository {
     public async Save(prepack: PrepackDto): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight]) VALUES (?, ?, ?);`,
-                [prepack.id, prepack.name, prepack.finalWeight]
+                `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified]) VALUES (?, ?, ?, ?);`,
+                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString()]
             ],
             ...prepack.ingredients.map(
                 (ingredient, idx) =>

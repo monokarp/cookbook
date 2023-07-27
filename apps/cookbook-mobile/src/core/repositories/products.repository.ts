@@ -48,8 +48,8 @@ export class ProductsRepository {
     public async Save(product: ProductDto): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Products] ([Id], [Name]) VALUES (?, ?);`,
-                [product.id, product.name,]
+                `INSERT OR REPLACE INTO [Products] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
+                [product.id, product.name, new Date().toISOString()]
             ],
             [
                 `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])

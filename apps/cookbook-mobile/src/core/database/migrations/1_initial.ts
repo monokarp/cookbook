@@ -15,9 +15,16 @@ export const initialMigration: Migration = {
             `);
 
             tx.executeSql(`
+                CREATE TABLE IF NOT EXISTS [DataSync] (
+                    [LastSyncedISO] TEXT NOT NULL PRIMARY KEY,
+                );
+            `);
+
+            tx.executeSql(`
                 CREATE TABLE IF NOT EXISTS [Recipes] (
                     [Id] TEXT NOT NULL PRIMARY KEY,
-                    [Name] TEXT NOT NULL
+                    [Name] TEXT NOT NULL,
+                    [LastModified] TEXT NOT NULL
                 );
             `);
 
@@ -25,14 +32,16 @@ export const initialMigration: Migration = {
                 CREATE TABLE IF NOT EXISTS [Prepacks] (
                     [Id] TEXT NOT NULL PRIMARY KEY,
                     [Name] TEXT NOT NULL,
-                    [FinalWeight] INTEGER NOT NULL
+                    [FinalWeight] INTEGER NOT NULL,
+                    [LastModified] TEXT NOT NULL
                 );
             `);
 
             tx.executeSql(`
                 CREATE TABLE IF NOT EXISTS [Products] (
                     [Id] TEXT NOT NULL PRIMARY KEY,
-                    [Name] TEXT NOT NULL
+                    [Name] TEXT NOT NULL,
+                    [LastModified] TEXT NOT NULL
                 );
             `);
 

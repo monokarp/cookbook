@@ -1,6 +1,7 @@
 import { injectable } from "inversify";
 import { EntitySync } from "./entity-sync.interface";
 
+const SyncIntervalMs = 5000;
 
 @injectable()
 export class DataSync {
@@ -23,6 +24,14 @@ export class DataSync {
     }
 
     public async start(): Promise<void> {
-        return;
+        setInterval(async () => {
+            try {
+                for (const one of this.syncs) {
+                    await one.sendPending();
+                }
+            } catch (e) {
+                console.log('datasync error', e);
+            }
+        }, SyncIntervalMs);
     }
 }

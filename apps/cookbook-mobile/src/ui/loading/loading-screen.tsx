@@ -1,5 +1,5 @@
 import { useInjection } from 'inversify-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Text } from 'react-native-paper';
@@ -17,12 +17,10 @@ export function LoadingScreen({ navigation }) {
     const seedData = useInjection(SeedData);
     const ds = useInjection(DataSync);
 
-    const { user } = useSession();
+    const { user, hasInitialized, initialize } = useSession();
     if (!user?.id) { throw new Error('User not logged in'); }
 
-    const [isReady, setIsReady] = useState(false);
-
-    async function seedDb() {
+    async function loadData() {
         console.log('Init database');
 
         // @TODO refactor to isFreshInstall
@@ -38,12 +36,12 @@ export function LoadingScreen({ navigation }) {
             await ds.start();
         }
 
-        setIsReady(true);
+        initialize();
 
         navigation.navigate(RootViews.Home);
     };
 
-    useEffect(() => { if (!isReady) { seedDb() } }, [isReady]);
+    useEffect(() => { if (!hasInitialized) { loadData() } }, [hasInitialized]);
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
