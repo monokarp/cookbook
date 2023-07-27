@@ -9,7 +9,7 @@ import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-for
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
-import { PrepackRepository } from "../../../../core/repositories/prepack.repository";
+import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
 import { useSubscription } from "../../../custom-hooks";
 import { useKeyboardVisible } from "../../common/use-kb-visible";
@@ -29,7 +29,7 @@ interface PrepackDetailsFormData {
 export function PrepackDetails({ navigation }) {
     const { t } = useTranslation();
 
-    const prepacksRepo = useInjection(PrepackRepository);
+    const prepacksRepo = useInjection(PrepacksRepository);
     const productsRepo = useInjection(ProductsRepository);
 
     const store = useContext(PrepackDetailsContext);

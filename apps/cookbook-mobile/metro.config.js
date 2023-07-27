@@ -22,6 +22,7 @@ module.exports = (async () => {
         sourceExts: [...sourceExts, 'svg'],
         blockList: exclusionList([/^(?!.*node_modules).*\/dist\/.*/]),
       },
+      resetCache: true,
     },
     {
       // Change this to true to see debugging info.

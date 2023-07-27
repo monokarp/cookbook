@@ -28,6 +28,11 @@
     "i18next": "*",
     "react-i18next": "*",
     "react-native-sqlite-storage": "*",
-    "@react-native-clipboard/clipboard": "*"
+    "@react-native-clipboard/clipboard": "*",
+    "@react-native-google-signin/google-signin": "*",
+    "@react-native-firebase/app": "*",
+    "@react-native-firebase/firestore": "*",
+    "@react-native-firebase/auth": "*",
+    "react-native-dotenv": "*"
   }
 }

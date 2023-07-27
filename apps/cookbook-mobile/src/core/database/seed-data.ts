@@ -5,7 +5,7 @@ import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredi
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { inject, injectable } from "inversify";
-import { PrepackRepository } from "../repositories/prepack.repository";
+import { PrepacksRepository } from "../repositories/prepack.repository";
 import { ProductsRepository } from "../repositories/products.repository";
 import { RecipesRepository } from "../repositories/recipes.repository";
 
@@ -13,7 +13,7 @@ import { RecipesRepository } from "../repositories/recipes.repository";
 export class SeedData {
     @inject(ProductsRepository) private readonly productsRepo!: ProductsRepository;
     @inject(RecipesRepository) private readonly recipesRepo!: RecipesRepository;
-    @inject(PrepackRepository) private readonly prepacksRepo!: PrepackRepository;
+    @inject(PrepacksRepository) private readonly prepacksRepo!: PrepacksRepository;
 
     private readonly products: ProductDto[] = [
         {

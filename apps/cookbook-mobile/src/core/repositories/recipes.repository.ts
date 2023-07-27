@@ -7,7 +7,7 @@ import { Position, Recipe, isPrepackIngredient, isProductIngredient } from '@coo
 import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
 import { Database, Query } from '../database/database';
-import { PrepackRepository } from './prepack.repository';
+import { PrepacksRepository } from './prepack.repository';
 import { ProductRow } from './products.repository';
 import { GroupById } from './util';
 
@@ -16,7 +16,7 @@ export class RecipesRepository {
 
     @inject(Database) private readonly database!: Database;
 
-    @inject(PrepackRepository) private readonly prepackRepository!: PrepackRepository;
+    @inject(PrepacksRepository) private readonly prepackRepository!: PrepacksRepository;
 
     private readonly SelectRecipeProductIngredientRowsSQL =
         `SELECT 

@@ -1,4 +1,4 @@
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
+import { Prepack, PrepackDto } from "@cookbook/domain/types/recipe/prepack";
 import { inject, injectable } from "inversify";
 import { ResultSet } from "react-native-sqlite-storage";
 import uuid from 'react-native-uuid';
@@ -7,7 +7,7 @@ import { MapProductIngredientRow, ProductIngredientRow } from "./recipes.reposit
 import { GroupById } from "./util";
 
 @injectable()
-export class PrepackRepository {
+export class PrepacksRepository {
     @inject(Database) private readonly database!: Database;
 
     private readonly SelectPrepackIngredientRowsSQL =
@@ -71,7 +71,7 @@ export class PrepackRepository {
             : null;
     }
 
-    public async Save(prepack: Prepack): Promise<void> {
+    public async Save(prepack: PrepackDto): Promise<void> {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight]) VALUES (?, ?, ?);`,

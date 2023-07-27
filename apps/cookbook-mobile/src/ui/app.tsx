@@ -27,8 +27,8 @@ const App = () => {
       <Provider container={container}>
         <NavigationContainer theme={LightTheme}>
           <Stack.Navigator>
-            <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
             <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
+            <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
             <Stack.Screen name={RootViews.Home} component={HomeScreen} options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }} />
             <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetails} options={{ headerTitle: t('recipe.details.title') }} />
             <Stack.Screen name={RootViews.ProductDetails} component={ProductDetails} options={{ headerTitle: t('product.details.title') }} />

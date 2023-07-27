@@ -31,13 +31,18 @@
     },
     "run-android": {
       "executor": "@nx/react-native:run-android",
-      "options": {}
-    },
-    "run-android-device": {
-      "executor": "@nx/react-native:run-android",
-      "options": {
-        "deviceId": "46ab969d"
+      "envFile": ".env.run-android",
+      "configurations": {
+        "device": {
+          "options": {
+            "deviceId": "46ab969d"
+          }
+        }
       }
+    },
+    "run-android-test": {
+      "executor": "@nx/react-native:run-android",
+      "envFile": ".env.run-android-test"
     },
     "build-android": {
       "executor": "@nx/react-native:build-android",
