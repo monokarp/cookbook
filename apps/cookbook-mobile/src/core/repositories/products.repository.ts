@@ -18,7 +18,7 @@ export class ProductsRepository {
         return new Product({
             id: uuid.v4().toString(),
             name: '',
-            lastModified: '',
+            lastModified: new Date().toISOString(),
             pricing: new ProductPricing({
                 measuring: ProductMeasuring.Grams,
                 price: 0,
@@ -49,7 +49,7 @@ export class ProductsRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Products] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
-                [product.id, product.name, new Date().toISOString()]
+                [product.id, product.name, product.lastModified]
             ],
             [
                 `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])
@@ -70,11 +70,14 @@ export class ProductsRepository {
     }
 
     public async EntitiesModifiedAfter(date: Date): Promise<Product[]> {
+        console.log(`selecting products gte ${date.toISOString()}`);
         const [result] = await this.database.ExecuteSql(
             `${this.SelectProductRowsSQL}
             WHERE [LastModified] >= ?;`,
             [date.toISOString()]
         );
+
+        console.log(JSON.stringify(result.rows.raw()));
 
         return result.rows.raw().map(MapProductRow);
     }

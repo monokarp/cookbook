@@ -31,7 +31,8 @@ export function LoadingScreen({ navigation }) {
         }
 
         if (Environment.Type !== 'Test') {
-            if (didRunMigrations) { await ds.recover(user.id); }
+            await ds.recover(user.id);
+            // if (didRunMigrations) { await ds.recover(user.id); }
 
             await ds.start(user.id);
         }

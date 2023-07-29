@@ -14,27 +14,30 @@ import { RecipesSync } from '../core/datasync/entity-syncs/recipe-sync';
 import { DatasyncRepository } from '../core/repositories/datasync.repository';
 
 export function buildRootContainer() {
-    const container = new Container();
+    const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });
 
-    container.bind(Database).toSelf().inSingletonScope();
+    container.bind(Database).toSelf();
 
-    container.bind(SeedData).toSelf().inSingletonScope();
+    container.bind(SeedData).toSelf();
 
     // Entity order below is important due to implicit dependencies
-    container.bind(ProductsCloudRepository).to(ProductsFirestore).inSingletonScope();
-    container.bind(PrepacksCloudRepository).to(PrepacksFirestore).inSingletonScope();
-    container.bind(RecipesCloudRepository).to(RecipesFirestore).inSingletonScope();
+    container.bind(ProductsCloudRepository).to(ProductsFirestore);
+    container.bind(PrepacksCloudRepository).to(PrepacksFirestore);
+    container.bind(RecipesCloudRepository).to(RecipesFirestore);
 
-    container.bind(ProductsRepository).toSelf().inSingletonScope();
-    container.bind(PrepacksRepository).toSelf().inSingletonScope();
-    container.bind(RecipesRepository).toSelf().inSingletonScope();
-    container.bind(DatasyncRepository).toSelf().inSingletonScope();
+    container.bind(DatasyncRepository).toSelf();
+    container.bind(ProductsRepository).toSelf();
+    container.bind(PrepacksRepository).toSelf();
+    container.bind(RecipesRepository).toSelf();
 
-    container.bind(ProductsSync).toSelf().inSingletonScope();
-    container.bind(PrepacksSync).toSelf().inSingletonScope();
-    container.bind(RecipesSync).toSelf().inSingletonScope();
+    container.bind(DataSync).toSelf();
 
-    container.bind(DataSync).toSelf().inSingletonScope();
+    // Entities' syncs are not referenced and must be resolved manually
+    container.bind(ProductsSync).toSelf();
+    container.resolve(ProductsSync);
+
+    container.bind(PrepacksSync).toSelf();
+    container.bind(RecipesSync).toSelf();
 
     return container;
 }

@@ -7,8 +7,7 @@ export abstract class ProductsCloudRepository extends CloudRepositoryBase<Produc
 
 @injectable()
 export class ProductsFirestore extends FirestoreRepository<ProductEntity>{
-
     constructor() {
-        super('dev-products');
+        super('products');
     }
 };

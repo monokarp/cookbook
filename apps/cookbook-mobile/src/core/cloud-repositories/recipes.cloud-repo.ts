@@ -7,8 +7,7 @@ export abstract class RecipesCloudRepository extends CloudRepositoryBase<RecipeE
 
 @injectable()
 export class RecipesFirestore extends FirestoreRepository<RecipeEntity>{
-
     constructor() {
-        super('dev-recipes');
+        super('recipes');
     }
 };

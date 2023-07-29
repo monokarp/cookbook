@@ -1,7 +1,7 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { theme } from './app.theme';
@@ -18,9 +18,10 @@ import { ToastMessage } from './home/common/toast/toast';
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
 
+const container = buildRootContainer();
+
 const App = () => {
   const { t } = useTranslation();
-  const container = buildRootContainer();
 
   return (
     <PaperProvider theme={theme}>

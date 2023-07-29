@@ -7,8 +7,7 @@ export abstract class PrepacksCloudRepository extends CloudRepositoryBase<Prepac
 
 @injectable()
 export class PrepacksFirestore extends FirestoreRepository<PrepackEntity>{
-
     constructor() {
-        super('dev-prepacks');
+        super('prepacks');
     }
 };

@@ -34,7 +34,7 @@ export class PrepacksRepository {
         return new Prepack({
             id: uuid.v4().toString(),
             name: '',
-            lastModified: '',
+            lastModified: new Date().toISOString(),
             ingredients: [],
             finalWeight: 0,
         });
@@ -77,7 +77,7 @@ export class PrepacksRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified]) VALUES (?, ?, ?, ?);`,
-                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString()]
+                [prepack.id, prepack.name, prepack.finalWeight, prepack.lastModified]
             ],
             ...prepack.ingredients.map(
                 (ingredient, idx) =>
@@ -105,7 +105,7 @@ export class PrepacksRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified]) VALUES (?, ?, ?, ?);`,
-                [entity.id, entity.name, entity.finalWeight, new Date().toISOString()]
+                [entity.id, entity.name, entity.finalWeight, entity.lastModified]
             ],
             ...entity.ingredients.map(
                 (ingredient, idx) =>

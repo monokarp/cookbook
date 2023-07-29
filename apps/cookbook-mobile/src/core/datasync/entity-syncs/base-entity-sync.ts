@@ -1,10 +1,15 @@
+import { injectable } from "inversify";
+import { DataSync } from "../datasync.service";
 import { EntitySync } from "../entity-sync";
 
+export class BaseEntitySync<E> implements EntitySync {
 
-export abstract class BaseEntitySync<E> implements EntitySync {
+    protected readonly localRepo!: LocalRepo<E>;
+    protected readonly cloudRepo!: CloudRepo<E>;
 
-    protected abstract readonly localRepo: LocalRepo<E>;
-    protected abstract readonly cloudRepo: CloudRepo<E>;
+    constructor(ds: DataSync) {
+        ds.register(this);
+    }
 
     public async recover(userId: string): Promise<void> {
         this.log('recovery');
@@ -18,7 +23,7 @@ export abstract class BaseEntitySync<E> implements EntitySync {
     }
 
     public async sendPending(userId: string, lastSynced: Date): Promise<void> {
-        this.log(`sending pending since ${lastSynced}`);
+        this.log(`sending pending since ${lastSynced.toISOString()}`);
 
         const pendingEntities = await this.localRepo.EntitiesModifiedAfter(lastSynced);
 

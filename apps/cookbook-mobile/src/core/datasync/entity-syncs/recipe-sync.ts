@@ -8,15 +8,11 @@ import { BaseEntitySync } from "./base-entity-sync";
 @injectable()
 export class RecipesSync extends BaseEntitySync<RecipeEntity> {
 
-    @inject(DataSync) private readonly ds!: DataSync;
-
-    @inject(RecipesRepository) protected readonly localRepo!: RecipesRepository;
-    @inject(RecipesCloudRepository) protected readonly cloudRepo!: RecipesCloudRepository;
-
-    constructor() {
-        super();
-
-        this.ds.register(this);
+    constructor(
+        ds: DataSync,
+        protected override readonly localRepo: RecipesRepository,
+        protected override readonly cloudRepo: RecipesCloudRepository
+    ) {
+        super(ds);
     }
-
 }
