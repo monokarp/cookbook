@@ -25,3 +25,8 @@ export interface PrepackIngredientDto {
     prepack: PrepackDto;
     weightInGrams: number;
 }
+
+export interface PrepackIngredientEntity {
+    prepackId: string;
+    weightInGrams: number;
+}

@@ -1,12 +1,13 @@
+import { NamedEntity } from '@cookbook/domain/types/named-entity';
 import firestore from '@react-native-firebase/firestore';
 import { CloudRepository } from './cloud-repo';
 
 
-export abstract class FirestoreRepository<T> implements CloudRepository<T> {
+export abstract class FirestoreRepository<T extends NamedEntity> implements CloudRepository<T> {
 
-    constructor(private readonly collectionName: string) { }
+    constructor(public readonly collectionName: string) { }
 
-    public async many(userId: string): Promise<T[]> {
+    public async Many(userId: string): Promise<T[]> {
         const data = await firestore().collection<RemotelyStored<T>>(this.collectionName).where('userId', '==', userId).get();
 
         return data.docs.map(one => {
@@ -16,12 +17,15 @@ export abstract class FirestoreRepository<T> implements CloudRepository<T> {
         })
     }
 
-    public save(entity: T): Promise<void> {
-        throw new Error("Method not implemented.");
+    public async SaveMany(userId: string, entities: T[]): Promise<void> {
+        for (const one of entities) {
+            const { id, ...dto } = one;
+
+            await firestore().collection(this.collectionName).doc(id).update({ ...dto, userId });
+        }
     }
 }
 
-type RemotelyStored<Entity> = Entity & {
-    lastModified: string
+type RemotelyStored<T> = T & {
     userId: string;
 }

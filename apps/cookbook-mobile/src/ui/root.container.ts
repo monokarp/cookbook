@@ -6,11 +6,11 @@ import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
 import { DataSync } from '../core/datasync/datasync.service';
 import { ProductsCloudRepository, ProductsFirestore } from '../core/cloud-repositories/products.cloud-repo';
-import { ProductsSync } from '../core/datasync/concrete/products-sync';
+import { ProductsSync } from '../core/datasync/entity-syncs/products-sync';
 import { PrepacksCloudRepository, PrepacksFirestore } from '../core/cloud-repositories/prepacks.cloud-repo';
 import { RecipesCloudRepository, RecipesFirestore } from '../core/cloud-repositories/recipes.cloud-repo';
-import { PrepacksSync } from '../core/datasync/concrete/prepack-sync';
-import { RecipesSync } from '../core/datasync/concrete/recipe-sync';
+import { PrepacksSync } from '../core/datasync/entity-syncs/prepack-sync';
+import { RecipesSync } from '../core/datasync/entity-syncs/recipe-sync';
 import { DatasyncRepository } from '../core/repositories/datasync.repository';
 
 export function buildRootContainer() {

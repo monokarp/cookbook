@@ -1,9 +1,9 @@
 import { Product } from '@cookbook/domain/types/product/product';
 import { ProductMeasuring, ProductPricing } from '@cookbook/domain/types/product/product-pricing';
 import { Prepack } from '@cookbook/domain/types/recipe/prepack';
-import { PrepackIngredient } from '@cookbook/domain/types/recipe/prepack-ingredient';
-import { ProductIngredient } from '@cookbook/domain/types/recipe/product-ingredient';
-import { Position, Recipe, isPrepackIngredient, isProductIngredient } from '@cookbook/domain/types/recipe/recipe';
+import { PrepackIngredient, PrepackIngredientEntity } from '@cookbook/domain/types/recipe/prepack-ingredient';
+import { ProductIngredient, ProductIngredientEntity } from '@cookbook/domain/types/recipe/product-ingredient';
+import { Position, PositionEntity, Recipe, RecipeEntity, isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, isProductIngredientEntity } from '@cookbook/domain/types/recipe/recipe';
 import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
 import { Database, Query } from '../database/database';
@@ -22,6 +22,7 @@ export class RecipesRepository {
         `SELECT 
             [Recipes].[Id],
             [Recipes].[Name],
+            [Recipes].[LastModified],
             [RecipeProductIngredients].[PositionNumber],
             [RecipeProductIngredients].[ServingUnits],
             [RecipeProductIngredients].[ServingMeasuring],
@@ -40,6 +41,7 @@ export class RecipesRepository {
         return new Recipe({
             id: uuid.v4().toString(),
             name: '',
+            lastModified: '',
             positions: []
         });
     }
@@ -117,12 +119,13 @@ export class RecipesRepository {
         const result = new Recipe({
             id: ingredientPositions.rows.raw()[0].Id,
             name: ingredientPositions.rows.raw()[0].Name,
+            lastModified: ingredientPositions.rows.raw()[0].LastModified,
             positions: []
         });
 
         ingredientPositions.rows.raw().forEach(
             (row: ProductIngredientRecipeRow) => {
-                result.positions[row.PositionNumber - 1] = MapProductIngredientRow(row);
+                result.positions[row.PositionNumber - 1] = ProductIngredientRowToModel(row);
             }
         );
 
@@ -160,6 +163,78 @@ export class RecipesRepository {
         ]);
     }
 
+    public async SaveEntity(entity: RecipeEntity): Promise<void> {
+        await this.database.Transaction([
+            [
+                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
+                [entity.id, entity.name, new Date().toISOString()]
+            ],
+            [
+                `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,
+                [entity.id]
+            ],
+            [
+                `DELETE FROM [RecipePrepackIngredients] WHERE [RecipeId] = ?;`,
+                [entity.id]
+            ],
+            ...entity.positions.map((position, idx) => SavePositionEntityQuery(entity.id, position, idx)),
+        ]);
+    }
+
+    public async EntitiesModifiedAfter(date: Date): Promise<RecipeEntity[]> {
+        const [productPositions] = await this.database.ExecuteSql(
+            `${this.SelectRecipeProductIngredientRowsSQL}
+            WHERE [Recipes].[LastModified] >= ?;`,
+            [date.toISOString()]
+        );
+
+        const recipeMap = GroupById<ProductIngredientRecipeRow>(productPositions.rows.raw());
+        const recipeIds = Array.from(recipeMap.keys());
+
+        const [prepackPositions] = await this.database.ExecuteSql(
+            `SELECT [RecipePrepackIngredients].[RecipeId] AS [Id], [RecipePrepackIngredients].[PositionNumber], [RecipePrepackIngredients].[WeightInGrams], [RecipePrepackIngredients].[PrepackId]
+            FROM [RecipePrepackIngredients]
+            WHERE [RecipePrepackIngredients].[RecipeId] IN (${recipeIds.map(() => '?').join(', ')})`,
+            recipeIds
+        );
+
+        const prepackPositionsMap = GroupById<PrepackIngredientRow>(prepackPositions.rows.raw());
+
+        const entities: RecipeEntity[] = [];
+
+        for (const productRows of recipeMap.values()) {
+            const entity = {
+                id: productRows[0].Id,
+                name: productRows[0].Name,
+                lastModified: productRows[0].LastModified,
+                positions: []
+            };
+
+            for (const productPosition of productRows) {
+                entity.positions[productPosition.PositionNumber - 1] = {
+                    productId: productPosition.ProductId,
+                    serving: {
+                        units: productPosition.ServingUnits,
+                        measuring: productPosition.ServingMeasuring
+                    }
+                };
+            }
+
+            const prepackPositions = prepackPositionsMap.get(entity.id) ?? [];
+
+            for (const prepackPosition of prepackPositions) {
+                entity.positions[prepackPosition.PositionNumber - 1] = {
+                    prepackId: prepackPosition.PrepackId,
+                    weightInGrams: prepackPosition.WeightInGrams
+                } as PrepackIngredientEntity;
+            }
+
+            entities.push(entity);
+        }
+
+        return entities;
+    }
+
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
             ['DELETE FROM [RecipeProductIngredients]  WHERE [RecipeId] = ?;', [id]],
@@ -174,6 +249,7 @@ interface ProductIngredientRecipeRow extends ProductIngredientRow, RecipeRow { }
 interface RecipeRow {
     Id: string;
     Name: string;
+    LastModified: string;
 }
 
 export interface ProductIngredientRow extends ProductRow {
@@ -189,11 +265,12 @@ interface PrepackIngredientRow {
     PrepackId: string;
 }
 
-export function MapProductIngredientRow(row: ProductIngredientRow): ProductIngredient {
+export function ProductIngredientRowToModel(row: ProductIngredientRow): ProductIngredient {
     return new ProductIngredient({
         product: new Product({
             id: row.ProductId,
             name: row.ProductName,
+            lastModified: row.LastModified,
             pricing: new ProductPricing({
                 measuring: row.Measuring as ProductMeasuring,
                 weightInGrams: row.WeightInGrams,
@@ -208,8 +285,18 @@ export function MapProductIngredientRow(row: ProductIngredientRow): ProductIngre
     });
 }
 
+export function ProductIngredientRowToEntity(row: ProductIngredientRow): ProductIngredientEntity {
+    return {
+        productId: row.ProductId,
+        serving: {
+            units: row.ServingUnits,
+            measuring: row.ServingMeasuring
+        }
+    };
+}
+
 function MapRecipePosition(row: ProductIngredientRecipeRow): Position {
-    return MapProductIngredientRow(row);
+    return ProductIngredientRowToModel(row);
 }
 
 function NoPositions(rows: { PositionNumber: number }[]): boolean {
@@ -224,6 +311,7 @@ function MapRecipe(rows: ProductIngredientRecipeRow[]): Recipe {
     const recipe = new Recipe({
         id: rows[0].Id,
         name: rows[0].Name,
+        lastModified: rows[0].LastModified,
         positions: []
     });
 
@@ -238,39 +326,62 @@ function MapRecipe(rows: ProductIngredientRecipeRow[]): Recipe {
 
 function SavePositionQuery(recipeId: string, position: Position, idx: number): Query {
     if (isProductIngredient(position)) {
-        return SaveProductIngredientQuery(recipeId, position, idx);
+        return [
+            `INSERT OR REPLACE INTO [RecipeProductIngredients] ([RecipeId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
+            VALUES (?, ?, ?, ?, ?);`,
+            [
+                recipeId,
+                idx + 1,
+                position.product.id,
+                position.serving.units,
+                position.serving.measuring
+            ]
+        ];
     }
 
     if (isPrepackIngredient(position)) {
-        return SavePrepackIngredientQuery(recipeId, position, idx);
+        return [
+            `INSERT OR REPLACE INTO [RecipePrepackIngredients] ([RecipeId], [PositionNumber], [WeightInGrams], [PrepackId])
+            VALUES (?, ?, ?, ?);`,
+            [
+                recipeId,
+                idx + 1,
+                position.weightInGrams,
+                position.prepack.id
+            ]
+        ];
     }
 
     throw new Error(`Unknown position type: ${position}`);
 }
 
-function SaveProductIngredientQuery(recipeId: string, position: ProductIngredient, idx: number): Query {
-    return [
-        `INSERT OR REPLACE INTO [RecipeProductIngredients] ([RecipeId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
-        VALUES (?, ?, ?, ?, ?);`,
-        [
-            recipeId,
-            idx + 1,
-            position.product.id,
-            position.serving.units,
-            position.serving.measuring
-        ]
-    ] as Query
-}
+function SavePositionEntityQuery(recipeId: string, position: PositionEntity, idx: number): Query {
+    if (isProductIngredientEntity(position)) {
+        return [
+            `INSERT OR REPLACE INTO [RecipeProductIngredients] ([RecipeId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
+            VALUES (?, ?, ?, ?, ?);`,
+            [
+                recipeId,
+                idx + 1,
+                position.productId,
+                position.serving.units,
+                position.serving.measuring
+            ]
+        ];
+    }
 
-function SavePrepackIngredientQuery(recipeId: string, position: PrepackIngredient, idx: number): Query {
-    return [
-        `INSERT OR REPLACE INTO [RecipePrepackIngredients] ([RecipeId], [PositionNumber], [WeightInGrams], [PrepackId])
-        VALUES (?, ?, ?, ?);`,
-        [
-            recipeId,
-            idx + 1,
-            position.weightInGrams,
-            position.prepack.id
-        ]
-    ] as Query
+    if (isPrepackIngredientEntity(position)) {
+        return [
+            `INSERT OR REPLACE INTO [RecipePrepackIngredients] ([RecipeId], [PositionNumber], [WeightInGrams], [PrepackId])
+            VALUES (?, ?, ?, ?);`,
+            [
+                recipeId,
+                idx + 1,
+                position.weightInGrams,
+                position.prepackId
+            ]
+        ];
+    }
+
+    throw new Error(`Unknown position type: ${position}`);
 }

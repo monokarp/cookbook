@@ -16,7 +16,7 @@ export const initialMigration: Migration = {
 
             tx.executeSql(`
                 CREATE TABLE IF NOT EXISTS [DataSync] (
-                    [LastSyncedISO] TEXT NOT NULL PRIMARY KEY,
+                    [LastSyncedISO] TEXT NOT NULL PRIMARY KEY
                 );
             `);
 

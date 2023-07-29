@@ -71,6 +71,7 @@ export function RecipeDetails({ route, navigation }) {
         const updatedRecipe = new Recipe({
             id: recipe.id,
             name: data.recipeName,
+            lastModified: recipe.lastModified,
             positions: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient)),
         });
 

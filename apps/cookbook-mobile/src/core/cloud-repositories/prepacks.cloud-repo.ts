@@ -1,12 +1,12 @@
-import { FirestoreRepository } from "./base-firestore.cloud-repo";
+import { PrepackEntity } from "@cookbook/domain/types/recipe/prepack";
 import { injectable } from "inversify";
+import { FirestoreRepository } from "./base-firestore.cloud-repo";
 import { CloudRepositoryBase } from "./cloud-repo";
-import { PrepackDto } from "@cookbook/domain/types/recipe/prepack";
 
-export abstract class PrepacksCloudRepository extends CloudRepositoryBase<PrepackDto>{ };
+export abstract class PrepacksCloudRepository extends CloudRepositoryBase<PrepackEntity>{ };
 
 @injectable()
-export class PrepacksFirestore extends FirestoreRepository<PrepackDto>{
+export class PrepacksFirestore extends FirestoreRepository<PrepackEntity>{
 
     constructor() {
         super('dev-prepacks');

@@ -1,11 +1,12 @@
 import { roundMoney } from "../../util";
 import { NamedEntity } from "../named-entity";
-import { ProductIngredient, ProductIngredientDto } from "./product-ingredient";
+import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity } from "./product-ingredient";
 
 
 export class Prepack implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
+    public readonly lastModified: string;
     public readonly ingredients: ProductIngredient[];
     public readonly finalWeight: number;
 
@@ -13,6 +14,7 @@ export class Prepack implements NamedEntity {
         return new Prepack({
             id: '',
             name: '',
+            lastModified: '',
             finalWeight: 0,
             ingredients: []
         });
@@ -21,6 +23,7 @@ export class Prepack implements NamedEntity {
     constructor(data: PrepackDto) {
         this.id = data.id;
         this.name = data.name;
+        this.lastModified = data.lastModified;
         this.finalWeight = data.finalWeight;
         this.ingredients = data.ingredients.map(dto => new ProductIngredient(dto));
     }
@@ -37,7 +40,15 @@ export class Prepack implements NamedEntity {
 export interface PrepackDto {
     id: string;
     name: string;
+    lastModified: string;
     finalWeight: number;
     ingredients: ProductIngredientDto[];
 }
 
+export interface PrepackEntity {
+    id: string;
+    name: string;
+    lastModified: string;
+    finalWeight: number;
+    ingredients: ProductIngredientEntity[];
+}

@@ -1,11 +1,14 @@
-import { injectable } from "inversify";
-import { EntitySync } from "./entity-sync.interface";
+import { inject, injectable } from "inversify";
+import { DatasyncRepository } from "../repositories/datasync.repository";
+import { EntitySync } from "./entity-sync";
 
 const SyncIntervalMs = 5000;
 
 @injectable()
 export class DataSync {
     private readonly syncs: EntitySync[] = [];
+
+    @inject(DatasyncRepository) protected readonly dsRepo!: DatasyncRepository;
 
     public register(sync: EntitySync): void {
         this.syncs.push(sync);
@@ -23,12 +26,18 @@ export class DataSync {
         }
     }
 
-    public async start(): Promise<void> {
+    public async start(userId: string): Promise<void> {
         setInterval(async () => {
             try {
-                for (const one of this.syncs) {
-                    await one.sendPending();
+                const lastSynced = await this.dsRepo.getLastSyncTime();
+
+                if (lastSynced) {
+                    for (const one of this.syncs) {
+                        await one.sendPending(userId, lastSynced);
+                    }
                 }
+
+                await this.dsRepo.setLastSyncedTime(new Date());
             } catch (e) {
                 console.log('datasync error', e);
             }

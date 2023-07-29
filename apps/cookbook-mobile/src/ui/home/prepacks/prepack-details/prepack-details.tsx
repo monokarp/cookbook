@@ -64,6 +64,7 @@ export function PrepackDetails({ navigation }) {
         const updatedPrepack = new Prepack({
             id: prepack.id,
             name: data.name,
+            lastModified: prepack.lastModified,
             finalWeight: FormatString.Weight(data.finalWeight),
             ingredients: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient) as ProductIngredient),
         });

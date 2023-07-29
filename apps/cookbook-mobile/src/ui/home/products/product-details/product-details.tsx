@@ -34,6 +34,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
         await repo.Save(new Product({
             id: product.id,
             name: data.productName,
+            lastModified: product.lastModified,
             pricing: FormDataFacade.for(measuringType).mapPricingInfo(data),
         }));
 

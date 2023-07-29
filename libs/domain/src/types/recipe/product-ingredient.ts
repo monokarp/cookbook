@@ -37,3 +37,8 @@ export interface Serving {
     units: number;
     measuring: ProductMeasuring;
 }
+
+export interface ProductIngredientEntity {
+    productId: string;
+    serving: Serving;
+}

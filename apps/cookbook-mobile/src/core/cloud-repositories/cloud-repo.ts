@@ -1,9 +1,13 @@
-export interface CloudRepository<T> {
-    many(userId: string): Promise<T[]>;
-    save(entity: T): Promise<void>;
+import { NamedEntity } from "@cookbook/domain/types/named-entity";
+
+export interface CloudRepository<T extends NamedEntity> {
+    readonly collectionName: string;
+    Many(userId: string): Promise<T[]>;
+    SaveMany(userId: string, entities: T[]): Promise<void>;
 }
 
-export abstract class CloudRepositoryBase<T> implements CloudRepository<T> {
-    public abstract many(userId: string): Promise<T[]>;
-    public abstract save(entity: T): Promise<void>;
+export abstract class CloudRepositoryBase<T extends NamedEntity> implements CloudRepository<T> {
+    public readonly collectionName: string;
+    public abstract Many(userId: string): Promise<T[]>;
+    public abstract SaveMany(userId: string, entities: T[]): Promise<void>;
 }

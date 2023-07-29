@@ -1,7 +1,7 @@
 import { roundMoney } from "../../util";
-import { ProductIngredient, ProductIngredientDto } from "./product-ingredient";
+import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity, Serving } from "./product-ingredient";
 import { NamedEntity } from "../named-entity";
-import { PrepackIngredient, PrepackIngredientDto } from "./prepack-ingredient";
+import { PrepackIngredient, PrepackIngredientDto, PrepackIngredientEntity } from "./prepack-ingredient";
 import { Product, ProductDto } from "../product/product";
 import { Prepack, PrepackDto } from "./prepack";
 
@@ -9,11 +9,13 @@ import { Prepack, PrepackDto } from "./prepack";
 export class Recipe implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
+    public readonly lastModified: string;
     public readonly positions: Position[];
 
-    constructor(data: { id: string, name: string, positions: PositionDto[] }) {
+    constructor(data: { id: string, name: string, lastModified: string, positions: PositionDto[] }) {
         this.id = data.id;
         this.name = data.name;
+        this.lastModified = data.lastModified;
         this.positions = data.positions.map(dto => {
             if (isPrepackIngredient(dto)) {
                 return new PrepackIngredient(dto);
@@ -54,4 +56,25 @@ export function isProduct(ingredient: IngredientBase): ingredient is Product {
 
 export function isPrepack(ingredient: IngredientBase): ingredient is Prepack {
     return (ingredient as Prepack)?.finalWeight !== undefined;
+}
+
+export interface RecipeEntity {
+    id: string;
+    name: string;
+    lastModified: string;
+    positions: PositionEntity[];
+}
+
+export type PositionEntity = ProductIngredientEntity | PrepackIngredientEntity;
+
+export function isPrepackIngredientEntity(position: PositionEntity): position is PrepackIngredientEntity {
+    const prepackPosition = position as PrepackIngredientEntity;
+
+    return !!prepackPosition.prepackId;
+}
+
+export function isProductIngredientEntity(position: PositionEntity): position is ProductIngredientEntity {
+    const prepackPosition = position as ProductIngredientEntity;
+
+    return !!prepackPosition.productId;
 }

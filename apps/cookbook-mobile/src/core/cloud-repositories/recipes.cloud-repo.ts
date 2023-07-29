@@ -1,12 +1,12 @@
-import { FirestoreRepository } from "./base-firestore.cloud-repo";
+import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
 import { injectable } from "inversify";
+import { FirestoreRepository } from "./base-firestore.cloud-repo";
 import { CloudRepositoryBase } from "./cloud-repo";
-import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 
-export abstract class RecipesCloudRepository extends CloudRepositoryBase<Recipe>{ };
+export abstract class RecipesCloudRepository extends CloudRepositoryBase<RecipeEntity>{ };
 
 @injectable()
-export class RecipesFirestore extends FirestoreRepository<Recipe>{
+export class RecipesFirestore extends FirestoreRepository<RecipeEntity>{
 
     constructor() {
         super('dev-recipes');
