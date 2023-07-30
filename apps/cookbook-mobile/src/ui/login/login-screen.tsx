@@ -17,12 +17,16 @@ export function LoginScreen({ navigation }) {
   const { setUser } = useSession();
 
   async function trySilentSignIn() {
-    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-    if (await GoogleSignin.isSignedIn()) {
-      const userInfo = await GoogleSignin.signInSilently();
+      if (await GoogleSignin.isSignedIn()) {
+        const userInfo = await GoogleSignin.signInSilently();
 
-      await authFirebase(userInfo);
+        await authFirebase(userInfo);
+      }
+    } catch (e) {
+      console.log('silent sign in', e)
     }
 
     setIsSigninInProgress(false);
@@ -52,6 +56,8 @@ export function LoginScreen({ navigation }) {
     }
 
     try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
       const userInfo = await GoogleSignin.signIn();
 
       await authFirebase(userInfo);
@@ -63,7 +69,7 @@ export function LoginScreen({ navigation }) {
   };
 
   useEffect(() => {
-    trySilentSignIn().catch(e => console.log('silent sign in', e));
+    trySilentSignIn();
   }, []);
 
   return (

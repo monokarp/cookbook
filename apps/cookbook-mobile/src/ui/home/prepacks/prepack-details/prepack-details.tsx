@@ -100,7 +100,7 @@ export function PrepackDetails({ navigation }) {
                     <Controller
                         rules={{
                             required: true,
-                            pattern: RegexPatterns.LatinAndCyrillicText
+                            pattern: RegexPatterns.EntityName
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput
@@ -178,7 +178,7 @@ export function PrepackDetails({ navigation }) {
                     !isKbVisible &&
                     <Button
                         testID={TestIds.PrepackDetails.Submit}
-                        style={{ marginTop: 'auto', marginBottom: 15 }}
+                        style={{ marginTop: 15, marginBottom: 15 }}
                         mode="outlined"
                         onPress={form.handleSubmit(onSubmit)}
                     >

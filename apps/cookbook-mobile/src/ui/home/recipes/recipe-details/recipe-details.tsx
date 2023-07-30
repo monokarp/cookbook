@@ -116,7 +116,7 @@ export function RecipeDetails({ route, navigation }) {
                         defaultValue={recipe.name}
                         rules={{
                             required: true,
-                            pattern: RegexPatterns.LatinAndCyrillicText
+                            pattern: RegexPatterns.EntityName
                         }}
                         render={({ field: { onChange, onBlur, value } }) => (
                             <TextInput

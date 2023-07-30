@@ -51,7 +51,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                     control={form.control}
                     rules={{
                         required: true,
-                        pattern: RegexPatterns.LatinAndCyrillicText
+                        pattern: RegexPatterns.EntityName
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <TextInput
