@@ -41,7 +41,7 @@ export class RecipesRepository {
         return new Recipe({
             id: uuid.v4().toString(),
             name: '',
-            lastModified: new Date().toISOString(),
+            lastModified: '',
             positions: []
         });
     }
@@ -149,7 +149,7 @@ export class RecipesRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
-                [recipe.id, recipe.name, recipe.lastModified]
+                [recipe.id, recipe.name, new Date().toISOString()]
             ],
             [
                 `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,

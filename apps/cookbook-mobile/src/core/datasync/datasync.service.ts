@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import { DatasyncRepository } from "../repositories/datasync.repository";
 import { EntitySync } from "./entity-sync";
 
-const SyncIntervalMs = 5000;
+const SyncIntervalMs = 10 * 1000;
 
 @injectable()
 export class DataSync {
@@ -15,8 +15,6 @@ export class DataSync {
     }
 
     public async recover(userId: string): Promise<void> {
-        console.log('datasync recovery', this.syncs);
-
         try {
             for (const one of this.syncs) {
                 await one.recover(userId);
@@ -28,7 +26,6 @@ export class DataSync {
 
     public async start(userId: string): Promise<void> {
         setInterval(async () => {
-            console.log('datasync tick');
             try {
                 const lastSynced = await this.dsRepo.getLastSyncTime();
 

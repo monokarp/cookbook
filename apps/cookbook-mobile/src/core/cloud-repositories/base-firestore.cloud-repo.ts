@@ -25,8 +25,10 @@ export abstract class FirestoreRepository<T extends NamedEntity> implements Clou
         for (const one of entities) {
             const { id, ...dto } = one;
 
-            // console.log(id, JSON.stringify({ ...dto, userId }));
-            // await firestore().collection(this.collectionName).doc(id).update({ ...dto, userId });
+            console.log(`saving into ${this.getCollectionName()}`);
+            console.log(id, { ...dto, userId });
+
+            await firestore().collection(this.getCollectionName()).doc(id).set({ ...dto, userId });
         }
     }
 

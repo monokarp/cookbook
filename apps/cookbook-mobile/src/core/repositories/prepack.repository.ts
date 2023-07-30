@@ -34,7 +34,7 @@ export class PrepacksRepository {
         return new Prepack({
             id: uuid.v4().toString(),
             name: '',
-            lastModified: new Date().toISOString(),
+            lastModified: '',
             ingredients: [],
             finalWeight: 0,
         });
@@ -77,7 +77,7 @@ export class PrepacksRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified]) VALUES (?, ?, ?, ?);`,
-                [prepack.id, prepack.name, prepack.finalWeight, prepack.lastModified]
+                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString()]
             ],
             ...prepack.ingredients.map(
                 (ingredient, idx) =>
@@ -131,7 +131,7 @@ export class PrepacksRepository {
     public async EntitiesModifiedAfter(date: Date): Promise<PrepackEntity[]> {
         const [result] = await this.database.ExecuteSql(
             `${this.SelectPrepackIngredientRowsSQL}
-            WHERE [LastModified] >= ?;`,
+            WHERE [Prepacks].[LastModified] >= ?;`,
             [date.toISOString()]
         );
 

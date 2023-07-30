@@ -35,7 +35,7 @@ export class BaseEntitySync<E> implements EntitySync {
     }
 
     private log(msg: string): void {
-        console.log(`datasync - ${this.cloudRepo.collectionName} - ${msg}`);
+        // console.log(`datasync - ${this.cloudRepo.collectionName} - ${msg}`);
     }
 }
 

@@ -13,10 +13,9 @@ export class DatasyncRepository {
     }
 
     public async setLastSyncedTime(dateTime: Date) {
-        await this.database.ExecuteSql(
-            `delete from [DataSync];
-            insert into [DataSync] ([LastSyncedISO]) values (?);`,
-            [dateTime.toISOString()]
-        );
+        await this.database.Transaction([
+            ['delete from [DataSync]',[]],
+            ['insert into [DataSync] ([LastSyncedISO]) values (?)', [dateTime.toISOString()]]
+        ]);
     }
 }

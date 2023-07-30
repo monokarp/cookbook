@@ -37,7 +37,10 @@ export function buildRootContainer() {
     container.resolve(ProductsSync);
 
     container.bind(PrepacksSync).toSelf();
+    container.resolve(PrepacksSync);
+
     container.bind(RecipesSync).toSelf();
+    container.resolve(RecipesSync);
 
     return container;
 }

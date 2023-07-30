@@ -18,7 +18,7 @@ export class ProductsRepository {
         return new Product({
             id: uuid.v4().toString(),
             name: '',
-            lastModified: new Date().toISOString(),
+            lastModified: '',
             pricing: new ProductPricing({
                 measuring: ProductMeasuring.Grams,
                 price: 0,
@@ -49,7 +49,7 @@ export class ProductsRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Products] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
-                [product.id, product.name, product.lastModified]
+                [product.id, product.name, new Date().toISOString()]
             ],
             [
                 `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])
@@ -66,18 +66,31 @@ export class ProductsRepository {
     }
 
     public async SaveEntity(entity: ProductEntity): Promise<void> {
-        return this.Save(entity);
+        await this.database.Transaction([
+            [
+                `INSERT OR REPLACE INTO [Products] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
+                [entity.id, entity.name, entity.lastModified]
+            ],
+            [
+                `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])
+                VALUES (?, ?, ?, ?, ?);`,
+                [
+                    entity.id,
+                    entity.pricing.measuring,
+                    entity.pricing.price,
+                    entity.pricing.weightInGrams,
+                    entity.pricing.numberOfUnits,
+                ]
+            ]
+        ]);
     }
 
     public async EntitiesModifiedAfter(date: Date): Promise<Product[]> {
-        console.log(`selecting products gte ${date.toISOString()}`);
         const [result] = await this.database.ExecuteSql(
             `${this.SelectProductRowsSQL}
             WHERE [LastModified] >= ?;`,
             [date.toISOString()]
         );
-
-        console.log(JSON.stringify(result.rows.raw()));
 
         return result.rows.raw().map(MapProductRow);
     }

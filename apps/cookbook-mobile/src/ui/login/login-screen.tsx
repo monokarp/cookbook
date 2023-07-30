@@ -1,7 +1,7 @@
 import { TestIds } from '@cookbook/ui/test-ids';
 import auth from '@react-native-firebase/auth';
-import { GoogleSignin, GoogleSigninButton } from '@react-native-google-signin/google-signin';
-import { useState } from 'react';
+import { GoogleSignin, GoogleSigninButton, User } from '@react-native-google-signin/google-signin';
+import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { RootViews } from '../root-views.enum';
 import { useSession } from './session.store';
@@ -12,9 +12,33 @@ GoogleSignin.configure({
 });
 
 export function LoginScreen({ navigation }) {
-  const [isSigninInProgress, setIsSigninInProgress] = useState(false);
+  const [isSigninInProgress, setIsSigninInProgress] = useState(true);
 
   const { setUser } = useSession();
+
+  async function trySilentSignIn() {
+    await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+
+    if (await GoogleSignin.isSignedIn()) {
+      const userInfo = await GoogleSignin.signInSilently();
+
+      await authFirebase(userInfo);
+    }
+
+    setIsSigninInProgress(false);
+  }
+
+  async function authFirebase(userInfo: User) {
+    console.log('user info', JSON.stringify(userInfo));
+
+    const googleCredential = auth.GoogleAuthProvider.credential(userInfo.idToken);
+
+    await auth().signInWithCredential(googleCredential);
+
+    setUser({ id: userInfo.user.id });
+
+    navigation.navigate(RootViews.Loading);
+  }
 
   async function signIn() {
     setIsSigninInProgress(true);
@@ -28,27 +52,19 @@ export function LoginScreen({ navigation }) {
     }
 
     try {
-      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      const userInfo = await GoogleSignin.signIn();
 
-      const userInfo = await GoogleSignin.isSignedIn()
-        ? await GoogleSignin.signInSilently()
-        : await GoogleSignin.signIn();
-
-      console.log('user info', JSON.stringify(userInfo));
-
-      const googleCredential = auth.GoogleAuthProvider.credential(userInfo.idToken);
-
-      await auth().signInWithCredential(googleCredential);
-
-      setUser({ id: userInfo.user.id });
-
-      navigation.navigate(RootViews.Loading);
+      await authFirebase(userInfo);
     } catch (error) {
-      console.log('error', error);
+      console.log('login error', error);
     }
 
     setIsSigninInProgress(false);
   };
+
+  useEffect(() => {
+    trySilentSignIn().catch(e => console.log('silent sign in', e));
+  }, []);
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

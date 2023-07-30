@@ -1,8 +1,7 @@
 
 import { ENV } from "@env";
 
-console.log('ENV_TYPE', ENV);
-console.log(process.env);
+console.log('ENV', ENV);
 
 export interface Env {
     Type: 'Test' | 'Dev' | 'Prod'
