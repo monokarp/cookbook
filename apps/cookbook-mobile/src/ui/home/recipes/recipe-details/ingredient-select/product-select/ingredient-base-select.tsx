@@ -1,13 +1,10 @@
 import { IngredientBase, isPrepack } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, Pressable, View } from "react-native";
-import { Card, Dialog, Portal, Text, TextInput } from "react-native-paper";
-import { usePrepacksStore } from "../../../../prepacks/prepacks.store";
-import { useProductsStore } from "../../../../products/products.store";
-import { useIngredientBaseStore } from "./ingredient-base.store";
+import { Pressable, View } from "react-native";
+import { Card, Text } from "react-native-paper";
+import { useIngredientSelectModal } from "../../../../common/ingredient-select-modal/ingredient-select-modal.store";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
@@ -21,29 +18,13 @@ export interface ProductSelectProps {
 export function IngredientBaseSelect({ selectedItem, index, ingredientPrice, allowPrepacks, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
-    const { items: products } = useProductsStore();
-    const { items: prepacks } = usePrepacksStore();
-
-    const [visible, setVisible] = useState(false);
-
-    const { set, filteredItems, filter } = useIngredientBaseStore();
-
-    useEffect(() => {
-        set(allowPrepacks ? [...products, ...prepacks] : products);
-    }, [products, prepacks, allowPrepacks]);
-
-    const show = () => setVisible(true);
-
-    const dismiss = () => {
-        setVisible(false);
-        filter('');
-    }
+    const { showModal } = useIngredientSelectModal();
 
     return (
         <View>
             <Pressable
                 testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
-                onPress={show}
+                onPress={() => showModal(allowPrepacks, onSelect)}
                 onLongPress={onLongPress}
             >
                 {
@@ -85,33 +66,6 @@ export function IngredientBaseSelect({ selectedItem, index, ingredientPrice, all
                         </Card>
                 }
             </Pressable>
-
-            <Portal>
-                <Dialog visible={visible} onDismiss={dismiss}>
-                    <TextInput
-                        testID={TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput}
-                        label={t('product.search.byName')}
-                        onChange={
-                            event => filter(event.nativeEvent.text)}
-                    />
-                    <Dialog.Content>
-                        <FlatList
-                            data={filteredItems}
-                            renderItem={({ item, index }) =>
-                                <Pressable
-                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Modal.ListItem, index)}
-                                    onTouchEnd={() => {
-                                        onSelect(item);
-                                        dismiss();
-                                    }}>
-                                    <Text style={{ padding: 20, fontWeight: '400', fontSize: 18 }}>{item.name}</Text>
-                                </Pressable>
-                            }
-                            keyExtractor={product => product.id}
-                        />
-                    </Dialog.Content>
-                </Dialog>
-            </Portal>
         </View>
     );
 }

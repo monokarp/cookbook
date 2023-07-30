@@ -1,7 +1,7 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { theme } from './app.theme';
@@ -15,6 +15,7 @@ import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
 import { ToastMessage } from './home/common/toast/toast';
 import { ConfirmationModal } from './home/common/confirmation-modal/confirmation-modal';
+import { ProductSelectionModal } from './home/common/ingredient-select-modal/ingredient-select-modal';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
@@ -39,6 +40,7 @@ const App = () => {
         </NavigationContainer>
         <ToastMessage />
         <ConfirmationModal />
+        <ProductSelectionModal />
       </Provider>
     </PaperProvider>
   );

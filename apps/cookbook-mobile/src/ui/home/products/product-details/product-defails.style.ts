@@ -3,7 +3,6 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
     },
     input: {
         backgroundColor: 'white',
@@ -14,6 +13,7 @@ export const styles = StyleSheet.create({
     },
     inputLabel: {
         fontWeight: '600',
-        marginLeft: 5
+        marginLeft: 5,
+        marginTop: 5,
     }
 });
