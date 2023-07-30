@@ -14,6 +14,7 @@ import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
 import { ToastMessage } from './home/common/toast/toast';
+import { ConfirmationModal } from './home/common/confirmation-modal/confirmation-modal';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
@@ -37,6 +38,7 @@ const App = () => {
           </Stack.Navigator>
         </NavigationContainer>
         <ToastMessage />
+        <ConfirmationModal />
       </Provider>
     </PaperProvider>
   );

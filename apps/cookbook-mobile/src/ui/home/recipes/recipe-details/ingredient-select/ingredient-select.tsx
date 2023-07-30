@@ -6,16 +6,15 @@ import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredi
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProduct, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatString } from "@cookbook/domain/util";
-import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { Switch, Text, TextInput } from "react-native-paper";
 import { useSubscription } from "../../../../custom-hooks";
-import { ConfirmDeletionModal } from "../../../common/confirmation-modal";
 import { styles } from "./ingredient-select.style";
 import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
+import { useConfirmationModal } from "../../../common/confirmation-modal/confirmation-modal.store";
 
 export interface IngredientSelectProps {
     selectedIngredient: Position,
@@ -69,9 +68,7 @@ function getBase(position: Position): IngredientBase {
 export function IngredientSelect({ selectedIngredient, index, requestRemoval, allowAddingPrepacks }: IngredientSelectProps) {
     const { t } = useTranslation();
 
-    const [visible, setVisible] = useState(false);
-    const show = () => setVisible(true);
-    const dismiss = () => setVisible(false);
+    const { showModal } = useConfirmationModal();
 
     const { watch, trigger, getValues, formState: { errors } } = useFormContext();
 
@@ -112,7 +109,15 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                                 ingredientPrice={getFormIngredient().price()}
                                 selectedItem={value}
                                 onSelect={onChange}
-                                onLongPress={show}
+                                onLongPress={() =>
+                                    showModal(
+                                        t('lists.deleteItemPrompt'),
+                                        (result) => {
+                                            if (result === 'confirm') {
+                                                requestRemoval();
+                                            }
+                                        }
+                                    )}
                             />
                         )}
                     />
@@ -172,8 +177,6 @@ export function IngredientSelect({ selectedIngredient, index, requestRemoval, al
                 errors.ingredients && errors.ingredients[index]?.units &&
                 <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.UnitsError, index)} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
             }
-
-            <ConfirmDeletionModal isVisible={visible} confirm={requestRemoval} dismiss={dismiss} />
         </View>
     );
 }

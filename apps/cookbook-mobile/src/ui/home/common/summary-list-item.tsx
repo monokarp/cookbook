@@ -1,9 +1,9 @@
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useState } from "react";
 import { Pressable, View, Text } from "react-native";
 import { List, TouchableRipple } from "react-native-paper";
-import { ConfirmDeletionModal } from "./confirmation-modal";
 import { styles } from "./summary-list-item.style";
+import { useConfirmationModal } from "./confirmation-modal/confirmation-modal.store";
+import { useTranslation } from "react-i18next";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -15,26 +15,29 @@ export interface SummaryListItemProps {
 }
 
 export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
-    const [visible, setVisible] = useState(false);
-    const show = () => setVisible(true);
-    const dismiss = () => setVisible(false);
+    const { t } = useTranslation();
 
-    const confirmDelete = () => {
-        dismiss();
-        deleteRequested();
-    };
+    const { showModal } = useConfirmationModal();
 
     return (
         <View>
             <View style={styles.container}>
-                <Pressable style={styles.textWrapper} onPress={itemSelected} onLongPress={show}>
+                <Pressable style={styles.textWrapper} onPress={itemSelected} onLongPress={() => {
+                    showModal(
+                        t('lists.deleteItemPrompt'),
+                        (result) => {
+                            if (result === 'confirm') {
+                                deleteRequested();
+                            }
+                        }
+                    )
+                }}>
                     <Text testID={`${itemTestId}-${index}`} style={styles.text}>{item.name}</Text>
                 </Pressable>
                 <TouchableRipple testID={`${TestIds.ListItem.ClipboardExport}-${index}`} style={styles.button} onPress={exportRequested}>
                     <List.Icon icon="content-copy" />
                 </TouchableRipple>
             </View>
-            <ConfirmDeletionModal isVisible={visible} confirm={confirmDelete} dismiss={dismiss} />
         </View>
     );
 }
