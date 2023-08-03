@@ -7,7 +7,7 @@ import { useInjection } from "inversify-react-native";
 import { useContext, useEffect } from "react";
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-import { FlatList, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Button, FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
@@ -19,6 +19,7 @@ import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
 import { TestIds } from "@cookbook/ui/test-ids";
+import { SimpleIngredientSelect } from "../../common/ingredient-select/simple-ingredient-select";
 
 interface PrepackDetailsFormData {
     name: string,
@@ -27,6 +28,8 @@ interface PrepackDetailsFormData {
 }
 
 export function PrepackDetails({ navigation }) {
+
+    console.log('prepack details rendered')
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(PrepacksRepository);
@@ -40,37 +43,24 @@ export function PrepackDetails({ navigation }) {
     const { set: setPrepacks } = usePrepacksStore();
     const { set: setProducts } = useProductsStore();
 
-    const isKbVisible = useKeyboardVisible();
-
     const form = useForm({
         defaultValues: {
             name: prepack.name,
             finalWeight: prepack.finalWeight ? FormatNumber.Weight(prepack.finalWeight) : '',
-            ingredients: prepack.ingredients.map(ingredient => {
-                return {
-                    selectedItem: ingredient.product,
-                    units: ingredient.serving.measuring === ProductMeasuring.Units
-                        ? FormatNumber.Units(ingredient.serving.units)
-                        : FormatNumber.Weight(ingredient.serving.units),
-                    measuringType: ingredient.serving.measuring,
-                };
-            })
         }
     });
 
-    const { remove } = useFieldArray({ control: form.control, name: 'ingredients' });
+    // useSubscription(form.watch, (data: PrepackDetailsFormData) => {
+    //     const updatedPrepack = new Prepack({
+    //         id: prepack.id,
+    //         name: data.name,
+    //         lastModified: prepack.lastModified,
+    //         finalWeight: FormatString.Weight(data.finalWeight),
+    //         ingredients: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient) as ProductIngredient),
+    //     });
 
-    useSubscription(form.watch, (data: PrepackDetailsFormData) => {
-        const updatedPrepack = new Prepack({
-            id: prepack.id,
-            name: data.name,
-            lastModified: prepack.lastModified,
-            finalWeight: FormatString.Weight(data.finalWeight),
-            ingredients: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient) as ProductIngredient),
-        });
-
-        setPrepack(updatedPrepack);
-    });
+    //     setPrepack(updatedPrepack);
+    // });
 
     const onSubmit = async () => {
         await prepacksRepo.Save(prepack);
@@ -85,107 +75,106 @@ export function PrepackDetails({ navigation }) {
     };
 
     function deleteIngredient(index: number) {
-        remove(index);
         removeIngredient(index);
     };
 
-    useEffect(() => {
-        productsRepo.All().then(setProducts);
-    }, []);
+    // useEffect(() => {
+    //     productsRepo.All().then(setProducts);
+    // }, []);
 
     return (
         <FormProvider {...form}>
-            <View style={styles.container}>
-                <View style={{ width: '100%' }}>
-                    <Controller
-                        rules={{
-                            required: true,
-                            pattern: RegexPatterns.EntityName
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                testID={TestIds.PrepackDetails.NameInput}
-                                label={t('prepack.name')}
-                                style={styles.input}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                        name="name"
-                    />
-                    {
-                        form.formState.errors.name
-                        && <Text testID={TestIds.PrepackDetails.NameInputError} style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>
-                    }
-
-                    <Controller
-                        rules={{
-                            validate: (value) => {
-                                const isValidWeight = RegexPatterns.Weight.test(value) && Number(value) > 0;
-
-                                return prepack.ingredients.length
-                                    ? isValidWeight
-                                    : isValidWeight || value === '';
-                            },
-                        }}
-                        render={({ field: { onChange, onBlur, value } }) => (
-                            <TextInput
-                                testID={TestIds.PrepackDetails.WeightInput}
-                                label={t('prepack.finalWeight')}
-                                style={styles.input}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                keyboardType='numeric'
-                                value={value}
-                            />
-                        )}
-                        name="finalWeight"
-                    />
-                    {
-                        form.formState.errors.finalWeight
-                        && <Text testID={TestIds.PrepackDetails.WeightInputError} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
-                    }
-
-                    <Text variant="labelLarge" style={{ margin: 5 }}>
-                        {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(prepack.price())}`}
-                    </Text>
-                </View>
-
+            <KeyboardAvoidingView style={styles.container}>
                 <FlatList
-                    style={{ flexGrow: 0 }}
+                    style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => `${index}_${item.product.id}`}
                     data={ingredients}
+                    ListHeaderComponent={
+                        <View style={{ flexDirection: 'row' }}>
+
+                            <View style={{ flex: 4 }}>
+                                <Controller
+                                    rules={{
+                                        required: true,
+                                        pattern: RegexPatterns.EntityName
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <TextInput
+                                            testID={TestIds.PrepackDetails.NameInput}
+                                            label={t('prepack.name')}
+                                            style={styles.input}
+                                            onBlur={onBlur}
+                                            onChangeText={onChange}
+                                            value={value}
+                                        />
+                                    )}
+                                    name="name"
+                                />
+                                {
+                                    form.formState.errors.name
+                                    && <Text testID={TestIds.PrepackDetails.NameInputError} style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>
+                                }
+
+                                <Controller
+                                    rules={{
+                                        validate: (value) => {
+                                            const isValidWeight = RegexPatterns.Weight.test(value) && Number(value) > 0;
+
+                                            return prepack.ingredients.length
+                                                ? isValidWeight
+                                                : isValidWeight || value === '';
+                                        },
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <TextInput
+                                            testID={TestIds.PrepackDetails.WeightInput}
+                                            label={t('prepack.finalWeight')}
+                                            style={styles.input}
+                                            onBlur={onBlur}
+                                            onChangeText={onChange}
+                                            keyboardType='numeric'
+                                            value={value}
+                                        />
+                                    )}
+                                    name="finalWeight"
+                                />
+                                {
+                                    form.formState.errors.finalWeight
+                                    && <Text testID={TestIds.PrepackDetails.WeightInputError} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
+                                }
+
+                                <Text variant="labelLarge" style={{ margin: 5 }}>
+                                    {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(prepack.price())}`}
+                                </Text>
+                            </View>
+
+                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                                <FAB
+                                    testID={TestIds.PrepackDetails.Submit}
+                                    icon="check-bold"
+                                    style={{ margin: 15 }}
+                                    onPress={form.handleSubmit(onSubmit)}
+                                />
+
+                                <FAB
+                                    testID={TestIds.PrepackDetails.AddIngredient}
+                                    icon="plus"
+                                    style={{ margin: 15 }}
+                                    onPress={addEmptyIngredient}
+                                />
+                            </View>
+                        </View>
+                    }
                     renderItem={({ item, index }) =>
-                        <IngredientSelect
+                        <SimpleIngredientSelect
                             allowAddingPrepacks={false}
-                            selectedIngredient={item}
+                            ingredient={item}
                             index={index}
                             requestRemoval={() => deleteIngredient(index)}
                         />
                     }
                 />
-
-                <FAB
-                    testID={TestIds.PrepackDetails.AddIngredient}
-                    visible={!isKbVisible}
-                    icon="plus"
-                    style={{ marginTop: 10 }}
-                    onPress={addEmptyIngredient}
-                />
-
-                {
-                    !isKbVisible &&
-                    <Button
-                        testID={TestIds.PrepackDetails.Submit}
-                        style={{ marginTop: 15, marginBottom: 15 }}
-                        mode="outlined"
-                        onPress={form.handleSubmit(onSubmit)}
-                    >
-                        {t('common.save')}
-                    </Button>
-                }
-            </View>
+            </KeyboardAvoidingView>
         </FormProvider>
     );
 }

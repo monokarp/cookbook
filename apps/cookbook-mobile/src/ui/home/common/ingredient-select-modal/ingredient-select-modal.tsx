@@ -5,12 +5,14 @@ import { Dialog, Portal, TextInput, Text } from "react-native-paper";
 import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select-modal.store";
 import { useProductsStore } from "../../products/products.store";
 import { usePrepacksStore } from "../../prepacks/prepacks.store";
-import { useEffect } from "react";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 
-export function ProductSelectionModal() {
+export const ProductSelectionModal = forwardRef(_ProductSelectionModal);
+
+function _ProductSelectionModal(_, ref) {
     const { t } = useTranslation();
 
-    const { isVisible, showPrepacks, onSelect, hide } = useIngredientSelectModal();
+    const { isVisible, showPrepacks, onSelect, hide, showModal } = useIngredientSelectModal();
 
     const { set, filteredItems, filter } = useIngredientItemsStore();
 
@@ -20,6 +22,8 @@ export function ProductSelectionModal() {
     useEffect(() => {
         set(showPrepacks ? [...products, ...prepacks] : products);
     }, [products, prepacks, showPrepacks]);
+
+    useImperativeHandle(ref, () => ({ showProductSelectModal: showModal }), [showModal]);
 
     return (
         <Portal>

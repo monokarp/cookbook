@@ -26,6 +26,10 @@ export class ProductIngredient implements ProductIngredientDto {
                 : this.serving.units * this.product.pricing.pricePerUnit()
         );
     }
+
+    public units(): number {
+        return this.serving.units;
+    }
 }
 
 export interface ProductIngredientDto {

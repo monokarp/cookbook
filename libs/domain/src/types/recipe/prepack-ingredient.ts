@@ -19,6 +19,10 @@ export class PrepackIngredient implements PrepackIngredientDto {
     public price(): number {
         return this.prepack.pricePerGram() * this.weightInGrams;
     }
+
+    public units(): number {
+        return this.weightInGrams;
+    }
 }
 
 export interface PrepackIngredientDto {

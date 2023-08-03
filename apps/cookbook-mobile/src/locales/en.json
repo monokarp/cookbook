@@ -18,8 +18,8 @@
     },
     "product": {
         "measuring": {
-            "grams": "grams",
-            "units": "pieces"
+            "grams": "kg",
+            "units": "amt."
         },
         "search": {
             "byName": "Search by name",

@@ -18,8 +18,8 @@
     },
     "product": {
         "measuring": {
-            "grams": "грамм",
-            "units": "штук"
+            "grams": "кг",
+            "units": "шт"
         },
         "search":{
             "byName": "Поиск по имени",
@@ -53,7 +53,7 @@
             "servingSizeInGrams": "Кило",
             "servingSizeInUnits": "Штуки"
         },
-        "ingredientPrice": "Стоимость ингредиента"
+        "ingredientPrice": "Стоимость"
     },
     "prepack": {
         "name": "Название",
