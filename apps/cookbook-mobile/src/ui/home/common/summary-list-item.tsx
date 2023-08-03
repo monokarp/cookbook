@@ -1,9 +1,10 @@
 import { TestIds } from "@cookbook/ui/test-ids";
-import { Pressable, View, Text } from "react-native";
-import { List, TouchableRipple } from "react-native-paper";
-import { styles } from "./summary-list-item.style";
-import { useConfirmationModal } from "./confirmation-modal/confirmation-modal.store";
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { Pressable, Text, View } from "react-native";
+import { List, TouchableRipple } from "react-native-paper";
+import { ModalsContext } from "./modals/modals.context";
+import { styles } from "./summary-list-item.style";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -17,13 +18,13 @@ export interface SummaryListItemProps {
 export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
     const { t } = useTranslation();
 
-    const { showModal } = useConfirmationModal();
+    const { confirmation } = useContext(ModalsContext);
 
     return (
         <View>
             <View style={styles.container}>
                 <Pressable style={styles.textWrapper} onPress={itemSelected} onLongPress={() => {
-                    showModal(
+                    confirmation(
                         t('lists.deleteItemPrompt'),
                         (result) => {
                             if (result === 'confirm') {

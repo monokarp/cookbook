@@ -14,7 +14,7 @@ import { useSubscription } from "../../../../custom-hooks";
 import { styles } from "./ingredient-select.style";
 import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { useConfirmationModal } from "../../../common/confirmation-modal/confirmation-modal.store";
+import { useConfirmationModal } from "../../../common/modals/confirmation/confirmation.store";
 import { useState } from "react";
 
 export interface IngredientSelectProps {
@@ -69,7 +69,7 @@ function getBase(position: Position): IngredientBase {
 export function IngredientSelect({ selectedIngredient, index, requestRemoval, allowAddingPrepacks }: IngredientSelectProps) {
     const { t } = useTranslation();
 
-    const { showModal } = useConfirmationModal();
+    const { show: showModal } = useConfirmationModal();
 
     const { watch, trigger, getValues, formState: { errors } } = useFormContext();
 

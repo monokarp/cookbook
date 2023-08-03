@@ -1,7 +1,7 @@
 import { Product } from '@cookbook/domain/types/product/product';
 import { TestIds } from '@cookbook/ui/test-ids';
 import { useInjection } from 'inversify-react-native';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
@@ -10,9 +10,9 @@ import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../common/clipboard-export';
 import { FormMode } from '../common/form-mode.enum';
 import { SummaryListItem } from '../common/summary-list-item';
-import { useToast } from '../common/toast/toast.store';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
+import { ModalsContext } from '../common/modals/modals.context';
 
 
 export function ProductsView({ navigation }) {
@@ -23,7 +23,7 @@ export function ProductsView({ navigation }) {
 
   const { set: setProducts, filteredItems: filteredProducts, filter, deleteItem } = useProductsStore();
 
-  const { show, hide } = useToast();
+  const { toast } = useContext(ModalsContext);
 
   async function tryDeleteProduct(item: Product) {
     try {
@@ -32,11 +32,9 @@ export function ProductsView({ navigation }) {
       deleteItem(item.id);
     } catch (e) {
       switch (e.code) {
-        case 0: show(t('errors.product.fkViolation')); break;
-        default: show(t('errors.product.cantDelete'));
+        case 0: toast(t('errors.product.fkViolation')); break;
+        default: toast(t('errors.product.cantDelete'));
       }
-
-      setTimeout(() => hide(), 3000);
     }
   }
 

@@ -1,10 +1,11 @@
 import { IngredientBase, isPrepack } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
+import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Card, Text } from "react-native-paper";
-import { useIngredientSelectModal } from "../../../../common/ingredient-select-modal/ingredient-select-modal.store";
+import { ModalsContext } from "../../../../common/modals/modals.context";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
@@ -18,13 +19,13 @@ export interface ProductSelectProps {
 export function IngredientBaseSelect({ selectedItem, index, ingredientPrice, allowPrepacks, onSelect, onLongPress }: ProductSelectProps) {
     const { t } = useTranslation();
 
-    const { showModal } = useIngredientSelectModal();
+    const { ingredientSelect } = useContext(ModalsContext);
 
     return (
         <View>
             <Pressable
                 testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
-                onPress={() => showModal(allowPrepacks, onSelect)}
+                onPress={() => ingredientSelect(allowPrepacks, onSelect)}
                 onLongPress={onLongPress}
             >
                 {

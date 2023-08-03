@@ -5,14 +5,11 @@ import { useContext, useRef, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Card, FAB, SegmentedButtons, Switch, Text, TextInput } from "react-native-paper";
-import { useConfirmationModal } from "../confirmation-modal/confirmation-modal.store";
 import { Pressable, View } from "react-native";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { useIngredientSelectModal } from "../ingredient-select-modal/ingredient-select-modal.store";
-import { ProductSelectionModal } from "../ingredient-select-modal/ingredient-select-modal";
 import { Product } from "@cookbook/domain/types/product/product";
 import { Prepack } from "@cookbook/domain/types/recipe/prepack";
-import { ModalsContext } from "../../../app-modals.context";
+import { ModalsContext } from "../modals/modals.context";
 
 export interface IngredientSelectProps {
     ingredient: Position,
@@ -37,8 +34,7 @@ export function SimpleIngredientSelect({ ingredient, index, requestRemoval, allo
     console.log('ingredient select rendered')
     const { t } = useTranslation();
 
-    const { showModal: confirmDelete } = useConfirmationModal();
-    const { productSelect } = useContext(ModalsContext);
+    const { ingredientSelect, confirmation } = useContext(ModalsContext);
 
     const { watch, trigger, getValues, formState: { errors } } = useFormContext();
 
@@ -64,9 +60,9 @@ export function SimpleIngredientSelect({ ingredient, index, requestRemoval, allo
 
                                 <Pressable
                                     style={{ backgroundColor: 'pink' }}
-                                    onPress={() => productSelect(allowAddingPrepacks, e => console.log('selected ingredient', e))}
+                                    onPress={() => ingredientSelect(allowAddingPrepacks, e => console.log('selected ingredient', e))}
                                     onLongPress={() =>
-                                        confirmDelete(
+                                        confirmation(
                                             t('lists.deleteItemPrompt'),
                                             (result) => {
                                                 if (result === 'confirm') {

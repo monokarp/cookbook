@@ -2,17 +2,17 @@ import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable } from "react-native";
 import { Dialog, Portal, TextInput, Text } from "react-native-paper";
-import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select-modal.store";
-import { useProductsStore } from "../../products/products.store";
-import { usePrepacksStore } from "../../prepacks/prepacks.store";
+import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select.store";
+import { useProductsStore } from "../../../products/products.store";
+import { usePrepacksStore } from "../../../prepacks/prepacks.store";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 
-export const ProductSelectionModal = forwardRef(_ProductSelectionModal);
+export const IngredientSelect = forwardRef(_IngredientSelectModal);
 
-function _ProductSelectionModal(_, ref) {
+function _IngredientSelectModal(_, ref) {
     const { t } = useTranslation();
 
-    const { isVisible, showPrepacks, onSelect, hide, showModal } = useIngredientSelectModal();
+    const { isVisible, showPrepacks, onSelect, hide, show } = useIngredientSelectModal();
 
     const { set, filteredItems, filter } = useIngredientItemsStore();
 
@@ -23,7 +23,7 @@ function _ProductSelectionModal(_, ref) {
         set(showPrepacks ? [...products, ...prepacks] : products);
     }, [products, prepacks, showPrepacks]);
 
-    useImperativeHandle(ref, () => ({ showProductSelectModal: showModal }), [showModal]);
+    useImperativeHandle(ref, () => ({ showIngredientSelectModal: show }), [show]);
 
     return (
         <Portal>

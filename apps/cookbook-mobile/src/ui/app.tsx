@@ -1,10 +1,12 @@
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { theme } from './app.theme';
+import { Modals } from './home/common/modals/modals';
+import { AppModals, ModalsContext } from './home/common/modals/modals.context';
 import { HomeScreen } from './home/home-screen';
 import { PrepackDetailsWithContext } from './home/prepacks/prepack-details/prepack-details-with-context';
 import { ProductDetails } from './home/products/product-details/product-details';
@@ -13,11 +15,6 @@ import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
-import { ToastMessage } from './home/common/toast/toast';
-import { ConfirmationModal } from './home/common/confirmation-modal/confirmation-modal';
-import { ProductSelectionModal } from './home/common/ingredient-select-modal/ingredient-select-modal';
-import { createContext } from 'vm';
-import { ModalsContext } from './app-modals.context';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
@@ -29,11 +26,18 @@ const App = () => {
 
   const modalRef = useRef(null);
 
-  const modalCtx = {};
+  const modalCtx: AppModals = {
+    ingredientSelect: null,
+    toast: null,
+    confirmation: null,
+  };
 
   useEffect(() => {
-    modalCtx.productSelect = modalRef.current.showProductSelectModal
-  }, [])
+    console.log('assigning modal refs', modalRef.current)
+    modalCtx.ingredientSelect = modalRef.current.showIngredientSelectModal;
+    modalCtx.toast = modalRef.current.showToastMessage;
+    modalCtx.confirmation = modalRef.current.showConfirmationModal;
+  }, []);
 
   return (
     <PaperProvider theme={theme}>
@@ -50,9 +54,7 @@ const App = () => {
             </Stack.Navigator>
           </NavigationContainer>
         </ModalsContext.Provider>
-        <ToastMessage />
-        <ConfirmationModal />
-        <ProductSelectionModal ref={modalRef} />
+        <Modals ref={modalRef} />
       </Provider>
     </PaperProvider>
   );

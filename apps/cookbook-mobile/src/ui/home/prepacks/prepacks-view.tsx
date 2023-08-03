@@ -1,6 +1,6 @@
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
@@ -8,17 +8,17 @@ import { PrepacksRepository } from "../../../core/repositories/prepack.repositor
 import { RootViews } from "../../root-views.enum";
 import { ExportToClipboard } from "../common/clipboard-export";
 import { SummaryListItem } from "../common/summary-list-item";
-import { useToast } from "../common/toast/toast.store";
 import { styles } from "../products/products-view.style";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
+import { ModalsContext } from "../common/modals/modals.context";
 
 export function PrepacksView({ navigation }) {
     const { t } = useTranslation();
     const clipboardExport = new ExportToClipboard(t);
 
     const repo = useInjection(PrepacksRepository);
-    const { show, hide } = useToast();
+    const { toast } = useContext(ModalsContext);
 
     const { items: products } = useProductsStore();
     const { filteredItems: filteredPrepacks, set: setPrepacks, filter, deleteItem } = usePrepacksStore();
@@ -34,11 +34,9 @@ export function PrepacksView({ navigation }) {
             deleteItem(id);
         } catch (e) {
             switch (e.code) {
-                case 0: show(t('errors.prepack.fkViolation')); break;
-                default: show(t('errors.prepack.cantDelete'));
+                case 0: toast(t('errors.prepack.fkViolation')); break;
+                default: toast(t('errors.prepack.cantDelete'));
             }
-
-            setTimeout(() => hide(), 3000);
         }
     };
 
