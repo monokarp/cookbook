@@ -12,14 +12,14 @@ import { Button, FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
 import { useSubscription } from "../../../custom-hooks";
-import { useKeyboardVisible } from "../../common/use-kb-visible";
+import { useKeyboardVisible } from "../../../common/use-kb-visible";
 import { useProductsStore } from "../../products/products.store";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "../../recipes/recipe-details/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
 import { TestIds } from "@cookbook/ui/test-ids";
-import { SimpleIngredientSelect } from "../../common/ingredient-select/simple-ingredient-select";
+import { SimpleIngredientSelect } from "../../../common/ingredient-select/simple-ingredient-select";
 
 interface PrepackDetailsFormData {
     name: string,

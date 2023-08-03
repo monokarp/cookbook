@@ -7,12 +7,12 @@ import { FlatList, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { ProductsRepository } from '../../../core/repositories/products.repository';
 import { RootViews } from '../../root-views.enum';
-import { ExportToClipboard } from '../common/clipboard-export';
-import { FormMode } from '../common/form-mode.enum';
-import { SummaryListItem } from '../common/summary-list-item';
+import { ExportToClipboard } from '../../common/clipboard-export';
+import { FormMode } from '../../common/form-mode.enum';
+import { SummaryListItem } from '../../common/summary-list-item';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
-import { ModalsContext } from '../common/modals/modals.context';
+import { ModalsContext } from '../../common/modals/modals.context';
 
 
 export function ProductsView({ navigation }) {

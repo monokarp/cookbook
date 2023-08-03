@@ -6,12 +6,12 @@ import { FlatList, View } from "react-native";
 import { Button, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../core/repositories/prepack.repository";
 import { RootViews } from "../../root-views.enum";
-import { ExportToClipboard } from "../common/clipboard-export";
-import { SummaryListItem } from "../common/summary-list-item";
+import { ExportToClipboard } from "../../common/clipboard-export";
+import { SummaryListItem } from "../../common/summary-list-item";
 import { styles } from "../products/products-view.style";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
-import { ModalsContext } from "../common/modals/modals.context";
+import { ModalsContext } from "../../common/modals/modals.context";
 
 export function PrepacksView({ navigation }) {
     const { t } = useTranslation();

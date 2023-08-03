@@ -14,9 +14,9 @@ export function _Modals(_, ref) {
     const ingredientSelectRef = useRef(null);
 
     useImperativeHandle(ref, () => ({
-        showConfirmationModal: confirmationRef.current.showConfirmationModal,
-        showIngredientSelectModal: ingredientSelectRef.current.showIngredientSelectModal,
-        showToastMessage: toastRef.current.showToastMessage,
+        confirmation: confirmationRef.current.showConfirmationModal,
+        ingredientSelect: ingredientSelectRef.current.showIngredientSelectModal,
+        toast: toastRef.current.showToastMessage,
     }), []);
 
     return (

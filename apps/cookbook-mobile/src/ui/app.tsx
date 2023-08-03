@@ -5,8 +5,8 @@ import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { theme } from './app.theme';
-import { Modals } from './home/common/modals/modals';
-import { AppModals, ModalsContext } from './home/common/modals/modals.context';
+import { Modals } from './common/modals/modals';
+import { AppModals, ModalsContext } from './common/modals/modals.context';
 import { HomeScreen } from './home/home-screen';
 import { PrepackDetailsWithContext } from './home/prepacks/prepack-details/prepack-details-with-context';
 import { ProductDetails } from './home/products/product-details/product-details';
@@ -33,10 +33,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    console.log('assigning modal refs', modalRef.current)
-    modalCtx.ingredientSelect = modalRef.current.showIngredientSelectModal;
-    modalCtx.toast = modalRef.current.showToastMessage;
-    modalCtx.confirmation = modalRef.current.showConfirmationModal;
+    Object.assign(modalCtx, modalRef.current);
   }, []);
 
   return (

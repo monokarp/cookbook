@@ -1,7 +1,7 @@
 import { Product } from '@cookbook/domain/types/product/product';
 import { ProductMeasuring, ProductPricingDto } from '@cookbook/domain/types/product/product-pricing';
 import { FormatNumber, FormatString } from '@cookbook/domain/util';
-import { FormMode } from '../../common/form-mode.enum';
+import { FormMode } from '../../../common/form-mode.enum';
 
 
 export const FormDataFacade = {

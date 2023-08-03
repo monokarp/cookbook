@@ -14,7 +14,7 @@ import { useSubscription } from "../../../../custom-hooks";
 import { styles } from "./ingredient-select.style";
 import { IngredientBaseSelect } from "./product-select/ingredient-base-select";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { useConfirmationModal } from "../../../common/modals/confirmation/confirmation.store";
+import { useConfirmationModal } from "../../../../common/modals/confirmation/confirmation.store";
 import { useState } from "react";
 
 export interface IngredientSelectProps {

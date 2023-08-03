@@ -13,7 +13,7 @@ import { Button, FAB, Text, TextInput } from "react-native-paper";
 import { ProductsRepository } from "../../../../core/repositories/products.repository";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { useSubscription } from "../../../custom-hooks";
-import { useKeyboardVisible } from "../../common/use-kb-visible";
+import { useKeyboardVisible } from "../../../common/use-kb-visible";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "./ingredient-select/ingredient-select";

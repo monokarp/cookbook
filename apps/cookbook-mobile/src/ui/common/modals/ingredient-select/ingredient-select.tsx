@@ -3,8 +3,8 @@ import { useTranslation } from "react-i18next";
 import { FlatList, Pressable } from "react-native";
 import { Dialog, Portal, TextInput, Text } from "react-native-paper";
 import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select.store";
-import { useProductsStore } from "../../../products/products.store";
-import { usePrepacksStore } from "../../../prepacks/prepacks.store";
+import { useProductsStore } from "../../../home/products/products.store";
+import { usePrepacksStore } from "../../../home/prepacks/prepacks.store";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 
 export const IngredientSelect = forwardRef(_IngredientSelectModal);

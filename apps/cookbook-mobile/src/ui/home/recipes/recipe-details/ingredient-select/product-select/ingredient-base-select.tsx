@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Card, Text } from "react-native-paper";
-import { ModalsContext } from "../../../../common/modals/modals.context";
+import { ModalsContext } from "../../../../../common/modals/modals.context";
 
 export interface ProductSelectProps {
     selectedItem: IngredientBase | null,
