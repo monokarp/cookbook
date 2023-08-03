@@ -65,6 +65,7 @@ export function PrepackDetails({ navigation }) {
     const onSubmit = async () => {
         await prepacksRepo.Save(prepack);
 
+        // @TODO replace in store?
         await prepacksRepo.All().then(setPrepacks);
 
         navigation.goBack();
@@ -170,7 +171,13 @@ export function PrepackDetails({ navigation }) {
                             allowAddingPrepacks={false}
                             ingredient={item}
                             index={index}
-                            requestRemoval={() => deleteIngredient(index)}
+                            onChange={(position) => {
+                                console.log('ingredient row on change', position)
+                            }}
+                            onDelete={() => {
+                                console.log('ingredient row delete', index);
+                                // deleteIngredient(index)
+                            }}
                         />
                     }
                 />
