@@ -1,47 +1,34 @@
 import { RegexPatterns } from "@cookbook/domain/constants";
-import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
+import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
-import { useContext, useEffect } from "react";
-import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form";
+import { useContext } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Button, FAB, Text, TextInput } from "react-native-paper";
+import { FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
-import { ProductsRepository } from "../../../../core/repositories/products.repository";
-import { useSubscription } from "../../../custom-hooks";
-import { useKeyboardVisible } from "../../../common/use-kb-visible";
-import { useProductsStore } from "../../products/products.store";
-import { IngredientFormData, IngredientSelect, MapFormDataToIngredient } from "../../recipes/recipe-details/ingredient-select/ingredient-select";
+import { SimpleIngredientSelect } from "../../../common/ingredient-select/simple-ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
-import { TestIds } from "@cookbook/ui/test-ids";
-import { SimpleIngredientSelect } from "../../../common/ingredient-select/simple-ingredient-select";
 
-interface PrepackDetailsFormData {
-    name: string,
-    finalWeight: string,
-    ingredients: IngredientFormData[],
-}
 
 export function PrepackDetails({ navigation }) {
+    let listElementRef: FlatList<ProductIngredient> | null = null;
 
     console.log('prepack details rendered')
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(PrepacksRepository);
-    const productsRepo = useInjection(ProductsRepository);
 
     const store = useContext(PrepackDetailsContext);
-    const { setPrepack, addIngredient, removeIngredient } = store();
+    const { hasIngredientsEditing, setIngredientsEditing, addIngredient, removeIngredient, setIngredient } = store();
     const prepack = store(state => state.prepack);
     const ingredients = store(state => state.prepack.ingredients);
 
     const { set: setPrepacks } = usePrepacksStore();
-    const { set: setProducts } = useProductsStore();
 
     const form = useForm({
         defaultValues: {
@@ -50,43 +37,39 @@ export function PrepackDetails({ navigation }) {
         }
     });
 
-    // useSubscription(form.watch, (data: PrepackDetailsFormData) => {
-    //     const updatedPrepack = new Prepack({
-    //         id: prepack.id,
-    //         name: data.name,
-    //         lastModified: prepack.lastModified,
-    //         finalWeight: FormatString.Weight(data.finalWeight),
-    //         ingredients: data.ingredients.map((ingredient, index) => MapFormDataToIngredient(ingredient) as ProductIngredient),
-    //     });
+    const onSubmit = async (data: { name: string, finalWeight: string }) => {
+        console.log('saving prepack', JSON.stringify(prepack))
+        if (hasIngredientsEditing) {
+            return;
+        }
 
-    //     setPrepack(updatedPrepack);
-    // });
+        await prepacksRepo.Save({ ...prepack, name: data.name, finalWeight: FormatString.Weight(data.finalWeight) });
 
-    const onSubmit = async () => {
-        await prepacksRepo.Save(prepack);
-
-        // @TODO replace in store?
         await prepacksRepo.All().then(setPrepacks);
 
         navigation.goBack();
     };
 
     function addEmptyIngredient() {
+        if (hasIngredientsEditing) {
+            return;
+        }
+
         addIngredient(ProductIngredient.Empty());
+        setIngredientsEditing(true);
     };
 
-    function deleteIngredient(index: number) {
+    function removeIngredientRow(index: number) {
         removeIngredient(index);
-    };
-
-    // useEffect(() => {
-    //     productsRepo.All().then(setProducts);
-    // }, []);
+        setIngredientsEditing(false);
+    }
 
     return (
         <FormProvider {...form}>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
+                    ref={ref => listElementRef = ref}
+                    onContentSizeChange={() => listElementRef.scrollToEnd()}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => `${index}_${item.product.id}`}
                     data={ingredients}
@@ -171,12 +154,12 @@ export function PrepackDetails({ navigation }) {
                             allowAddingPrepacks={false}
                             ingredient={item}
                             index={index}
-                            onChange={(position) => {
-                                console.log('ingredient row on change', position)
+                            onEditConfirmed={(position) => {
+                                console.log('position edit confirmed', position)
+                                setIngredient(position as ProductIngredient, index);
                             }}
                             onDelete={() => {
-                                console.log('ingredient row delete', index);
-                                // deleteIngredient(index)
+                                removeIngredientRow(index);
                             }}
                         />
                     }
