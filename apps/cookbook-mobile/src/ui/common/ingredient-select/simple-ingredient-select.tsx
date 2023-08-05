@@ -14,12 +14,13 @@ import { Pressable, View } from "react-native";
 import { FAB, Switch, Text, TextInput } from "react-native-paper";
 import { ModalsContext } from "../modals/modals.context";
 import { styles } from "./ingredient-select.style";
-import { PrepackDetailsContext } from "../../home/prepacks/prepack-details/prepack-details.store";
 
 export interface IngredientSelectProps {
     ingredient: Position,
     allowAddingPrepacks: boolean,
+    isEditing: boolean;
     index: number,
+    requestEdit: () => void,
     onEditConfirmed: (update: Position) => void,
     onDelete: () => void,
 }
@@ -41,7 +42,7 @@ interface IngredientSelectFormData {
     measuringUnits: string,
 }
 
-export function SimpleIngredientSelect({ ingredient, index, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
+export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
     console.log('ingredient select rendered');
     const { t } = useTranslation();
 
@@ -54,10 +55,6 @@ export function SimpleIngredientSelect({ ingredient, index, onEditConfirmed, onD
 
     const { ingredientSelect, confirmation } = useContext(ModalsContext);
 
-
-    const store = useContext(PrepackDetailsContext);
-    const { hasIngredientsEditing, setIngredientsEditing } = store();
-
     const defaultValues = {
         ingredientBase: getBase(ingredient),
         measuringUnits: ingredient.units() ? measuringUnits : '',
@@ -68,48 +65,36 @@ export function SimpleIngredientSelect({ ingredient, index, onEditConfirmed, onD
         defaultValues
     });
 
-    const [isEditMode, setEditMode] = useState(!getBase(ingredient).id);
-
-    const toggleLocalEdit = () => {
-        if (isEditMode) {
-            handleSubmit(
-                (data: IngredientSelectFormData) => {
-                    // @TODO do not emit if overall ingredient has not changed
-                    if (isProductIngredient(ingredient)) {
-                        onEditConfirmed(
-                            new ProductIngredient({
-                                product: data.ingredientBase as Product,
-                                serving: {
-                                    units: selectedMeasuringType === ProductMeasuring.Units ? Number(data.measuringUnits) : FormatString.Weight(data.measuringUnits),
-                                    measuring: selectedMeasuringType,
-                                }
-                            })
-                        );
-                    }
-
-                    if (isPrepackIngredient(ingredient)) {
-                        onEditConfirmed(
-                            new PrepackIngredient({
-                                prepack: data.ingredientBase as Prepack,
-                                weightInGrams: FormatString.Weight(data.measuringUnits),
-                            })
-                        );
-                    }
-
-                    setEditMode(false);
+    const submit = () => {
+        handleSubmit(
+            (data: IngredientSelectFormData) => {
+                // @TODO do not emit if overall ingredient has not changed
+                if (isProductIngredient(ingredient)) {
+                    onEditConfirmed(
+                        new ProductIngredient({
+                            product: data.ingredientBase as Product,
+                            serving: {
+                                units: selectedMeasuringType === ProductMeasuring.Units ? Number(data.measuringUnits) : FormatString.Weight(data.measuringUnits),
+                                measuring: selectedMeasuringType,
+                            }
+                        })
+                    );
                 }
-            )();
-            setIngredientsEditing(false);
-        } else {
-            if (!hasIngredientsEditing) {
-                setEditMode(true);
-                setIngredientsEditing(true);
+
+                if (isPrepackIngredient(ingredient)) {
+                    onEditConfirmed(
+                        new PrepackIngredient({
+                            prepack: data.ingredientBase as Prepack,
+                            weightInGrams: FormatString.Weight(data.measuringUnits),
+                        })
+                    );
+                }
             }
-        }
+        )();
     };
 
     return (
-        isEditMode
+        isEditing
             ? <View style={{ margin: 5, backgroundColor: '#cccccc', borderRadius: 5 }}>
                 <View style={{ padding: 15 }}>
 
@@ -193,7 +178,7 @@ export function SimpleIngredientSelect({ ingredient, index, onEditConfirmed, onD
                         <View style={{ flex: 1, alignItems: 'center' }}>
                             <FAB
                                 icon={'check-bold'}
-                                onPress={toggleLocalEdit}
+                                onPress={submit}
                             />
                         </View>
 
@@ -238,7 +223,7 @@ export function SimpleIngredientSelect({ ingredient, index, onEditConfirmed, onD
                         <View style={{ flex: 1, alignItems: 'center' }}>
                             <FAB
                                 icon={'file-edit'}
-                                onPress={toggleLocalEdit}
+                                onPress={requestEdit}
                             />
                         </View>
 

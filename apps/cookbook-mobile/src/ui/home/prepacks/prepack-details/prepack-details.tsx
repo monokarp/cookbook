@@ -3,7 +3,7 @@ import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredi
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
@@ -24,9 +24,11 @@ export function PrepackDetails({ navigation }) {
     const prepacksRepo = useInjection(PrepacksRepository);
 
     const store = useContext(PrepackDetailsContext);
-    const { hasIngredientsEditing, setIngredientsEditing, addIngredient, removeIngredient, setIngredient } = store();
+    const { addIngredient, removeIngredient, setIngredient } = store();
     const prepack = store(state => state.prepack);
     const ingredients = store(state => state.prepack.ingredients);
+
+    const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
     const { set: setPrepacks } = usePrepacksStore();
 
@@ -38,10 +40,11 @@ export function PrepackDetails({ navigation }) {
     });
 
     const onSubmit = async (data: { name: string, finalWeight: string }) => {
-        console.log('saving prepack', JSON.stringify(prepack))
-        if (hasIngredientsEditing) {
+        if (currentlyEditedItemIndex) {
             return;
         }
+
+        console.log('saving prepack', JSON.stringify(prepack));
 
         await prepacksRepo.Save({ ...prepack, name: data.name, finalWeight: FormatString.Weight(data.finalWeight) });
 
@@ -51,17 +54,17 @@ export function PrepackDetails({ navigation }) {
     };
 
     function addEmptyIngredient() {
-        if (hasIngredientsEditing) {
+        if (currentlyEditedItemIndex) {
             return;
         }
 
         addIngredient(ProductIngredient.Empty());
-        setIngredientsEditing(true);
+        setCurrentlyEditedItemIndex(prepack.ingredients.length);
     };
 
     function removeIngredientRow(index: number) {
         removeIngredient(index);
-        setIngredientsEditing(false);
+        setCurrentlyEditedItemIndex(null);
     }
 
     return (
@@ -135,6 +138,7 @@ export function PrepackDetails({ navigation }) {
                             <View style={{ flex: 1, flexDirection: 'column' }}>
                                 <FAB
                                     testID={TestIds.PrepackDetails.Submit}
+                                    disabled={currentlyEditedItemIndex !== null}
                                     icon="check-bold"
                                     style={{ margin: 15 }}
                                     onPress={form.handleSubmit(onSubmit)}
@@ -142,6 +146,7 @@ export function PrepackDetails({ navigation }) {
 
                                 <FAB
                                     testID={TestIds.PrepackDetails.AddIngredient}
+                                    disabled={currentlyEditedItemIndex !== null}
                                     icon="plus"
                                     style={{ margin: 15 }}
                                     onPress={addEmptyIngredient}
@@ -154,9 +159,14 @@ export function PrepackDetails({ navigation }) {
                             allowAddingPrepacks={false}
                             ingredient={item}
                             index={index}
+                            isEditing={currentlyEditedItemIndex === index}
+                            requestEdit={() => {
+                                setCurrentlyEditedItemIndex(index)
+                            }}
                             onEditConfirmed={(position) => {
                                 console.log('position edit confirmed', position)
                                 setIngredient(position as ProductIngredient, index);
+                                setCurrentlyEditedItemIndex(null);
                             }}
                             onDelete={() => {
                                 removeIngredientRow(index);

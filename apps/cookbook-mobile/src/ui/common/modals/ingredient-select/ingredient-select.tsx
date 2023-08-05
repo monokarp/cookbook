@@ -23,11 +23,16 @@ function _IngredientSelectModal(_, ref) {
         set(showPrepacks ? [...products, ...prepacks] : products);
     }, [products, prepacks, showPrepacks]);
 
+    function resetAndDismiss() {
+        filter('');
+        hide();
+    }
+
     useImperativeHandle(ref, () => ({ showIngredientSelectModal: show }), [show]);
 
     return (
         <Portal>
-            <Dialog visible={isVisible} onDismiss={hide}>
+            <Dialog visible={isVisible} onDismiss={resetAndDismiss}>
                 <TextInput
                     testID={TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput}
                     label={t('product.search.byName')}
@@ -41,7 +46,7 @@ function _IngredientSelectModal(_, ref) {
                                 testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Modal.ListItem, index)}
                                 onTouchEnd={() => {
                                     onSelect(item);
-                                    hide();
+                                    resetAndDismiss();
                                 }}>
                                 <Text style={{ padding: 20, fontWeight: '400', fontSize: 18 }}>{item.name}</Text>
                             </Pressable>
