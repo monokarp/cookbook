@@ -10,7 +10,7 @@ import { AppModals, ModalsContext } from './common/modals/modals.context';
 import { HomeScreen } from './home/home-screen';
 import { PrepackDetailsWithContext } from './home/prepacks/prepack-details/prepack-details-with-context';
 import { ProductDetails } from './home/products/product-details/product-details';
-import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
+import { RecipeDetailsWithContext } from './home/recipes/recipe-details/recipe-details-with-context';
 import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
@@ -45,7 +45,7 @@ const App = () => {
               <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
               <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
               <Stack.Screen name={RootViews.Home} component={HomeScreen} options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }} />
-              <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetails} options={{ headerTitle: t('recipe.details.title') }} />
+              <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetailsWithContext} options={{ headerTitle: t('recipe.details.title') }} />
               <Stack.Screen name={RootViews.ProductDetails} component={ProductDetails} options={{ headerTitle: t('product.details.title') }} />
               <Stack.Screen name={RootViews.PrepackDetails} component={PrepackDetailsWithContext} options={{ headerTitle: t('prepack.details.title') }} />
             </Stack.Navigator>

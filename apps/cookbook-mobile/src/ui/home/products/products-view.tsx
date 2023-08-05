@@ -6,13 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, View } from 'react-native';
 import { Button, Text, TextInput } from 'react-native-paper';
 import { ProductsRepository } from '../../../core/repositories/products.repository';
-import { RootViews } from '../../root-views.enum';
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { FormMode } from '../../common/form-mode.enum';
+import { ModalsContext } from '../../common/modals/modals.context';
 import { SummaryListItem } from '../../common/summary-list-item';
+import { RootViews } from '../../root-views.enum';
 import { styles } from './products-view.style';
 import { useProductsStore } from './products.store';
-import { ModalsContext } from '../../common/modals/modals.context';
 
 
 export function ProductsView({ navigation }) {

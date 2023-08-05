@@ -1,8 +1,8 @@
 import { TestIds } from "@cookbook/ui/test-ids";
+import { forwardRef, useImperativeHandle } from "react";
 import { useTranslation } from "react-i18next";
 import { Portal, Snackbar, Text } from "react-native-paper";
 import { useToast } from "./toast.store";
-import { forwardRef, useImperativeHandle } from "react";
 
 export const ToastMessage = forwardRef(_ToastMessage);
 

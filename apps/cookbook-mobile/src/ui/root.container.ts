@@ -1,17 +1,17 @@
 import { Container } from 'inversify';
+import { PrepacksCloudRepository, PrepacksFirestore } from '../core/cloud-repositories/prepacks.cloud-repo';
+import { ProductsCloudRepository, ProductsFirestore } from '../core/cloud-repositories/products.cloud-repo';
+import { RecipesCloudRepository, RecipesFirestore } from '../core/cloud-repositories/recipes.cloud-repo';
 import { Database } from '../core/database/database';
 import { SeedData } from '../core/database/seed-data';
+import { DataSync } from '../core/datasync/datasync.service';
+import { PrepacksSync } from '../core/datasync/entity-syncs/prepack-sync';
+import { ProductsSync } from '../core/datasync/entity-syncs/products-sync';
+import { RecipesSync } from '../core/datasync/entity-syncs/recipe-sync';
+import { DatasyncRepository } from '../core/repositories/datasync.repository';
 import { PrepacksRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
-import { DataSync } from '../core/datasync/datasync.service';
-import { ProductsCloudRepository, ProductsFirestore } from '../core/cloud-repositories/products.cloud-repo';
-import { ProductsSync } from '../core/datasync/entity-syncs/products-sync';
-import { PrepacksCloudRepository, PrepacksFirestore } from '../core/cloud-repositories/prepacks.cloud-repo';
-import { RecipesCloudRepository, RecipesFirestore } from '../core/cloud-repositories/recipes.cloud-repo';
-import { PrepacksSync } from '../core/datasync/entity-syncs/prepack-sync';
-import { RecipesSync } from '../core/datasync/entity-syncs/recipe-sync';
-import { DatasyncRepository } from '../core/repositories/datasync.repository';
 
 export function buildRootContainer() {
     const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });

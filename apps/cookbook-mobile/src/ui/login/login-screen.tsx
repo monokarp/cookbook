@@ -3,9 +3,9 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, User } from '@react-native-google-signin/google-signin';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
+import { Environment } from '../env';
 import { RootViews } from '../root-views.enum';
 import { useSession } from './session.store';
-import { Environment } from '../env';
 
 GoogleSignin.configure({
   webClientId: '1011563761916-245cqtlrfd9frupq9i7so8n2ul5rc8t7.apps.googleusercontent.com'

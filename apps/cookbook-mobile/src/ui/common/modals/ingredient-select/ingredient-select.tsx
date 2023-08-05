@@ -1,11 +1,11 @@
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
+import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, Pressable } from "react-native";
-import { Dialog, Portal, TextInput, Text } from "react-native-paper";
-import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select.store";
-import { useProductsStore } from "../../../home/products/products.store";
+import { Dialog, Portal, Text, TextInput } from "react-native-paper";
 import { usePrepacksStore } from "../../../home/prepacks/prepacks.store";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { useProductsStore } from "../../../home/products/products.store";
+import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select.store";
 
 export const IngredientSelect = forwardRef(_IngredientSelectModal);
 

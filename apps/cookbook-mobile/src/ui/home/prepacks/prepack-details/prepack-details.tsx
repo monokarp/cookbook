@@ -9,7 +9,7 @@ import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
-import { SimpleIngredientSelect } from "../../../common/ingredient-select/simple-ingredient-select";
+import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
@@ -40,10 +40,6 @@ export function PrepackDetails({ navigation }) {
     });
 
     const onSubmit = async (data: { name: string, finalWeight: string }) => {
-        if (currentlyEditedItemIndex) {
-            return;
-        }
-
         console.log('saving prepack', JSON.stringify(prepack));
 
         await prepacksRepo.Save({ ...prepack, name: data.name, finalWeight: FormatString.Weight(data.finalWeight) });
@@ -54,10 +50,6 @@ export function PrepackDetails({ navigation }) {
     };
 
     function addEmptyIngredient() {
-        if (currentlyEditedItemIndex) {
-            return;
-        }
-
         addIngredient(ProductIngredient.Empty());
         setCurrentlyEditedItemIndex(prepack.ingredients.length);
     };
@@ -155,7 +147,7 @@ export function PrepackDetails({ navigation }) {
                         </View>
                     }
                     renderItem={({ item, index }) =>
-                        <SimpleIngredientSelect
+                        <IngredientSelect
                             allowAddingPrepacks={false}
                             ingredient={item}
                             index={index}

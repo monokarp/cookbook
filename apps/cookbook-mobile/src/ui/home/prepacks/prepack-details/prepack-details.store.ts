@@ -5,8 +5,6 @@ import { create } from 'zustand';
 
 export interface PrepackDetailsState {
     prepack: Prepack;
-    // hasIngredientsEditing: boolean;
-    // setIngredientsEditing: (value:boolean) => void;
     addIngredient: (value: ProductIngredient) => void;
     setIngredient: (value: ProductIngredient, index: number) => void;
     removeIngredient: (index: number) => void;
@@ -19,8 +17,6 @@ export type PrepackDetailsStore = ReturnType<typeof createPrepackDetailsStore>;
 export function createPrepackDetailsStore(prepack: Prepack) {
     return create<PrepackDetailsState>((set) => ({
         prepack,
-        // hasIngredientsEditing: false,
-        // setIngredientsEditing: (value:boolean) => set(state => ({ hasIngredientsEditing: value })),
         addIngredient: (value: ProductIngredient) => {
             set(state => {
                 return {

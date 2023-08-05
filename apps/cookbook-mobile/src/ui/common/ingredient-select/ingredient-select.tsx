@@ -4,7 +4,7 @@ import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing
 import { Prepack } from "@cookbook/domain/types/recipe/prepack";
 import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredient";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProduct, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 import { useContext, useState } from "react";
@@ -42,8 +42,7 @@ interface IngredientSelectFormData {
     measuringUnits: string,
 }
 
-export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
-    console.log('ingredient select rendered');
+export function IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
     const { t } = useTranslation();
 
     const isMeasuredInUnits = isProductIngredient(ingredient) && ingredient.product.pricing.measuring === ProductMeasuring.Units;
@@ -68,8 +67,7 @@ export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEd
     const submit = () => {
         handleSubmit(
             (data: IngredientSelectFormData) => {
-                // @TODO do not emit if overall ingredient has not changed
-                if (isProductIngredient(ingredient)) {
+                if (isProduct(data.ingredientBase)) {
                     onEditConfirmed(
                         new ProductIngredient({
                             product: data.ingredientBase as Product,
@@ -81,7 +79,7 @@ export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEd
                     );
                 }
 
-                if (isPrepackIngredient(ingredient)) {
+                if (isPrepack(data.ingredientBase)) {
                     onEditConfirmed(
                         new PrepackIngredient({
                             prepack: data.ingredientBase as Prepack,
@@ -113,6 +111,7 @@ export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEd
                                     }}
                                     render={({ field: { onChange, value } }) =>
                                         <Pressable
+                                            testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
                                             style={{ backgroundColor: 'pink' }}
                                             onPress={() => ingredientSelect(allowAddingPrepacks, e => {
                                                 onChange(e)
@@ -126,7 +125,9 @@ export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEd
                                                         }
                                                     })}
                                         >
-                                            <Text variant="titleMedium">
+                                            <Text
+                                                testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
+                                                variant="titleMedium">
                                                 {value?.name ? value.name : t('product.search.noneSelected')} {isPrepack(value) ? t('recipe.details.isPrepack') : ''}
                                             </Text>
                                         </Pressable>
@@ -152,6 +153,7 @@ export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEd
                                     }}
                                     render={({ field: { value, onChange } }) =>
                                         <TextInput
+                                            testID={collectionElementId(TestIds.IngredientSelect.UnitsInput, index)}
                                             style={{ flexGrow: 1 }}
                                             mode="outlined"
                                             value={value}
@@ -202,11 +204,17 @@ export function SimpleIngredientSelect({ ingredient, isEditing, index, requestEd
                         <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
 
                             <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
-                                <Text variant="titleMedium">
+                                <Text
+                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
+                                    variant="titleMedium"
+                                >
                                     {getBase(ingredient).name} {isPrepack(getBase(ingredient)) ? t('recipe.details.isPrepack') : ''}
                                 </Text>
 
-                                <Text style={{}} variant="labelSmall">
+                                <Text
+                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Price, index)}
+                                    variant="labelSmall"
+                                >
                                     {`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredient.price())}`}
                                 </Text>
                             </View>
