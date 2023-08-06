@@ -182,7 +182,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                             <FAB
                                 testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
                                 icon={'check-bold'}
-                                onPress={submit}
+                                onTouchEnd={submit}
                             />
                         </View>
 

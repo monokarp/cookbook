@@ -49,8 +49,9 @@ export class ExportToClipboard {
     private summarizeRecipe(entity: Recipe): string {
         return [
             entity.name,
+            '\n',
             ...entity.positions.map(one => this.summarizePosition(one)),
-        ].join('\n\n');
+        ].join('\n');
     }
 
     private summarizePosition(entity: Position): string {
@@ -72,7 +73,8 @@ export class ExportToClipboard {
     private summarizePrepack(entity: Prepack): string {
         return [
             entity.name,
+            '\n',
             ...entity.ingredients.map(one => this.summarizeIngredient(one)),
-        ].join('\n\n');
+        ].join('\n');
     }
 }

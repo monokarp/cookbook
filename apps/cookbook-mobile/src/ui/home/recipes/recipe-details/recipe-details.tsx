@@ -33,7 +33,7 @@ export function RecipeDetails({ navigation }) {
     const recipe = store(state => state.recipe);
     const positions = store(state => state.recipe.positions);
 
-    console.log('rendering recipe', JSON.stringify(recipe));
+    console.log(`rendering recipe ${recipe.name}`);
 
     const { set: setRecipes } = useRecipesStore();
 
@@ -58,6 +58,9 @@ export function RecipeDetails({ navigation }) {
     function addEmptyIngredient() {
         addPosition(ProductIngredient.Empty());
         setCurrentlyEditedItemIndex(recipe.positions.length);
+        if (recipe.positions.length) {
+            listElementRef.scrollToIndex({ index: recipe.positions.length - 1 });
+        }
     };
 
     function deleteIngredient(index: number) {
@@ -70,7 +73,6 @@ export function RecipeDetails({ navigation }) {
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
-                    onContentSizeChange={() => { if (recipe.positions.length) listElementRef.scrollToEnd() }}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => {
                         if (isProductIngredient(item)) {
@@ -114,7 +116,7 @@ export function RecipeDetails({ navigation }) {
                                 </Text>
                             </View>
 
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent:'space-evenly' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
                                 <FAB
                                     testID={TestIds.RecipeDetails.Submit}
                                     disabled={currentlyEditedItemIndex !== null}

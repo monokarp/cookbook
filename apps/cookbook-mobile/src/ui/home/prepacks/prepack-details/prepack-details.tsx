@@ -18,7 +18,6 @@ import { styles } from "./prepack-details.style";
 export function PrepackDetails({ navigation }) {
     let listElementRef: FlatList<ProductIngredient> | null = null;
 
-    console.log('prepack details rendered')
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(PrepacksRepository);
@@ -27,6 +26,8 @@ export function PrepackDetails({ navigation }) {
     const { addIngredient, removeIngredient, setIngredient } = store();
     const prepack = store(state => state.prepack);
     const ingredients = store(state => state.prepack.ingredients);
+
+    console.log(`prepack details rendered ${prepack.name}`)
 
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
@@ -40,8 +41,6 @@ export function PrepackDetails({ navigation }) {
     });
 
     const onSubmit = async (data: { name: string, finalWeight: string }) => {
-        console.log('saving prepack', JSON.stringify(prepack));
-
         await prepacksRepo.Save({ ...prepack, name: data.name, finalWeight: FormatString.Weight(data.finalWeight) });
 
         await prepacksRepo.All().then(setPrepacks);
@@ -52,6 +51,9 @@ export function PrepackDetails({ navigation }) {
     function addEmptyIngredient() {
         addIngredient(ProductIngredient.Empty());
         setCurrentlyEditedItemIndex(prepack.ingredients.length);
+        if (prepack.ingredients.length) {
+            listElementRef.scrollToIndex({ index: prepack.ingredients.length - 1 });
+        }
     };
 
     function removeIngredientRow(index: number) {
@@ -64,7 +66,6 @@ export function PrepackDetails({ navigation }) {
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
-                    onContentSizeChange={() => { if (prepack.ingredients.length) listElementRef.scrollToEnd() }}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => `${index}_${item.product.id}`}
                     data={ingredients}
@@ -127,7 +128,7 @@ export function PrepackDetails({ navigation }) {
                                 </Text>
                             </View>
 
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent:'space-evenly' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
                                 <FAB
                                     testID={TestIds.PrepackDetails.Submit}
                                     disabled={currentlyEditedItemIndex !== null}
