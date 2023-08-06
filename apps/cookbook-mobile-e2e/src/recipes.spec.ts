@@ -1,6 +1,6 @@
 import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
-import { assertListItems, collectionElement, untilGone, untilNotVisible, untilVisible } from './util';
+import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
 
 describe('Recipes view', () => {
     beforeAll(async () => {
@@ -64,10 +64,14 @@ describe('Recipes view', () => {
 
     it('adds a prepack ingredient base to the recipe', async () => {
         await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(4).tap();
+
+        await collectionElement(TestIds.IngredientSelect.Edit).at(0).tap();
         await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
 
         await collectionElement(TestIds.IngredientSelect.UnitsInput).at(0).typeText('0.100\n');
         await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
+
+        await collectionElement(TestIds.IngredientSelect.Edit).at(0).tap();
 
         await untilVisible(TestIds.RecipeDetails.Submit);
     });
@@ -87,6 +91,8 @@ describe('Recipes view', () => {
 
     it('adds a product ingredient base to the recipe', async () => {
         await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(2).tap();
+
+        await collectionElement(TestIds.IngredientSelect.Edit).at(1).tap();
         await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
     });
 
@@ -99,15 +105,14 @@ describe('Recipes view', () => {
 
     it('updates validation rules when units toggle is changed', async () => {
         await collectionElement(TestIds.IngredientSelect.UnitsToggle).at(1).tap();
+
+        await collectionElement(TestIds.IngredientSelect.Edit).at(1).tap();
         await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
 
         await collectionElement(TestIds.IngredientSelect.UnitsInput).at(1).replaceText('3');
         await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 1);
-    });
 
-    it('displays prepack label only on prepack ingredients', async () => {
-        await untilVisible(TestIds.IngredientSelect.Ingredient.IsPrepackLabel, 0);
-        await untilGone(TestIds.IngredientSelect.Ingredient.IsPrepackLabel, 1);
+        await collectionElement(TestIds.IngredientSelect.Edit).at(1).tap();
     });
 
     it('should save updated prepack', async () => {

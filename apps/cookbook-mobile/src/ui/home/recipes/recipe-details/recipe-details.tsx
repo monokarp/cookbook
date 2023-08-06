@@ -1,7 +1,7 @@
 
 import { RegexPatterns } from "@cookbook/domain/constants";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
@@ -22,6 +22,8 @@ export interface RecipeDetailsFormData {
 };
 
 export function RecipeDetails({ navigation }) {
+    let listElementRef: FlatList<Position> | null = null;
+
     const { t } = useTranslation();
     const recipeRepo = useInjection(RecipesRepository);
 
@@ -67,6 +69,8 @@ export function RecipeDetails({ navigation }) {
         <FormProvider {...form}>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
+                    ref={ref => listElementRef = ref}
+                    onContentSizeChange={() => { if (recipe.positions.length) listElementRef.scrollToEnd() }}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => {
                         if (isProductIngredient(item)) {
@@ -110,7 +114,7 @@ export function RecipeDetails({ navigation }) {
                                 </Text>
                             </View>
 
-                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent:'space-evenly' }}>
                                 <FAB
                                     testID={TestIds.RecipeDetails.Submit}
                                     disabled={currentlyEditedItemIndex !== null}

@@ -3,7 +3,7 @@ import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product
 import { Prepack } from '@cookbook/domain/types/recipe/prepack';
 import { ProductIngredient } from '@cookbook/domain/types/recipe/product-ingredient';
 import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
-import { roundMoney } from "@cookbook/domain/util";
+import { FormatNumber, FormatString, roundMoney } from "@cookbook/domain/util";
 import Clipboard from '@react-native-clipboard/clipboard';
 
 
@@ -66,11 +66,7 @@ export class ExportToClipboard {
     }
 
     private summarizeIngredient(entity: ProductIngredient): string {
-        return [
-            entity.product.name,
-            `${entity.serving.units} ${this.t(`product.measuring.${entity.serving.measuring}`)}`,
-            `${this.t('product.pricing.totalPrice')} - ${entity.price()}`,
-        ].join('\n');
+        return `${entity.product.name} - ${entity.serving.measuring === ProductMeasuring.Units ? entity.serving.units : FormatNumber.Weight(entity.serving.units)} ${this.t(`product.measuring.${entity.serving.measuring}`)}`;
     }
 
     private summarizePrepack(entity: Prepack): string {

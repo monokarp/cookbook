@@ -5,6 +5,6 @@
     ["@babel/plugin-transform-class-static-block"],
     ["babel-plugin-transform-typescript-metadata"],
     ["babel-plugin-parameter-decorator"],
-    ["module:react-native-dotenv"]
+    ["module:react-native-dotenv", { "allowUndefined": false }]
   ]
 }

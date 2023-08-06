@@ -72,10 +72,14 @@ describe('Prepacks view', () => {
 
   it('adds first ingredient base to prepack', async () => {
     await collectionElement(TestIds.IngredientSelect.Ingredient.Modal.ListItem).at(0).tap();
+
+    await collectionElement(TestIds.IngredientSelect.Edit).at(0).tap();
     await untilVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
 
     await collectionElement(TestIds.IngredientSelect.UnitsInput).at(0).typeText('0.100\n');
     await untilNotVisible(TestIds.IngredientSelect.Ingredient.UnitsError, 0);
+
+    await collectionElement(TestIds.IngredientSelect.Edit).at(0).tap();
 
     await untilVisible(TestIds.PrepackDetails.Submit);
   });

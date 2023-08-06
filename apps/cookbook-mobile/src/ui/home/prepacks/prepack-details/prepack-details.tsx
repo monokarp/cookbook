@@ -64,7 +64,7 @@ export function PrepackDetails({ navigation }) {
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
-                    onContentSizeChange={() => listElementRef.scrollToEnd()}
+                    onContentSizeChange={() => { if (prepack.ingredients.length) listElementRef.scrollToEnd() }}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => `${index}_${item.product.id}`}
                     data={ingredients}
@@ -127,12 +127,12 @@ export function PrepackDetails({ navigation }) {
                                 </Text>
                             </View>
 
-                            <View style={{ flex: 1, flexDirection: 'column' }}>
+                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent:'space-evenly' }}>
                                 <FAB
                                     testID={TestIds.PrepackDetails.Submit}
                                     disabled={currentlyEditedItemIndex !== null}
                                     icon="check-bold"
-                                    style={{ margin: 15 }}
+                                    style={{ margin: 10 }}
                                     onPress={form.handleSubmit(onSubmit)}
                                 />
 
@@ -140,7 +140,7 @@ export function PrepackDetails({ navigation }) {
                                     testID={TestIds.PrepackDetails.AddIngredient}
                                     disabled={currentlyEditedItemIndex !== null}
                                     icon="plus"
-                                    style={{ margin: 15 }}
+                                    style={{ margin: 10 }}
                                     onPress={addEmptyIngredient}
                                 />
                             </View>

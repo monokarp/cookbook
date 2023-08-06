@@ -45,14 +45,15 @@ interface IngredientSelectFormData {
 export function IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
     const { t } = useTranslation();
 
-    const isMeasuredInUnits = isProductIngredient(ingredient) && ingredient.product.pricing.measuring === ProductMeasuring.Units;
-    const [selectedMeasuringType, setMeasuring] = useState(isMeasuredInUnits ? ProductMeasuring.Units : ProductMeasuring.Grams);
 
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;
     const measuringUnits = isServedInUnits ? ingredient.units().toString() : FormatNumber.Weight(ingredient.units());
-    const measuringTypeLabel = t(isServedInUnits ? 'product.measuring.units' : 'product.measuring.grams');
 
     const { ingredientSelect, confirmation } = useContext(ModalsContext);
+
+    const [selectedBase, setSelectedBase] = useState(getBase(ingredient));
+    const isMeasuredInUnits = isProduct(selectedBase) && selectedBase.pricing.measuring === ProductMeasuring.Units;
+    const [selectedMeasuringType, setMeasuring] = useState(isMeasuredInUnits ? ProductMeasuring.Units : ProductMeasuring.Grams);
 
     const defaultValues = {
         ingredientBase: getBase(ingredient),
@@ -67,10 +68,10 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
     const submit = () => {
         handleSubmit(
             (data: IngredientSelectFormData) => {
-                if (isProduct(data.ingredientBase)) {
+                if (isProduct(selectedBase)) {
                     onEditConfirmed(
                         new ProductIngredient({
-                            product: data.ingredientBase as Product,
+                            product: selectedBase as Product,
                             serving: {
                                 units: selectedMeasuringType === ProductMeasuring.Units ? Number(data.measuringUnits) : FormatString.Weight(data.measuringUnits),
                                 measuring: selectedMeasuringType,
@@ -79,10 +80,10 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                     );
                 }
 
-                if (isPrepack(data.ingredientBase)) {
+                if (isPrepack(selectedBase)) {
                     onEditConfirmed(
                         new PrepackIngredient({
-                            prepack: data.ingredientBase as Prepack,
+                            prepack: selectedBase as Prepack,
                             weightInGrams: FormatString.Weight(data.measuringUnits),
                         })
                     );
@@ -107,14 +108,14 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                                     name="ingredientBase"
                                     rules={{
                                         required: true,
-                                        validate: (value) => !!value.id,
+                                        validate: () => !!selectedBase.id,
                                     }}
-                                    render={({ field: { onChange, value } }) =>
+                                    render={() =>
                                         <Pressable
                                             testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
                                             style={{ backgroundColor: 'pink' }}
                                             onPress={() => ingredientSelect(allowAddingPrepacks, e => {
-                                                onChange(e)
+                                                setSelectedBase(e)
                                             })}
                                             onLongPress={() =>
                                                 confirmation(
@@ -128,7 +129,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                                             <Text
                                                 testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
                                                 variant="titleMedium">
-                                                {value?.name ? value.name : t('product.search.noneSelected')} {isPrepack(value) ? t('recipe.details.isPrepack') : ''}
+                                                {selectedBase?.name ? selectedBase.name : t('product.search.noneSelected')} {isPrepack(selectedBase) ? t('recipe.details.isPrepack') : ''}
                                             </Text>
                                         </Pressable>
                                     }
@@ -179,6 +180,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
 
                         <View style={{ flex: 1, alignItems: 'center' }}>
                             <FAB
+                                testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
                                 icon={'check-bold'}
                                 onPress={submit}
                             />
@@ -222,7 +224,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                             <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center' }}>
 
                                 <Text style={{ flexGrow: 1, fontSize: 16 }} variant="labelSmall" >
-                                    {measuringUnits} {measuringTypeLabel}
+                                    {measuringUnits}
                                 </Text>
 
                             </View>
@@ -230,6 +232,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
 
                         <View style={{ flex: 1, alignItems: 'center' }}>
                             <FAB
+                                testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
                                 icon={'file-edit'}
                                 onPress={requestEdit}
                             />

@@ -64,12 +64,11 @@ export const TestIds = {
     IngredientSelect: {
         UnitsInput: 'ingredient-select-units-input',
         UnitsToggle: 'ingredient-select-units-toggle',
+        Edit: 'ingredient-select-edit',
         Ingredient: {
             Button: 'ingredient-select-ingredient-button',
             Name: 'ingredient-select-ingredient-name',
-            NamePlaceholder: 'ingredient-select-ingredient-name-placeholder',
             Price: 'ingredient-select-ingredient-price',
-            IsPrepackLabel: 'ingredient-select-ingredient-is-prepack-label',
             Modal: {
                 NameSearchInput: 'ingredient-select-ingredient-modal-name-search-input',
                 ListItem: 'ingredient-select-ingredient-modal-list-item',
