@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
@@ -63,6 +63,11 @@ export function PrepackDetails({ navigation }) {
 
     return (
         <FormProvider {...form}>
+            <Appbar.Header>
+                <Appbar.BackAction onPress={() => navigation.goBack()} />
+                <Appbar.Content title={t('prepack.details.title')} />
+                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} />
+            </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
@@ -127,24 +132,6 @@ export function PrepackDetails({ navigation }) {
                                     {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(prepack.price())}`}
                                 </Text>
                             </View>
-
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
-                                <FAB
-                                    testID={TestIds.PrepackDetails.Submit}
-                                    disabled={currentlyEditedItemIndex !== null}
-                                    icon="check-bold"
-                                    style={{ margin: 10 }}
-                                    onPress={form.handleSubmit(onSubmit)}
-                                />
-
-                                <FAB
-                                    testID={TestIds.PrepackDetails.AddIngredient}
-                                    disabled={currentlyEditedItemIndex !== null}
-                                    icon="plus"
-                                    style={{ margin: 10 }}
-                                    onPress={addEmptyIngredient}
-                                />
-                            </View>
                         </View>
                     }
                     renderItem={({ item, index }) =>
@@ -168,6 +155,16 @@ export function PrepackDetails({ navigation }) {
                     }
                 />
             </KeyboardAvoidingView>
+
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <FAB
+                    testID={TestIds.PrepackDetails.AddIngredient}
+                    disabled={currentlyEditedItemIndex !== null}
+                    icon="plus"
+                    style={{ margin: 10 }}
+                    onPress={addEmptyIngredient}
+                />
+            </View>
         </FormProvider>
     );
 }

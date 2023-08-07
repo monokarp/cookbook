@@ -3,6 +3,7 @@ export const enum RootViews {
     Login = "login",
     Home = "home",
     ProductDetails = "product-details",
+    RecipeSummary = "recipe-summary",
     RecipeDetails = "recipe-details",
     PrepackDetails = "prepack-details",
 };

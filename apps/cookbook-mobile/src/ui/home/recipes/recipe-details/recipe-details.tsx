@@ -9,12 +9,14 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, FAB, Text, TextInput, ToggleButton } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { useRecipesStore } from "../recipes.store";
 import { RecipeDetailsContext } from "./recipe-details.store";
 import { styles } from "./recipe-details.style";
+import { RootViews } from "../../../root-views.enum";
+import { useKeyboardVisible } from "../../../common/use-kb-visible";
 
 
 export interface RecipeDetailsFormData {
@@ -27,6 +29,7 @@ export function RecipeDetails({ navigation }) {
     const { t } = useTranslation();
     const recipeRepo = useInjection(RecipesRepository);
 
+    const isKbVisible = useKeyboardVisible();
 
     const store = useContext(RecipeDetailsContext);
     const { addPosition, removePosition, setPosition } = store();
@@ -46,13 +49,15 @@ export function RecipeDetails({ navigation }) {
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
-        console.log('saving recipe', JSON.stringify(recipe));
 
-        await recipeRepo.Save(new Recipe({ ...recipe, name: data.name }));
+        const updatedRecipe = new Recipe({ ...recipe, name: data.name });
+        console.log('saving recipe', JSON.stringify(updatedRecipe));
+
+        await recipeRepo.Save(updatedRecipe);
 
         await recipeRepo.All().then(setRecipes);
 
-        navigation.goBack();
+        navigation.navigate(RootViews.RecipeSummary, { recipe: updatedRecipe });
     };
 
     function addEmptyIngredient() {
@@ -70,6 +75,11 @@ export function RecipeDetails({ navigation }) {
 
     return (
         <FormProvider {...form}>
+            <Appbar.Header>
+                <Appbar.BackAction onPress={() => navigation.goBack()} />
+                <Appbar.Content title={t('recipe.details.title')} />
+                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} />
+            </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
@@ -97,14 +107,16 @@ export function RecipeDetails({ navigation }) {
                                         pattern: RegexPatterns.EntityName
                                     }}
                                     render={({ field: { onChange, onBlur, value } }) => (
-                                        <TextInput
-                                            testID={TestIds.RecipeDetails.NameInput}
-                                            label={t('recipe.name')}
-                                            style={styles.input}
-                                            onBlur={onBlur}
-                                            onChangeText={onChange}
-                                            value={value}
-                                        />
+                                        <View>
+                                            <TextInput
+                                                testID={TestIds.RecipeDetails.NameInput}
+                                                placeholder={t('recipe.name')}
+                                                style={styles.input}
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        </View>
                                     )}
                                 />
                                 {
@@ -114,24 +126,7 @@ export function RecipeDetails({ navigation }) {
                                 <Text testID={TestIds.RecipeDetails.NameInputError} variant="labelLarge" style={{ margin: 5 }}>
                                     {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(recipe.totalPrice())}`}
                                 </Text>
-                            </View>
 
-                            <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'space-evenly' }}>
-                                <FAB
-                                    testID={TestIds.RecipeDetails.Submit}
-                                    disabled={currentlyEditedItemIndex !== null}
-                                    icon="check-bold"
-                                    style={{ margin: 15 }}
-                                    onPress={form.handleSubmit(onSubmit)}
-                                />
-
-                                <FAB
-                                    testID={TestIds.RecipeDetails.AddIngredient}
-                                    disabled={currentlyEditedItemIndex !== null}
-                                    icon="plus"
-                                    style={{ margin: 15 }}
-                                    onPress={addEmptyIngredient}
-                                />
                             </View>
                         </View>
                     }
@@ -157,6 +152,17 @@ export function RecipeDetails({ navigation }) {
                     }
                 />
             </KeyboardAvoidingView>
+
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <FAB
+                    testID={TestIds.RecipeDetails.AddIngredient}
+                    disabled={currentlyEditedItemIndex !== null}
+                    icon="plus"
+                    style={{ margin: 15 }}
+                    onPress={addEmptyIngredient}
+                />
+            </View>
+
         </FormProvider>
     );
 }

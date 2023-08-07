@@ -45,7 +45,6 @@ interface IngredientSelectFormData {
 export function IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
     const { t } = useTranslation();
 
-
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;
     const measuringUnits = isServedInUnits ? ingredient.units().toString() : FormatNumber.Weight(ingredient.units());
 
@@ -95,7 +94,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
     return (
         isEditing
             ? <View style={{ margin: 5, backgroundColor: '#cccccc', borderRadius: 5 }}>
-                <View style={{ padding: 15 }}>
+                <View style={{ padding: 5 }}>
 
                     <View style={{ flexDirection: 'row' }}>
 
@@ -181,6 +180,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                         <View style={{ flex: 1, alignItems: 'center' }}>
                             <FAB
                                 testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
+                                size='small'
                                 icon={'check-bold'}
                                 onTouchEnd={submit}
                             />
@@ -199,7 +199,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
             </View >
 
             : <View style={{ margin: 5, backgroundColor: '#cccccc', borderRadius: 5 }}>
-                <View style={{ padding: 15 }}>
+                <View style={{ padding: 5 }}>
 
                     <View style={{ flexDirection: 'row' }}>
 
@@ -233,6 +233,7 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
                         <View style={{ flex: 1, alignItems: 'center' }}>
                             <FAB
                                 testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
+                                size='small'
                                 icon={'file-edit'}
                                 onPress={requestEdit}
                             />

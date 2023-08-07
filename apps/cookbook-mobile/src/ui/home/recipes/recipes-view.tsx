@@ -46,7 +46,7 @@ export function RecipesView({ navigation }) {
                 item={item}
                 itemTestId={TestIds.RecipesView.ListItem}
                 index={index}
-                itemSelected={() => navigation.navigate(RootViews.RecipeDetails, { recipe: item })}
+                itemSelected={() => navigation.navigate(RootViews.RecipeSummary, { recipe: item })}
                 deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
                 exportRequested={() => clipboardExport.recipe(item)}
               />
