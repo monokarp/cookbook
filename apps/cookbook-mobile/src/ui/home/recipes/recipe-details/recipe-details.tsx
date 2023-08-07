@@ -9,14 +9,14 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, FAB, Text, TextInput, ToggleButton } from "react-native-paper";
+import { Appbar, FAB, Text, TextInput } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
+import { useKeyboardVisible } from "../../../common/use-kb-visible";
+import { RootViews } from "../../../root-views.enum";
 import { useRecipesStore } from "../recipes.store";
 import { RecipeDetailsContext } from "./recipe-details.store";
 import { styles } from "./recipe-details.style";
-import { RootViews } from "../../../root-views.enum";
-import { useKeyboardVisible } from "../../../common/use-kb-visible";
 
 
 export interface RecipeDetailsFormData {

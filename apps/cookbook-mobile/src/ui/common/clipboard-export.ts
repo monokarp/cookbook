@@ -3,7 +3,7 @@ import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product
 import { Prepack } from '@cookbook/domain/types/recipe/prepack';
 import { ProductIngredient } from '@cookbook/domain/types/recipe/product-ingredient';
 import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
-import { FormatNumber, FormatString, roundMoney } from "@cookbook/domain/util";
+import { FormatNumber, roundMoney } from "@cookbook/domain/util";
 import Clipboard from '@react-native-clipboard/clipboard';
 
 

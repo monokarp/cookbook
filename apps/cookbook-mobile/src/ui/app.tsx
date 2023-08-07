@@ -11,11 +11,11 @@ import { HomeScreen } from './home/home-screen';
 import { PrepackDetailsWithContext } from './home/prepacks/prepack-details/prepack-details-with-context';
 import { ProductDetails } from './home/products/product-details/product-details';
 import { RecipeDetailsWithContext } from './home/recipes/recipe-details/recipe-details-with-context';
+import { RecipeSummary } from './home/recipes/recipe-summary/recipe-summary';
 import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
-import { RecipeSummary } from './home/recipes/recipe-summary/recipe-summary';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
