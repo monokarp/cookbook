@@ -3,7 +3,7 @@ import { inject, injectable } from "inversify";
 import { ResultSet } from "react-native-sqlite-storage";
 import uuid from 'react-native-uuid';
 import { Database, Query } from "../database/database";
-import { ProductIngredientRowToModel, ProductIngredientRow, ProductIngredientRowToEntity } from "./recipes.repository";
+import { ProductIngredientRow, ProductIngredientRowToEntity, ProductIngredientRowToModel } from "./recipes.repository";
 import { GroupById } from "./util";
 
 @injectable()

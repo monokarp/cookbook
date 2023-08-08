@@ -1,4 +1,3 @@
-import { injectable } from "inversify";
 import { DataSync } from "../datasync.service";
 import { EntitySync } from "../entity-sync";
 

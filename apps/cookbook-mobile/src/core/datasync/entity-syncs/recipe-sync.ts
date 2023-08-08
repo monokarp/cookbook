@@ -1,5 +1,5 @@
 import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import { RecipesCloudRepository } from "../../cloud-repositories/recipes.cloud-repo";
 import { RecipesRepository } from "../../repositories/recipes.repository";
 import { DataSync } from "../datasync.service";

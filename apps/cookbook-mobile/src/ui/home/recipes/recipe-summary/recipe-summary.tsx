@@ -9,9 +9,9 @@ import { ScrollView, View } from "react-native";
 import { Appbar, Divider, Text, ToggleButton } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { RootViews } from "../../../root-views.enum";
+import { useRecipesStore } from "../recipes.store";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
-import { useRecipesStore } from "../recipes.store";
 
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();

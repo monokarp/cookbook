@@ -1,7 +1,7 @@
 import { NamedEntity } from '@cookbook/domain/types/named-entity';
 import firestore from '@react-native-firebase/firestore';
-import { CloudRepository } from './cloud-repo';
 import { Environment } from '../../ui/env';
+import { CloudRepository } from './cloud-repo';
 
 
 export abstract class FirestoreRepository<T extends NamedEntity> implements CloudRepository<T> {
