@@ -144,7 +144,6 @@ export function PrepackDetails({ navigation }) {
                                 setCurrentlyEditedItemIndex(index)
                             }}
                             onEditConfirmed={(position) => {
-                                console.log('position edit confirmed', position)
                                 setIngredient(position as ProductIngredient, index);
                                 setCurrentlyEditedItemIndex(null);
                             }}

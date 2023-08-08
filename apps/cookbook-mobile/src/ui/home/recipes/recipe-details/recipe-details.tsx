@@ -46,9 +46,7 @@ export function RecipeDetails({ navigation }) {
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
-
         const updatedRecipe = new Recipe({ ...recipe, name: data.name });
-        console.log('saving recipe', JSON.stringify(updatedRecipe));
 
         await recipeRepo.Save(updatedRecipe);
 
