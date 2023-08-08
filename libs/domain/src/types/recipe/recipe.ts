@@ -1,5 +1,5 @@
 import { roundMoney } from "../../util";
-import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity, Serving } from "./product-ingredient";
+import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity } from "./product-ingredient";
 import { NamedEntity } from "../named-entity";
 import { PrepackIngredient, PrepackIngredientDto, PrepackIngredientEntity } from "./prepack-ingredient";
 import { Product, ProductDto } from "../product/product";
@@ -10,12 +10,14 @@ export class Recipe implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
     public readonly lastModified: string;
+    public readonly description: string;
     public readonly positions: Position[];
 
-    constructor(data: { id: string, name: string, lastModified: string, positions: PositionDto[] }) {
+    constructor(data: RecipeDto) {
         this.id = data.id;
         this.name = data.name;
         this.lastModified = data.lastModified;
+        this.description = data.description;
         this.positions = data.positions.map(dto => {
             if (isPrepackIngredient(dto)) {
                 return new PrepackIngredient(dto);
@@ -36,6 +38,14 @@ export class Recipe implements NamedEntity {
     public totalWeight(): number {
         return this.positions.reduce((total, next) => total + next.weight(), 0);
     }
+}
+
+export interface RecipeDto {
+    id: string,
+    name: string,
+    lastModified: string,
+    description: string,
+    positions: PositionDto[]
 }
 
 export function isPrepackIngredient(position: PositionDto): position is PrepackIngredientDto {
@@ -66,6 +76,7 @@ export interface RecipeEntity {
     id: string;
     name: string;
     lastModified: string;
+    description: string;
     positions: PositionEntity[];
 }
 

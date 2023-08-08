@@ -83,15 +83,15 @@ export class Database {
 
         const output = [];
 
-        appliedVersions.forEach((version, index) => {
-            const pending = migrations[index];
+        migrations.forEach((migration, index) => {
+            const appliedVersion = appliedVersions[index];
 
-            if (pending) {
-                if (version !== migrations[index].version) {
-                    throw new Error(`Migration mismatch at index ${index}: ${version} (in DB) !== ${migrations[index].version} (pending)`);
+            if (appliedVersion) {
+                if (migration.version !== appliedVersion) {
+                    throw new Error(`Migration mismatch at index ${index}: ${migration} (in DB) !== ${migrations[index].version} (pending)`);
                 }
             } else {
-                output.push(pending);
+                output.push(migration);
             }
         });
 

@@ -23,6 +23,7 @@ export function RecipesView({ navigation }) {
 
   useEffect(() => {
     repo.All().then(all => {
+      console.log('setting all recipes',JSON.stringify(all))
       setRecipes(all);
     });
   }, [products]);

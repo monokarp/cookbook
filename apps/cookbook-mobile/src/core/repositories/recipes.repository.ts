@@ -23,6 +23,7 @@ export class RecipesRepository {
             [Recipes].[Id],
             [Recipes].[Name],
             [Recipes].[LastModified],
+            [Recipes].[Description],
             [RecipeProductIngredients].[PositionNumber],
             [RecipeProductIngredients].[ServingUnits],
             [RecipeProductIngredients].[ServingMeasuring],
@@ -42,6 +43,7 @@ export class RecipesRepository {
             id: uuid.v4().toString(),
             name: '',
             lastModified: '',
+            description: '',
             positions: []
         });
     }
@@ -92,7 +94,7 @@ export class RecipesRepository {
     }
 
     public async One(id: string): Promise<Recipe | null> {
-        const [[ingredientPositions], [prepackPositions]] = await Promise.all([
+        const [[ingredientPositionRows], [prepackPositions]] = await Promise.all([
             this.database.ExecuteSql(
                 `${this.SelectRecipeProductIngredientRowsSQL}
                 ORDER BY [RecipeProductIngredients].[PositionNumber]
@@ -107,8 +109,10 @@ export class RecipesRepository {
             )
         ]);
 
+        const ingredientPositions = ingredientPositionRows.rows.raw();
+
         if (
-            NoPositions(ingredientPositions.rows.raw())
+            NoPositions(ingredientPositions)
             && NoPositions(prepackPositions.rows.raw())
         ) {
             return null;
@@ -117,13 +121,14 @@ export class RecipesRepository {
         const prepacks = await this.prepackRepository.Many(prepackPositions.rows.raw().map(row => row.PrepackId));
 
         const result = new Recipe({
-            id: ingredientPositions.rows.raw()[0].Id,
-            name: ingredientPositions.rows.raw()[0].Name,
-            lastModified: ingredientPositions.rows.raw()[0].LastModified,
+            id: ingredientPositions[0].Id,
+            name: ingredientPositions[0].Name,
+            lastModified: ingredientPositions[0].LastModified,
+            description: ingredientPositions[0].Description,
             positions: []
         });
 
-        ingredientPositions.rows.raw().forEach(
+        ingredientPositions.forEach(
             (row: ProductIngredientRecipeRow) => {
                 result.positions[row.PositionNumber - 1] = ProductIngredientRowToModel(row);
             }
@@ -148,8 +153,8 @@ export class RecipesRepository {
     public async Save(recipe: Recipe): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
-                [recipe.id, recipe.name, new Date().toISOString()]
+                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified], [Description]) VALUES (?, ?, ?, ?);`,
+                [recipe.id, recipe.name, new Date().toISOString(), recipe.description]
             ],
             [
                 `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,
@@ -166,8 +171,8 @@ export class RecipesRepository {
     public async SaveEntity(entity: RecipeEntity): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
-                [entity.id, entity.name, entity.lastModified]
+                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified], [Description]) VALUES (?, ?, ?, ?);`,
+                [entity.id, entity.name, entity.lastModified, entity.description]
             ],
             [
                 `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,
@@ -207,6 +212,7 @@ export class RecipesRepository {
                 id: productRows[0].Id,
                 name: productRows[0].Name,
                 lastModified: productRows[0].LastModified,
+                description: productRows[0].Description,
                 positions: []
             };
 
@@ -235,6 +241,16 @@ export class RecipesRepository {
         return entities;
     }
 
+    public async UpdateDescription(id: string, description: string) {
+        await this.database.ExecuteSql(
+            `UPDATE [Recipes]
+            SET [Description] = ?,
+            [LastModified] = ?
+            WHERE [Id] = ?;`,
+            [description, new Date().toISOString(), id]
+        );
+    }
+
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
             ['DELETE FROM [RecipeProductIngredients]  WHERE [RecipeId] = ?;', [id]],
@@ -250,6 +266,7 @@ interface RecipeRow {
     Id: string;
     Name: string;
     LastModified: string;
+    Description: string;
 }
 
 export interface ProductIngredientRow extends ProductRow {
@@ -312,6 +329,7 @@ function MapRecipe(rows: ProductIngredientRecipeRow[]): Recipe {
         id: rows[0].Id,
         name: rows[0].Name,
         lastModified: rows[0].LastModified,
+        description: rows[0].Description,
         positions: []
     });
 

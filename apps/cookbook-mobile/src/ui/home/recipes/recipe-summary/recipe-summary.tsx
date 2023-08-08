@@ -2,18 +2,22 @@ import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
+import { useInjection } from "inversify-react-native";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
-import { Appbar, Divider, Text, TextInput, ToggleButton } from "react-native-paper";
+import { Appbar, Divider, Text, ToggleButton } from "react-native-paper";
+import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { RootViews } from "../../../root-views.enum";
-import { styles } from "./recipe-summary.style";
 import { RecipeDescription } from "./recipe-description";
-
-const fn = v => v;
+import { styles } from "./recipe-summary.style";
+import { useRecipesStore } from "../recipes.store";
 
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
+
+    const recipeRepo = useInjection(RecipesRepository);
+    const { set: setRecipes } = useRecipesStore();
 
     const recipe: Recipe = route.params.recipe;
 
@@ -27,15 +31,22 @@ export function RecipeSummary({ navigation, route }) {
     const increaseRatio = () => setRatio(round(ratio + increment));
     const decreaseRatio = () => setRatio(round(ratio - increment ? ratio - increment : ratio));
 
+    const [description, setDescription] = useState(recipe.description);
 
-    const [description, setDescripion] = useState('');
+    const updateDescription = async (value: string) => {
+        await recipeRepo.UpdateDescription(recipe.id, value);
+
+        setDescription(value);
+
+        setRecipes(await recipeRepo.All());
+    };
 
     return (
         <View style={{ height: '100%' }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.navigate(RootViews.Home)} />
                 <Appbar.Content title={recipe.name} />
-                <Appbar.Action icon="file-edit-outline" onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe })} />
+                <Appbar.Action icon="file-edit-outline" onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: new Recipe({ ...recipe, description }) })} />
             </Appbar.Header>
 
             <ScrollView>
@@ -86,7 +97,7 @@ export function RecipeSummary({ navigation, route }) {
                     }
                 </View>
 
-                <RecipeDescription description={description} onUpdate={setDescripion} />
+                <RecipeDescription description={description} onUpdate={updateDescription} />
             </ScrollView>
         </View>
     );
