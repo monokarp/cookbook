@@ -5,7 +5,7 @@ import { FormatNumber } from "@cookbook/domain/util";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { Appbar, Text, ToggleButton } from "react-native-paper";
+import { Appbar, Divider, Text, ToggleButton } from "react-native-paper";
 import { RootViews } from "../../../root-views.enum";
 import { styles } from "./recipe-summary.style";
 
@@ -34,33 +34,33 @@ export function RecipeSummary({ navigation, route }) {
 
             <View style={styles.bodyCol}>
                 <View style={styles.recipePriceRow}>
-                    <View style={{ flex: 2 }}>
-                        <PriceRowLabel>{t('product.pricing.totalPrice')}</PriceRowLabel>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                        <PriceRowLabel>{FormatNumber.Money(recipe.totalPrice() * ratio)}</PriceRowLabel>
-                    </View>
+                    <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
+                    <TotalsRowLabel>{FormatNumber.Weight(recipe.totalWeight() * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                    <TotalsRowLabel>{FormatNumber.Money(recipe.totalPrice() * ratio)}</TotalsRowLabel>
                 </View>
+                <Divider />
                 {
-                    recipe.positions.map((one, idx) => {
+                    recipe.positions.reduce((acc, one, idx) => {
                         if (isPrepackIngredient(one)) {
-                            return <View key={idx} style={styles.positionRow}>
+                            acc.push(<View key={idx * 2} style={styles.positionRow}>
                                 <PositionRowLabel>{one.prepack.name} {t('recipe.details.isPrepack')}</PositionRowLabel>
                                 <PositionRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
                                 <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-                            </View>;
-                        }
-
-                        if (isProductIngredient(one)) {
-                            return <View key={idx} style={styles.positionRow}>
+                            </View>);
+                        } else if (isProductIngredient(one)) {
+                            acc.push(<View key={idx * 2} style={styles.positionRow}>
                                 <PositionRowLabel>{one.product.name}</PositionRowLabel>
                                 <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
                                 <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-                            </View>;
+                            </View>);
+                        } else {
+                            acc.push(<Text style={styles.positionLabelMargin}>Unrecognized position type</Text>);
                         }
 
-                        return <Text style={styles.positionLabelMargin}>Unrecognized position type</Text>
-                    })
+                        acc.push(<Divider key={(idx * 2) + 1} />);
+
+                        return acc;
+                    }, [])
                 }
 
                 <View style={styles.ratioBoxContainer}>
@@ -82,8 +82,10 @@ export function RecipeSummary({ navigation, route }) {
     );
 }
 
-function PriceRowLabel(props) {
-    return <Text {...props} variant="bodyLarge" style={styles.positionLabelMargin} />
+function TotalsRowLabel(props) {
+    return <View style={{ flex: 1 }}>
+        <Text {...props} variant="bodyLarge" style={styles.positionLabelMargin} />
+    </View>;
 }
 
 function PositionRowLabel(props) {

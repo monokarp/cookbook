@@ -32,6 +32,10 @@ export class Recipe implements NamedEntity {
     public totalPrice(): number {
         return roundMoney(this.positions.reduce((total, next) => total + next.price(), 0));
     }
+
+    public totalWeight(): number {
+        return this.positions.reduce((total, next) => total + next.weight(), 0);
+    }
 }
 
 export function isPrepackIngredient(position: PositionDto): position is PrepackIngredientDto {

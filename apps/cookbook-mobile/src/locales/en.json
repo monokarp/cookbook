@@ -47,6 +47,7 @@
     "recipe": {
         "name": "Recipe name",
         "addNew": "Add new recipe",
+        "totals": "Totals",
         "details": {
             "isPrepack": "Prepack",
             "title": "Recipe details",
