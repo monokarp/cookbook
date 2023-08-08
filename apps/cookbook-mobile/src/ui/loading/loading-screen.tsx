@@ -2,7 +2,7 @@ import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
-import { Text } from 'react-native-paper';
+import { ActivityIndicator, Text } from 'react-native-paper';
 import { Database } from '../../core/database/database';
 import { SeedData } from '../../core/database/seed-data';
 import { DataSync } from '../../core/datasync/datasync.service';
@@ -45,7 +45,7 @@ export function LoadingScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text variant="displayMedium">{t('common.loading')}</Text>
+            <ActivityIndicator animating={true} />
         </View>
     );
 }

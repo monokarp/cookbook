@@ -4,10 +4,13 @@ import { Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/doma
 import { FormatNumber } from "@cookbook/domain/util";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
-import { Appbar, Divider, Text, ToggleButton } from "react-native-paper";
+import { ScrollView, View } from "react-native";
+import { Appbar, Divider, Text, TextInput, ToggleButton } from "react-native-paper";
 import { RootViews } from "../../../root-views.enum";
 import { styles } from "./recipe-summary.style";
+import { RecipeDescription } from "./recipe-description";
+
+const fn = v => v;
 
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
@@ -24,45 +27,18 @@ export function RecipeSummary({ navigation, route }) {
     const increaseRatio = () => setRatio(round(ratio + increment));
     const decreaseRatio = () => setRatio(round(ratio - increment ? ratio - increment : ratio));
 
+
+    const [description, setDescripion] = useState('');
+
     return (
-        <View>
+        <View style={{ height: '100%' }}>
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.navigate(RootViews.Home)} />
                 <Appbar.Content title={recipe.name} />
                 <Appbar.Action icon="file-edit-outline" onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe })} />
             </Appbar.Header>
 
-            <View style={styles.bodyCol}>
-                <View style={styles.recipePriceRow}>
-                    <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
-                    <TotalsRowLabel>{FormatNumber.Weight(recipe.totalWeight() * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
-                    <TotalsRowLabel>{FormatNumber.Money(recipe.totalPrice() * ratio)}</TotalsRowLabel>
-                </View>
-                <Divider />
-                {
-                    recipe.positions.reduce((acc, one, idx) => {
-                        if (isPrepackIngredient(one)) {
-                            acc.push(<View key={idx * 2} style={styles.positionRow}>
-                                <PositionRowLabel>{one.prepack.name} {t('recipe.details.isPrepack')}</PositionRowLabel>
-                                <PositionRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
-                                <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-                            </View>);
-                        } else if (isProductIngredient(one)) {
-                            acc.push(<View key={idx * 2} style={styles.positionRow}>
-                                <PositionRowLabel>{one.product.name}</PositionRowLabel>
-                                <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
-                                <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-                            </View>);
-                        } else {
-                            acc.push(<Text style={styles.positionLabelMargin}>Unrecognized position type</Text>);
-                        }
-
-                        acc.push(<Divider key={(idx * 2) + 1} />);
-
-                        return acc;
-                    }, [])
-                }
-
+            <ScrollView>
                 <View style={styles.ratioBoxContainer}>
                     <Text style={styles.ratioLabel} variant="headlineSmall">{ratio}</Text>
                     {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
@@ -77,7 +53,41 @@ export function RecipeSummary({ navigation, route }) {
                         />
                     </ToggleButton.Row>
                 </View>
-            </View>
+
+                <View style={styles.bodyCol}>
+                    <View style={styles.recipePriceRow}>
+                        <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
+                        <TotalsRowLabel>{FormatNumber.Weight(recipe.totalWeight() * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                        <TotalsRowLabel>{FormatNumber.Money(recipe.totalPrice() * ratio)}</TotalsRowLabel>
+                    </View>
+                    <Divider />
+                    {
+                        recipe.positions.reduce((acc, one, idx) => {
+                            if (isPrepackIngredient(one)) {
+                                acc.push(<View key={idx * 2} style={styles.positionRow}>
+                                    <PositionRowLabel>{one.prepack.name} {t('recipe.details.isPrepack')}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
+                                </View>);
+                            } else if (isProductIngredient(one)) {
+                                acc.push(<View key={idx * 2} style={styles.positionRow}>
+                                    <PositionRowLabel>{one.product.name}</PositionRowLabel>
+                                    <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
+                                </View>);
+                            } else {
+                                acc.push(<Text style={styles.positionLabelMargin}>Unrecognized position type</Text>);
+                            }
+
+                            acc.push(<Divider key={(idx * 2) + 1} />);
+
+                            return acc;
+                        }, [])
+                    }
+                </View>
+
+                <RecipeDescription description={description} onUpdate={setDescripion} />
+            </ScrollView>
         </View>
     );
 }

@@ -8,7 +8,7 @@
         "cancel": "Отмена",
         "yes": "Да"
     },
-    "lists":{
+    "lists": {
         "deleteItemPrompt": "Удалить этот элемент?"
     },
     "views": {
@@ -21,7 +21,7 @@
             "grams": "кг",
             "units": "шт"
         },
-        "search":{
+        "search": {
             "byName": "Поиск по имени",
             "noneSelected": "Не выбран продукт"
         },
@@ -44,10 +44,11 @@
         },
         "addNew": "Добавить продукт"
     },
-    "recipe":{
+    "recipe": {
         "name": "Имя рецепта",
         "addNew": "Добавить рецепт",
         "totals": "Общие",
+        "description": "Описание",
         "details": {
             "isPrepack": "(П/Ф)",
             "title": "Детали рецепта",
@@ -60,7 +61,7 @@
         "name": "Название",
         "finalWeight": "Финальный вес",
         "addNew": "Добавить полуфабрикат",
-        "details":{
+        "details": {
             "title": "Детали полуфабриката"
         }
     },
@@ -72,7 +73,7 @@
             "selectProduct": "Выберите продукт"
         }
     },
-    "errors":{
+    "errors": {
         "product": {
             "cantDelete": "Ошибка при удалении продукта",
             "fkViolation": "Существуют рецепты ссылающиеся на этот продукт"
