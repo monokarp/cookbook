@@ -3,13 +3,13 @@ import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FlatList, Text, View } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, Divider, TextInput } from 'react-native-paper';
 import { RecipesRepository } from '../../../core/repositories/recipes.repository';
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { SummaryListItem } from '../../common/summary-list-item';
 import { RootViews } from '../../root-views.enum';
+import { styles } from "../entity-view.style";
 import { useProductsStore } from '../products/products.store';
-import { styles } from './recipes-view.style';
 import { useRecipesStore } from './recipes.store';
 
 export function RecipesView({ navigation }) {
@@ -31,35 +31,35 @@ export function RecipesView({ navigation }) {
     <View testID={TestIds.RecipesView.Container} style={styles.container}>
       <TextInput
         testID={TestIds.RecipesView.SearchInput}
-        mode='outlined'
+        mode='flat'
         label={t('product.search.byName')}
         defaultValue=''
         onChange={event => filter(event.nativeEvent.text)}
       />
 
-      <View style={{ flex: 9 }}>
-        <FlatList
-          data={filteredRecipes}
-          renderItem={({ item, index }) =>
-            <View style={styles.item}>
-              <SummaryListItem
-                item={item}
-                itemTestId={TestIds.RecipesView.ListItem}
-                index={index}
-                itemSelected={() => navigation.navigate(RootViews.RecipeSummary, { recipe: item })}
-                deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
-                exportRequested={() => clipboardExport.recipe(item)}
-              />
-            </View>
-          }
-          keyExtractor={product => product.id}
-        />
-      </View>
+      <FlatList
+        style={styles.list}
+        data={filteredRecipes}
+        renderItem={({ item, index }) =>
+          <View>
+            <SummaryListItem
+              item={item}
+              itemTestId={TestIds.RecipesView.ListItem}
+              index={index}
+              itemSelected={() => navigation.navigate(RootViews.RecipeSummary, { recipe: item })}
+              deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
+              exportRequested={() => clipboardExport.recipe(item)}
+            />
+            <Divider />
+          </View>
+        }
+        keyExtractor={product => product.id}
+      />
 
       <Button
         testID={TestIds.RecipesView.AddNewButton}
         style={styles.button}
-        mode='outlined'
+        mode='contained-tonal'
         onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: repo.Create() })}
       >
         <Text style={{ fontSize: 18 }}>{t('recipe.addNew')}</Text>

@@ -1,10 +1,9 @@
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Pressable, Text, View } from "react-native";
-import { List, TouchableRipple } from "react-native-paper";
+import { Pressable } from "react-native";
+import { List } from "react-native-paper";
 import { ModalsContext } from "./modals/modals.context";
-import { styles } from "./summary-list-item.style";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -15,30 +14,51 @@ export interface SummaryListItemProps {
     exportRequested: () => void;
 }
 
+enum Icons {
+    Default = 'content-copy',
+    Done = 'arrow-up',
+}
+
+const IconResetTimeoutMs = 500;
+
 export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
     const { t } = useTranslation();
 
     const { confirmation } = useContext(ModalsContext);
 
+    const [icon, setIcon] = useState(Icons.Default);
+
+    function onExportPress() {
+        setIcon(Icons.Done);
+
+        setTimeout(() => setIcon(Icons.Default), IconResetTimeoutMs)
+
+        exportRequested();
+    }
+
     return (
-        <View>
-            <View style={styles.container}>
-                <Pressable style={styles.textWrapper} onPress={itemSelected} onLongPress={() => {
-                    confirmation(
-                        t('lists.deleteItemPrompt'),
-                        (result) => {
-                            if (result === 'confirm') {
-                                deleteRequested();
-                            }
-                        }
-                    )
-                }}>
-                    <Text testID={`${itemTestId}-${index}`} style={styles.text}>{item.name}</Text>
+        <List.Item
+            testID={`${itemTestId}-${index}`}
+            title={item.name}
+            right={() =>
+                <Pressable
+                    testID={`${TestIds.ListItem.ClipboardExport}-${index}`}
+                    onPress={onExportPress}
+                >
+                    <List.Icon icon={icon} />
                 </Pressable>
-                <TouchableRipple testID={`${TestIds.ListItem.ClipboardExport}-${index}`} style={styles.button} onPress={exportRequested}>
-                    <List.Icon icon="content-copy" />
-                </TouchableRipple>
-            </View>
-        </View>
+            }
+            onPress={itemSelected}
+            onLongPress={() => {
+                confirmation(
+                    t('lists.deleteItemPrompt'),
+                    (result) => {
+                        if (result === 'confirm') {
+                            deleteRequested();
+                        }
+                    }
+                )
+            }}
+        />
     );
 }

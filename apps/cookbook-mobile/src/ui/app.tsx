@@ -4,7 +4,7 @@ import { Provider } from 'inversify-react-native';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
-import { theme } from './app.theme';
+import { appLightTheme } from './app.theme';
 import { Modals } from './common/modals/modals';
 import { AppModals, ModalsContext } from './common/modals/modals.context';
 import { HomeScreen } from './home/home-screen';
@@ -18,7 +18,16 @@ import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
 
 const Stack = createNativeStackNavigator();
-const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme });
+const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme, materialLight: appLightTheme });
+
+const CombinedDefaultTheme = {
+  ...appLightTheme,
+  ...LightTheme,
+  colors: {
+    ...appLightTheme.colors,
+    ...LightTheme.colors,
+  },
+};
 
 const container = buildRootContainer();
 
@@ -38,10 +47,10 @@ const App = () => {
   }, []);
 
   return (
-    <PaperProvider theme={theme}>
+    <PaperProvider theme={CombinedDefaultTheme}>
       <Provider container={container}>
         <ModalsContext.Provider value={modalCtx}>
-          <NavigationContainer theme={LightTheme}>
+          <NavigationContainer theme={CombinedDefaultTheme}>
             <Stack.Navigator>
               <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
               <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
