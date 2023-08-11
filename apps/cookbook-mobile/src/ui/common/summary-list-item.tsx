@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { List } from "react-native-paper";
 import { ModalsContext } from "./modals/modals.context";
+import { IconResetTimeoutMs } from "../contsants";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -18,8 +19,6 @@ enum Icons {
     Default = 'content-copy',
     Done = 'arrow-up',
 }
-
-const IconResetTimeoutMs = 500;
 
 export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
     const { t } = useTranslation();

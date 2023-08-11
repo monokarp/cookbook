@@ -140,15 +140,20 @@ export class PrepacksRepository {
 
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
-            [
-                `DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;`,
-                [id]
-            ],
-            [
-                `DELETE FROM [Prepacks] WHERE [Id] = ?;`,
-                [id]
-            ]
+            ['DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;', [id]],
+            ['DELETE FROM [Prepacks] WHERE [Id] = ?;', [id]],
+            ['INSERT INTO [PrepacksPendingDeletion] VALUES (?)', [id]],
         ]);
+    }
+
+    public async GetPendingDeletion(): Promise<string[]> {
+        const [result] = await this.database.ExecuteSql('SELECT [Id] FROM [PrepacksPendingDeletion]');
+
+        return result.rows.raw().map(row => row.Id);
+    }
+
+    public async ClearPendingDeletion(): Promise<void> {
+        await this.database.ExecuteSql('DELETE FROM [PrepacksPendingDeletion]');
     }
 }
 

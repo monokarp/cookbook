@@ -2,10 +2,16 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
+import { IconResetTimeoutMs } from "../../../contsants";
 
 export interface RecipeDescriptionProps {
     description: string;
     onUpdate: (newDescription: string) => void;
+}
+
+enum Icons {
+    Default = 'file-document-edit-outline',
+    Saved = 'check'
 }
 
 export function RecipeDescription({ description, onUpdate }: RecipeDescriptionProps) {
@@ -13,28 +19,22 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
 
     let inputRef = null;
 
-    const [isEditing, setEditing] = useState(false);
     const [value, setValue] = useState(description);
 
-    function toggleEditing() {
-        if (isEditing) {
-            onUpdate(value);
-        }
+    const [icon, setIcon] = useState(Icons.Default);
 
-        setEditing(!isEditing);
+    function onSave() {
+        onUpdate(value);
+        setIcon(Icons.Saved);
+
+        setTimeout(() => setIcon(Icons.Default), IconResetTimeoutMs);
     }
 
     return (
-        <View style={{ flexWrap: 'wrap' }}>
-            <IconButton style={{ alignSelf: 'flex-end' }}
-                icon={isEditing ? 'check' : 'file-document-edit-outline'}
-                onTouchStart={() => { if (isEditing) inputRef.blur(); }}
-                onTouchEnd={toggleEditing}
-            />
-            <View style={{ width: '100%' }}>
+        <View style={{ flexWrap: 'wrap', marginTop:20 }}>
+            <View style={{ width: '100%', maxHeight:'50%' }}>
                 <TextInput
                     ref={ref => inputRef = ref}
-                    editable={isEditing}
                     label={t('recipe.description')}
                     style={{ marginHorizontal: 5 }}
                     mode="outlined"
@@ -43,6 +43,11 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
                     onChange={event => setValue(event.nativeEvent.text)}
                 />
             </View>
+            <IconButton style={{ alignSelf: 'flex-end' }}
+                icon={icon}
+                onTouchStart={() => inputRef.blur()}
+                onTouchEnd={onSave}
+            />
         </View>
     );
 }

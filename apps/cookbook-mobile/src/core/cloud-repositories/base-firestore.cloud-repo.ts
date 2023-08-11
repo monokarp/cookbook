@@ -18,18 +18,34 @@ export abstract class FirestoreRepository<T extends NamedEntity> implements Clou
         })
     }
 
-    public async SaveMany(userId: string, entities: T[]): Promise<void> {
-
+    public SaveMany(userId: string, entities: T[]): Promise<void> {
         console.log(`${this.getCollectionName()} cloud repo - saving many`);
+
+        const collection = this.getCollection();
+        const batch = firestore().batch();
 
         for (const one of entities) {
             const { id, ...dto } = one;
 
-            console.log(`saving into ${this.getCollectionName()}`);
-            console.log(id, { ...dto, userId });
-
-            await firestore().collection(this.getCollectionName()).doc(id).set({ ...dto, userId });
+            batch.set(collection.doc(id), { ...dto, userId });
         }
+
+        return batch.commit();
+    }
+
+    public DeleteMany(ids: string[]): Promise<void> {
+        const collection = this.getCollection();
+        const batch = firestore().batch();
+
+        for (const id of ids) {
+            batch.delete(collection.doc(id));
+        }
+
+        return batch.commit();
+    }
+
+    private getCollection() {
+        return firestore().collection(this.getCollectionName());
     }
 
     private getCollectionName(): string {

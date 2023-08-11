@@ -99,7 +99,18 @@ export class ProductsRepository {
         await this.database.Transaction([
             ['DELETE FROM [ProductPricing] WHERE [ProductId] = ?;', [id]],
             ['DELETE FROM [Products] WHERE [Id] = ?;', [id]],
+            ['INSERT INTO [ProductsPendingDeletion] VALUES (?)', [id]],
         ]);
+    }
+
+    public async GetPendingDeletion(): Promise<string[]> {
+        const [result] = await this.database.ExecuteSql('SELECT [Id] FROM [ProductsPendingDeletion]');
+
+        return result.rows.raw().map(row => row.Id);
+    }
+
+    public async ClearPendingDeletion(): Promise<void> {
+        await this.database.ExecuteSql('DELETE FROM [ProductsPendingDeletion]');
     }
 }
 

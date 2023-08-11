@@ -152,18 +152,18 @@ export function PrepackDetails({ navigation }) {
                             }}
                         />
                     }
+                    ListFooterComponentStyle={{ justifyContent: 'center' }}
+                    ListFooterComponent={() =>
+                        <FAB
+                            testID={TestIds.PrepackDetails.AddIngredient}
+                            disabled={currentlyEditedItemIndex !== null}
+                            icon="plus"
+                            style={{ margin: 10, alignSelf: 'center' }}
+                            onPress={addEmptyIngredient}
+                        />
+                    }
                 />
             </KeyboardAvoidingView>
-
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <FAB
-                    testID={TestIds.PrepackDetails.AddIngredient}
-                    disabled={currentlyEditedItemIndex !== null}
-                    icon="plus"
-                    style={{ margin: 10 }}
-                    onPress={addEmptyIngredient}
-                />
-            </View>
         </FormProvider>
     );
 }

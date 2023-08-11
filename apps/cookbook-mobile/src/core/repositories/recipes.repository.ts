@@ -255,8 +255,19 @@ export class RecipesRepository {
         await this.database.Transaction([
             ['DELETE FROM [RecipeProductIngredients]  WHERE [RecipeId] = ?;', [id]],
             ['DELETE FROM [RecipePrepackIngredients]  WHERE [RecipeId] = ?;', [id]],
-            ['DELETE FROM [Recipes]  WHERE [Id] = ?;', [id]]
+            ['DELETE FROM [Recipes]  WHERE [Id] = ?;', [id]],
+            ['INSERT INTO [RecipesPendingDeletion] VALUES (?)', [id]],
         ]);
+    }
+
+    public async GetPendingDeletion(): Promise<string[]> {
+        const [result] = await this.database.ExecuteSql('SELECT [Id] FROM [RecipesPendingDeletion]');
+
+        return result.rows.raw().map(row => row.Id);
+    }
+
+    public async ClearPendingDeletion(): Promise<void> {
+        await this.database.ExecuteSql('DELETE FROM [RecipesPendingDeletion]');
     }
 }
 

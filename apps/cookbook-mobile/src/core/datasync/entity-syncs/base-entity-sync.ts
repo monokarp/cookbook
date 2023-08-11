@@ -33,6 +33,14 @@ export class BaseEntitySync<E> implements EntitySync {
         }
     }
 
+    public async clearDeleted(): Promise<void> {
+        const ids = await this.localRepo.GetPendingDeletion();
+
+        await this.cloudRepo.DeleteMany(ids);
+
+        await this.localRepo.ClearPendingDeletion();
+    }
+
     private log(msg: string): void {
         // console.log(`datasync - ${this.cloudRepo.collectionName} - ${msg}`);
     }
@@ -41,10 +49,13 @@ export class BaseEntitySync<E> implements EntitySync {
 interface LocalRepo<E> {
     SaveEntity: (entity: E) => Promise<void>;
     EntitiesModifiedAfter: (lastSynced: Date) => Promise<E[]>;
+    GetPendingDeletion(): Promise<string[]>;
+    ClearPendingDeletion(): Promise<void>;
 }
 
 interface CloudRepo<E> {
     collectionName: string;
     Many: (userId: string) => Promise<E[]>;
     SaveMany: (userId: string, entities: E[]) => Promise<void>;
+    DeleteMany(ids: string[]): Promise<void>;
 }

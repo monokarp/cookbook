@@ -32,6 +32,8 @@ export class DataSync {
                 if (lastSynced) {
                     for (const one of this.syncs) {
                         await one.sendPending(userId, lastSynced);
+
+                        await one.clearDeleted();
                     }
                 }
 
