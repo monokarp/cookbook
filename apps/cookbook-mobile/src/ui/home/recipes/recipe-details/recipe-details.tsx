@@ -19,7 +19,7 @@ import { styles } from "./recipe-details.style";
 
 
 export interface RecipeDetailsFormData {
-    name: string
+    recipeName: string
 };
 
 export function RecipeDetails({ navigation }) {
@@ -46,7 +46,7 @@ export function RecipeDetails({ navigation }) {
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
-        const updatedRecipe = new Recipe({ ...recipe, name: data.name });
+        const updatedRecipe = new Recipe({ ...recipe, name: data.recipeName });
 
         await recipeRepo.Save(updatedRecipe);
 
@@ -95,8 +95,7 @@ export function RecipeDetails({ navigation }) {
 
                             <View style={{ flex: 4 }}>
                                 <Controller
-                                    name="name"
-                                    defaultValue={recipe.name}
+                                    name="recipeName"
                                     rules={{
                                         required: true,
                                         pattern: RegexPatterns.EntityName
@@ -145,19 +144,18 @@ export function RecipeDetails({ navigation }) {
                             }}
                         />
                     }
+                    ListFooterComponentStyle={{ justifyContent: 'center' }}
+                    ListFooterComponent={() =>
+                        <FAB
+                            testID={TestIds.RecipeDetails.AddIngredient}
+                            disabled={currentlyEditedItemIndex !== null}
+                            icon="plus"
+                            style={{ margin: 10, alignSelf: 'center' }}
+                            onPress={addEmptyIngredient}
+                        />
+                    }
                 />
             </KeyboardAvoidingView>
-
-            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <FAB
-                    testID={TestIds.RecipeDetails.AddIngredient}
-                    disabled={currentlyEditedItemIndex !== null}
-                    icon="plus"
-                    style={{ margin: 15 }}
-                    onPress={addEmptyIngredient}
-                />
-            </View>
-
         </FormProvider>
     );
 }

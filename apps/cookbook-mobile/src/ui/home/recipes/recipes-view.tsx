@@ -1,14 +1,14 @@
+import { Recipe } from '@cookbook/domain/types/recipe/recipe';
 import { TestIds } from '@cookbook/ui/test-ids';
 import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FlatList, Text, View } from 'react-native';
-import { Button, Divider, TextInput } from 'react-native-paper';
+import { View } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import { RecipesRepository } from '../../../core/repositories/recipes.repository';
 import { ExportToClipboard } from '../../common/clipboard-export';
-import { SummaryListItem } from '../../common/summary-list-item';
+import { EntityList } from '../../common/entity-list/entity-list';
 import { RootViews } from '../../root-views.enum';
-import { styles } from "../entity-view.style";
 import { useProductsStore } from '../products/products.store';
 import { useRecipesStore } from './recipes.store';
 
@@ -28,7 +28,7 @@ export function RecipesView({ navigation }) {
   }, [products]);
 
   return (
-    <View testID={TestIds.RecipesView.Container} style={styles.container}>
+    <View testID={TestIds.RecipesView.Container} style={{ flexGrow: 1 }}>
       <TextInput
         testID={TestIds.RecipesView.SearchInput}
         mode='flat'
@@ -37,33 +37,15 @@ export function RecipesView({ navigation }) {
         onChange={event => filter(event.nativeEvent.text)}
       />
 
-      <FlatList
-        style={styles.list}
-        data={filteredRecipes}
-        renderItem={({ item, index }) =>
-          <View>
-            <SummaryListItem
-              item={item}
-              itemTestId={TestIds.RecipesView.ListItem}
-              index={index}
-              itemSelected={() => navigation.navigate(RootViews.RecipeSummary, { recipe: item })}
-              deleteRequested={() => repo.Delete(item.id).then(() => deleteItem(item.id))}
-              exportRequested={() => clipboardExport.recipe(item)}
-            />
-            <Divider />
-          </View>
-        }
-        keyExtractor={product => product.id}
+      <EntityList<Recipe>
+        items={filteredRecipes}
+        itemTestId={TestIds.RecipesView.ListItem}
+        addNewButtonTestId={TestIds.RecipesView.AddNewButton}
+        select={item => navigation.navigate(RootViews.RecipeSummary, { recipe: item })}
+        addNew={() => navigation.navigate(RootViews.RecipeDetails, { recipe: repo.Create() })}
+        remove={item => repo.Delete(item.id).then(() => deleteItem(item.id))}
+        exportToClipboard={item => clipboardExport.recipe(item)}
       />
-
-      <Button
-        testID={TestIds.RecipesView.AddNewButton}
-        style={styles.button}
-        mode='contained-tonal'
-        onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: repo.Create() })}
-      >
-        <Text style={{ fontSize: 18 }}>{t('recipe.addNew')}</Text>
-      </Button>
     </View>
   );
 }

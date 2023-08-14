@@ -7,5 +7,5 @@ export const RegexPatterns = {
     Weight: new RegExp(`^\\d+\\.\\d{${WeightRoundingPrecision}}$`),
     Money: new RegExp(`^\\d+\\.?\\d{0,${MoneyRoundingPrecision}}?$`),
     // eslint-disable-next-line no-useless-escape
-    EntityName: /^[а-я\w\d\ \\\/\*\%\(\)]+$/im,
+    EntityName: /^[а-я\w\d\ \\\/\*\%\(\)\-]+$/im,
 };
