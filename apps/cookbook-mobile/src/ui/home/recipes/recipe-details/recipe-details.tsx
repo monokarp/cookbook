@@ -9,7 +9,7 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, Divider, FAB, Text, TextInput } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
@@ -121,6 +121,7 @@ export function RecipeDetails({ navigation }) {
                                     {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(recipe.totalPrice())}`}
                                 </Text>
 
+                                <Divider />
                             </View>
                         </View>
                     }

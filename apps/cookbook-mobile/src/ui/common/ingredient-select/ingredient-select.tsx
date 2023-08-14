@@ -11,7 +11,7 @@ import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import { FAB, Switch, Text, TextInput } from "react-native-paper";
+import { Divider, FAB, IconButton, List, Switch, Text, TextInput, withTheme } from "react-native-paper";
 import { ModalsContext } from "../modals/modals.context";
 import { styles } from "./ingredient-select.style";
 
@@ -42,7 +42,9 @@ interface IngredientSelectFormData {
     measuringUnits: string,
 }
 
-export function IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks }: IngredientSelectProps) {
+export const IngredientSelect = withTheme(_IngredientSelect);
+
+function _IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks, theme }: IngredientSelectProps & { theme }) {
     const { t } = useTranslation();
 
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;
@@ -92,155 +94,158 @@ export function IngredientSelect({ ingredient, isEditing, index, requestEdit, on
     };
 
     return (
-        isEditing
-            ? <View style={{ margin: 5, backgroundColor: '#cccccc', borderRadius: 5 }}>
-                <View style={{ padding: 5 }}>
+        <View>
+            {
+                isEditing
+                    ? <View style={{ margin: 2, backgroundColor: 'white' }}>
+                        <View style={{ padding: 5 }}>
 
-                    <View style={{ flexDirection: 'row' }}>
+                            <View style={{ flexDirection: 'row' }}>
 
-                        <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
+                                <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
 
-                            <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
+                                    <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
 
-                                <Controller
-                                    control={control}
-                                    name="ingredientBase"
-                                    rules={{
-                                        required: true,
-                                        validate: () => !!selectedBase.id,
-                                    }}
-                                    render={() =>
-                                        <Pressable
-                                            testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
-                                            style={{ backgroundColor: 'pink' }}
-                                            onPress={() => ingredientSelect(allowAddingPrepacks, e => {
-                                                setSelectedBase(e)
-                                            })}
-                                            onLongPress={() =>
-                                                confirmation(
-                                                    t('lists.deleteItemPrompt'),
-                                                    (result) => {
-                                                        if (result === 'confirm') {
-                                                            onDelete();
-                                                        }
+                                        <Controller
+                                            control={control}
+                                            name="ingredientBase"
+                                            rules={{
+                                                required: true,
+                                                validate: () => !!selectedBase.id,
+                                            }}
+                                            render={() =>
+                                                <Pressable
+                                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
+                                                    style={{ paddingLeft: 5, paddingVertical: 10, marginRight: 10, backgroundColor: theme.colors.secondaryContainer, borderRadius: 5 }}
+                                                    onPress={() => ingredientSelect(allowAddingPrepacks, e => {
+                                                        setSelectedBase(e)
                                                     })}
-                                        >
-                                            <Text
-                                                testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
-                                                variant="titleMedium">
-                                                {selectedBase?.name ? selectedBase.name : t('product.search.noneSelected')} {isPrepack(selectedBase) ? t('recipe.details.isPrepack') : ''}
-                                            </Text>
-                                        </Pressable>
-                                    }
-                                />
-
-                            </View>
-
-                            <View style={{ width: '40%', flexDirection: 'row', }}>
-
-                                <Controller
-                                    control={control}
-                                    name="measuringUnits"
-                                    rules={{
-                                        required: true,
-                                        validate: (value) => {
-                                            const regex = selectedMeasuringType === ProductMeasuring.Units
-                                                ? RegexPatterns.Money
-                                                : RegexPatterns.Weight;
-
-                                            return regex.test(value) && Number(value) > 0
-                                        },
-                                    }}
-                                    render={({ field: { value, onChange } }) =>
-                                        <TextInput
-                                            testID={collectionElementId(TestIds.IngredientSelect.UnitsInput, index)}
-                                            style={{ flexGrow: 1 }}
-                                            mode="outlined"
-                                            value={value}
-                                            onChangeText={onChange}
-                                            label={t(selectedMeasuringType === ProductMeasuring.Units ? 'product.measuring.units' : 'product.measuring.grams')}
-                                            keyboardType='numeric'
+                                                    onLongPress={() =>
+                                                        confirmation(
+                                                            t('lists.deleteItemPrompt'),
+                                                            (result) => {
+                                                                if (result === 'confirm') {
+                                                                    onDelete();
+                                                                }
+                                                            })}
+                                                >
+                                                    <Text
+                                                        testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
+                                                        variant="titleMedium">
+                                                        {selectedBase?.name ? selectedBase.name : t('product.search.noneSelected')} {isPrepack(selectedBase) ? t('recipe.details.isPrepack') : ''}
+                                                    </Text>
+                                                </Pressable>
+                                            }
                                         />
-                                    }
-                                />
 
-                                {
-                                    isMeasuredInUnits &&
-                                    <Switch
-                                        testID={collectionElementId(TestIds.IngredientSelect.UnitsToggle, index)}
-                                        value={selectedMeasuringType === ProductMeasuring.Units}
-                                        onValueChange={value => {
-                                            setMeasuring(value ? ProductMeasuring.Units : ProductMeasuring.Grams);
-                                        }}
+                                    </View>
+
+                                    <View style={{ width: '40%', flexDirection: 'row', }}>
+
+                                        <Controller
+                                            control={control}
+                                            name="measuringUnits"
+                                            rules={{
+                                                required: true,
+                                                validate: (value) => {
+                                                    const regex = selectedMeasuringType === ProductMeasuring.Units
+                                                        ? RegexPatterns.Money
+                                                        : RegexPatterns.Weight;
+
+                                                    return regex.test(value) && Number(value) > 0
+                                                },
+                                            }}
+                                            render={({ field: { value, onChange } }) =>
+                                                <TextInput
+                                                    testID={collectionElementId(TestIds.IngredientSelect.UnitsInput, index)}
+                                                    style={{ flexGrow: 1 }}
+                                                    mode="outlined"
+                                                    value={value}
+                                                    onChangeText={onChange}
+                                                    label={t(selectedMeasuringType === ProductMeasuring.Units ? 'product.measuring.units' : 'product.measuring.grams')}
+                                                    keyboardType='numeric'
+                                                />
+                                            }
+                                        />
+
+                                        {
+                                            isMeasuredInUnits &&
+                                            <Switch
+                                                testID={collectionElementId(TestIds.IngredientSelect.UnitsToggle, index)}
+                                                value={selectedMeasuringType === ProductMeasuring.Units}
+                                                onValueChange={value => {
+                                                    setMeasuring(value ? ProductMeasuring.Units : ProductMeasuring.Grams);
+                                                }}
+                                            />
+                                        }
+                                    </View>
+                                </View>
+
+                                <View style={{ flex: 1, alignItems: 'center' }}>
+                                    <IconButton
+                                        testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
+                                        icon={'check-bold'}
+                                        onTouchEnd={submit}
                                     />
-                                }
+                                </View>
+
+                            </View>
+                            {
+                                errors.ingredientBase &&
+                                <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.RequiredError, index)} style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>
+                            }
+                            {
+                                errors.measuringUnits &&
+                                <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.UnitsError, index)} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
+                            }
+                        </View>
+                    </View >
+
+                    : <View style={{ margin: 1 }}>
+                        <View style={{ padding: 5 }}>
+
+                            <View style={{ flexDirection: 'row' }}>
+
+                                <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
+
+                                    <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
+                                        <Text
+                                            testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
+                                            variant="titleMedium"
+                                        >
+                                            {getBase(ingredient).name} {isPrepack(getBase(ingredient)) ? t('recipe.details.isPrepack') : ''}
+                                        </Text>
+
+                                        <Text
+                                            testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Price, index)}
+                                            variant="labelSmall"
+                                        >
+                                            {`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredient.price())}`}
+                                        </Text>
+                                    </View>
+
+                                    <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center' }}>
+
+                                        <Text style={{ flexGrow: 1, fontSize: 16 }} variant="labelSmall" >
+                                            {measuringUnits}
+                                        </Text>
+
+                                    </View>
+                                </View>
+
+                                <View style={{ flex: 1, alignItems: 'center' }}>
+                                    <IconButton
+                                        testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
+                                        icon={'file-edit'}
+                                        onPress={requestEdit}
+                                    />
+                                </View>
+
                             </View>
                         </View>
-
-                        <View style={{ flex: 1, alignItems: 'center' }}>
-                            <FAB
-                                testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
-                                size='small'
-                                icon={'check-bold'}
-                                onTouchEnd={submit}
-                            />
-                        </View>
-
                     </View>
-                    {
-                        errors.ingredientBase &&
-                        <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.RequiredError, index)} style={styles.validationErrorLabel}>{t('validation.required.selectProduct')}</Text>
-                    }
-                    {
-                        errors.measuringUnits &&
-                        <Text testID={collectionElementId(TestIds.IngredientSelect.Ingredient.UnitsError, index)} style={styles.validationErrorLabel}>{t('validation.required.decimalGTE', { gte: 0 })}</Text>
-                    }
-                </View>
-            </View >
-
-            : <View style={{ margin: 5, backgroundColor: '#cccccc', borderRadius: 5 }}>
-                <View style={{ padding: 5 }}>
-
-                    <View style={{ flexDirection: 'row' }}>
-
-                        <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
-
-                            <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
-                                <Text
-                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
-                                    variant="titleMedium"
-                                >
-                                    {getBase(ingredient).name} {isPrepack(getBase(ingredient)) ? t('recipe.details.isPrepack') : ''}
-                                </Text>
-
-                                <Text
-                                    testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Price, index)}
-                                    variant="labelSmall"
-                                >
-                                    {`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredient.price())}`}
-                                </Text>
-                            </View>
-
-                            <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center' }}>
-
-                                <Text style={{ flexGrow: 1, fontSize: 16 }} variant="labelSmall" >
-                                    {measuringUnits}
-                                </Text>
-
-                            </View>
-                        </View>
-
-                        <View style={{ flex: 1, alignItems: 'center' }}>
-                            <FAB
-                                testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
-                                size='small'
-                                icon={'file-edit'}
-                                onPress={requestEdit}
-                            />
-                        </View>
-
-                    </View>
-                </View>
-            </View>
+            }
+            <Divider />
+        </View>
     );
 }

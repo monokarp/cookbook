@@ -7,7 +7,7 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, Divider, FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
@@ -131,6 +131,8 @@ export function PrepackDetails({ navigation }) {
                                 <Text variant="labelLarge" style={{ margin: 5 }}>
                                     {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(prepack.price())}`}
                                 </Text>
+
+                                <Divider />
                             </View>
                         </View>
                     }
