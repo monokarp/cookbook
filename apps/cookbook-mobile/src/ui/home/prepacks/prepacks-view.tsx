@@ -54,6 +54,7 @@ export function PrepacksView({ navigation }) {
                 items={filteredPrepacks}
                 itemTestId={TestIds.PrepacksView.ListItem}
                 addNewButtonTestId={TestIds.PrepacksView.AddNewButton}
+                addNewButtonText={t('prepack.addNew')}
                 select={item => navigation.navigate(RootViews.PrepackDetails, { prepack: item })}
                 addNew={() => navigation.navigate(RootViews.PrepackDetails, { prepack: repo.Create() })}
                 remove={item => deletePrepack(item.id)}

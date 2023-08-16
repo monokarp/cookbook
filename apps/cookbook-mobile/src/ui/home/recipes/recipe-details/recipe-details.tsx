@@ -73,7 +73,7 @@ export function RecipeDetails({ navigation }) {
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title={t('recipe.details.title')} />
-                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} />
+                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} testID={TestIds.RecipeDetails.Submit} />
             </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList

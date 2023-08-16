@@ -41,6 +41,7 @@ export function RecipesView({ navigation }) {
         items={filteredRecipes}
         itemTestId={TestIds.RecipesView.ListItem}
         addNewButtonTestId={TestIds.RecipesView.AddNewButton}
+        addNewButtonText={t('recipe.addNew')}
         select={item => navigation.navigate(RootViews.RecipeSummary, { recipe: item })}
         addNew={() => navigation.navigate(RootViews.RecipeDetails, { recipe: repo.Create() })}
         remove={item => repo.Delete(item.id).then(() => deleteItem(item.id))}

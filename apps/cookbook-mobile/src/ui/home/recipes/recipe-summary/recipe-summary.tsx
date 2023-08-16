@@ -6,7 +6,7 @@ import { useInjection } from "inversify-react-native";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
-import { Appbar, Divider, Text, ToggleButton } from "react-native-paper";
+import { Appbar, Divider, List, Text, ToggleButton } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { RootViews } from "../../../root-views.enum";
 import { useRecipesStore } from "../recipes.store";
@@ -75,11 +75,30 @@ export function RecipeSummary({ navigation, route }) {
                     {
                         recipe.positions.reduce((acc, one, idx) => {
                             if (isPrepackIngredient(one)) {
-                                acc.push(<View key={idx * 2} style={styles.positionRow}>
-                                    <PositionRowLabel>{one.prepack.name} {t('recipe.details.isPrepack')}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-                                </View>);
+                                acc.push(
+                                    <List.Accordion
+                                        key={idx * 2}
+                                        title={one.prepack.name}
+                                    >
+                                        {
+
+                                            [
+                                                <View style={styles.recipePriceRow}>
+                                                    <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
+                                                    <TotalsRowLabel>{FormatNumber.Weight(one.prepack.finalWeight * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                                                    <TotalsRowLabel>{FormatNumber.Money(one.prepack.price() * ratio)}</TotalsRowLabel>
+                                                </View>,
+                                                ...one.prepack.ingredients.map((productIngredient, idx) =>
+                                                    <View key={idx} style={styles.positionRow}>
+                                                        <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
+                                                        <PositionRowLabel>{FormatNumber.Weight(productIngredient.weight() * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
+                                                        <PositionRowLabel>{FormatNumber.Money(productIngredient.price() * ratio)}</PositionRowLabel>
+                                                    </View>
+                                                )
+                                            ]
+                                        }
+                                    </List.Accordion>
+                                );
                             } else if (isProductIngredient(one)) {
                                 acc.push(<View key={idx * 2} style={styles.positionRow}>
                                     <PositionRowLabel>{one.product.name}</PositionRowLabel>

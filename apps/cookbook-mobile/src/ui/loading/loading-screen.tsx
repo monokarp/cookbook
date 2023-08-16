@@ -1,6 +1,5 @@
 import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { Database } from '../../core/database/database';
@@ -11,8 +10,6 @@ import { useSession } from '../login/session.store';
 import { RootViews } from '../root-views.enum';
 
 export function LoadingScreen({ navigation }) {
-    const { t } = useTranslation();
-
     const db = useInjection(Database);
     const seedData = useInjection(SeedData);
     const ds = useInjection(DataSync);
@@ -45,7 +42,7 @@ export function LoadingScreen({ navigation }) {
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <ActivityIndicator animating={true} />
+            <ActivityIndicator animating={!hasInitialized} />
         </View>
     );
 }

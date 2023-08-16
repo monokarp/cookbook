@@ -66,7 +66,7 @@ export function PrepackDetails({ navigation }) {
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title={t('prepack.details.title')} />
-                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} />
+                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} testID={TestIds.PrepackDetails.Submit} />
             </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList

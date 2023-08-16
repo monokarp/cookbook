@@ -21,9 +21,13 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
 
     const [value, setValue] = useState(description);
 
+    const [textDisplayed, setTextDisplayed] = useState(!!value);
+
     const [icon, setIcon] = useState(Icons.Default);
 
     function onSave() {
+        if (!textDisplayed) { setTextDisplayed(true); }
+
         onUpdate(value);
         setIcon(Icons.Saved);
 
@@ -31,21 +35,24 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
     }
 
     return (
-        <View style={{ flexWrap: 'wrap', marginTop:20 }}>
-            <View style={{ width: '100%', maxHeight:'50%' }}>
-                <TextInput
-                    ref={ref => inputRef = ref}
-                    label={t('recipe.description')}
-                    style={{ marginHorizontal: 5 }}
-                    mode="outlined"
-                    multiline={true}
-                    value={value}
-                    onChange={event => setValue(event.nativeEvent.text)}
-                />
+        <View style={{ flexWrap: 'wrap', marginTop: 20 }}>
+            <View style={{ width: '100%' }}>
+                {
+                    textDisplayed &&
+                    <TextInput
+                        ref={ref => inputRef = ref}
+                        label={t('recipe.description')}
+                        style={{ marginHorizontal: 5 }}
+                        mode="outlined"
+                        multiline={true}
+                        value={value}
+                        onChange={event => setValue(event.nativeEvent.text)}
+                    />
+                }
             </View>
             <IconButton style={{ alignSelf: 'flex-end' }}
                 icon={icon}
-                onTouchStart={() => inputRef.blur()}
+                onTouchStart={() => inputRef?.blur()}
                 onTouchEnd={onSave}
             />
         </View>

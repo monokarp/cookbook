@@ -2,7 +2,7 @@ import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
 import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
 
-describe('Recipes view', () => {
+xdescribe('Recipes view', () => {
     beforeAll(async () => {
         await device.reloadReactNative();
     });

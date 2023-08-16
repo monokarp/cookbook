@@ -55,6 +55,7 @@ export function ProductsView({ navigation }) {
         items={filteredProducts}
         itemTestId={TestIds.ProductsView.ListItem}
         addNewButtonTestId={TestIds.ProductsView.AddNewButton}
+        addNewButtonText={t('product.addNew')}
         select={item => navigation.navigate(RootViews.ProductDetails, { product: item, mode: FormMode.Edit })}
         addNew={() => navigation.navigate(RootViews.ProductDetails, { product: repo.Create(), mode: FormMode.New })}
         remove={item => tryDeleteProduct(item)}
