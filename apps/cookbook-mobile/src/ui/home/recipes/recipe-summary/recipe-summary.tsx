@@ -73,23 +73,23 @@ export function RecipeSummary({ navigation, route }) {
                     </View>
                     <Divider />
                     {
-                        recipe.positions.reduce((acc, one, idx) => {
+                        recipe.positions.reduce((acc, one, recipePositionIndex) => {
                             if (isPrepackIngredient(one)) {
                                 acc.push(
                                     <List.Accordion
-                                        key={idx * 2}
+                                        key={recipePositionIndex * 2}
                                         title={one.prepack.name}
                                     >
                                         {
 
                                             [
-                                                <View style={styles.recipePriceRow}>
+                                                <View key={`${recipePositionIndex * 2}-0`} style={styles.recipePriceRow}>
                                                     <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
-                                                    <TotalsRowLabel>{FormatNumber.Weight(one.prepack.finalWeight * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
-                                                    <TotalsRowLabel>{FormatNumber.Money(one.prepack.price() * ratio)}</TotalsRowLabel>
+                                                    <TotalsRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                                                    <TotalsRowLabel>{FormatNumber.Money(one.price() * ratio)}</TotalsRowLabel>
                                                 </View>,
-                                                ...one.prepack.ingredients.map((productIngredient, idx) =>
-                                                    <View key={idx} style={styles.positionRow}>
+                                                ...one.prepack.ingredients.map((productIngredient, prepackPositionIndex) =>
+                                                    <View key={`${recipePositionIndex * 2}-${prepackPositionIndex + 1}`} style={styles.positionRow}>
                                                         <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
                                                         <PositionRowLabel>{FormatNumber.Weight(productIngredient.weight() * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
                                                         <PositionRowLabel>{FormatNumber.Money(productIngredient.price() * ratio)}</PositionRowLabel>
@@ -100,7 +100,7 @@ export function RecipeSummary({ navigation, route }) {
                                     </List.Accordion>
                                 );
                             } else if (isProductIngredient(one)) {
-                                acc.push(<View key={idx * 2} style={styles.positionRow}>
+                                acc.push(<View key={recipePositionIndex * 2} style={styles.positionRow}>
                                     <PositionRowLabel>{one.product.name}</PositionRowLabel>
                                     <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
                                     <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
@@ -109,7 +109,7 @@ export function RecipeSummary({ navigation, route }) {
                                 acc.push(<Text style={styles.positionLabelMargin}>Unrecognized position type</Text>);
                             }
 
-                            acc.push(<Divider key={(idx * 2) + 1} />);
+                            acc.push(<Divider key={(recipePositionIndex * 2) + 1} />);
 
                             return acc;
                         }, [])
