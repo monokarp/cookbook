@@ -3,7 +3,7 @@ import { ProductMeasuring, ProductPricing } from '@cookbook/domain/types/product
 import { Prepack } from '@cookbook/domain/types/recipe/prepack';
 import { PrepackIngredient, PrepackIngredientEntity } from '@cookbook/domain/types/recipe/prepack-ingredient';
 import { ProductIngredient, ProductIngredientEntity } from '@cookbook/domain/types/recipe/product-ingredient';
-import { Position, PositionEntity, Recipe, RecipeEntity, isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, isProductIngredientEntity } from '@cookbook/domain/types/recipe/recipe';
+import { Position, PositionEntity, PositionGroup, Recipe, RecipeEntity, isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, isProductIngredientEntity } from '@cookbook/domain/types/recipe/recipe';
 import { inject, injectable } from 'inversify';
 import uuid from 'react-native-uuid';
 import { Database, Query } from '../database/database';
@@ -44,7 +44,8 @@ export class RecipesRepository {
             name: '',
             lastModified: '',
             description: '',
-            positions: []
+            positions: [],
+            groups: [],
         });
     }
 
@@ -69,12 +70,16 @@ export class RecipesRepository {
 
         const prepacks = await this.prepackRepository.Many(prepackIds);
 
+        const positionGroups = await this.GetPositionGroupsMap(recipeIds);
+
         const recipes = [];
 
         for (const productRows of recipeMap.values()) {
             const recipe = MapRecipe(productRows);
 
             const prepackPositions = prepackPositionsMap.get(recipe.id) ?? [];
+
+            recipe.groups.push(...positionGroups.get(recipe.id)?.map(MapPositionGroup) ?? []);
 
             for (const prepackPosition of prepackPositions) {
                 const matchingPrepack: Prepack | undefined = prepacks.find(prepack => prepack.id === prepackPosition.PrepackId);
@@ -120,12 +125,15 @@ export class RecipesRepository {
 
         const prepacks = await this.prepackRepository.Many(prepackPositions.rows.raw().map(row => row.PrepackId));
 
+        const positionGroups = await this.GetPositionGroupsMap([id]);
+
         const result = new Recipe({
             id: ingredientPositions[0].Id,
             name: ingredientPositions[0].Name,
             lastModified: ingredientPositions[0].LastModified,
             description: ingredientPositions[0].Description,
-            positions: []
+            positions: [],
+            groups: positionGroups.get(id)?.map(MapPositionGroup) ?? [],
         });
 
         ingredientPositions.forEach(
@@ -165,6 +173,14 @@ export class RecipesRepository {
                 [recipe.id]
             ],
             ...recipe.positions.map((position, idx) => SavePositionQuery(recipe.id, position, idx)),
+            [
+                'DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;',
+                [recipe.id]
+            ],
+            ...recipe.groups.map(one => ([
+                'INSERT INTO [RecipePositionGroups] VALUES (?, ?, ?);',
+                [recipe.id, one.name, one.positionIndices.join(',')],
+            ] as Query)),
         ]);
     }
 
@@ -183,6 +199,14 @@ export class RecipesRepository {
                 [entity.id]
             ],
             ...entity.positions.map((position, idx) => SavePositionEntityQuery(entity.id, position, idx)),
+            [
+                'DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;',
+                [entity.id]
+            ],
+            ...entity.groups.map(one => ([
+                'INSERT INTO [RecipePositionGroups] VALUES (?, ?, ?);',
+                [entity.id, one.name, one.positionIndices.join(',')],
+            ] as Query)),
         ]);
     }
 
@@ -205,15 +229,20 @@ export class RecipesRepository {
 
         const prepackPositionsMap = GroupById<PrepackIngredientRow>(prepackPositions.rows.raw());
 
+        const positionGroups = await this.GetPositionGroupsMap(recipeIds);
+
         const entities: RecipeEntity[] = [];
 
         for (const productRows of recipeMap.values()) {
+            const id = productRows[0].Id;
+
             const entity = {
-                id: productRows[0].Id,
+                id,
                 name: productRows[0].Name,
                 lastModified: productRows[0].LastModified,
                 description: productRows[0].Description,
-                positions: []
+                positions: [],
+                groups: positionGroups.get(id)?.map(MapPositionGroup) ?? [],
             };
 
             for (const productPosition of productRows) {
@@ -268,6 +297,17 @@ export class RecipesRepository {
 
     public async ClearPendingDeletion(): Promise<void> {
         await this.database.ExecuteSql('DELETE FROM [RecipesPendingDeletion]');
+    }
+
+    private async GetPositionGroupsMap(recipeIds: string[]) {
+        const [positionGroupRows] = await this.database.ExecuteSql(
+            `SELECT [RecipePositionGroups].[RecipeId] AS [Id], [RecipePositionGroups].[Name], [RecipePositionGroups].[PositionIndicesCsv]
+            FROM [RecipePositionGroups]
+            WHERE [RecipePositionGroups].[RecipeId] IN (${recipeIds.map(() => '?').join(', ')})`,
+            recipeIds
+        );
+
+        return GroupById<PositionGroupRow>(positionGroupRows.rows.raw());
     }
 }
 
@@ -341,7 +381,8 @@ function MapRecipe(rows: ProductIngredientRecipeRow[]): Recipe {
         name: rows[0].Name,
         lastModified: rows[0].LastModified,
         description: rows[0].Description,
-        positions: []
+        positions: [],
+        groups: [],
     });
 
     if (HasPositions(rows)) {
@@ -351,6 +392,19 @@ function MapRecipe(rows: ProductIngredientRecipeRow[]): Recipe {
     }
 
     return recipe;
+}
+
+interface PositionGroupRow {
+    Id: string;
+    Name: string;
+    PositionIndicesCsv: string;
+}
+
+function MapPositionGroup(row: PositionGroupRow): PositionGroup {
+    return {
+        name: row.Name,
+        positionIndices: row.PositionIndicesCsv.split(',').map(Number)
+    };
 }
 
 function SavePositionQuery(recipeId: string, position: Position, idx: number): Query {

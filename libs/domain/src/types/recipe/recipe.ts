@@ -12,12 +12,14 @@ export class Recipe implements NamedEntity {
     public readonly lastModified: string;
     public readonly description: string;
     public readonly positions: Position[];
+    public readonly groups: PositionGroup[];
 
     constructor(data: RecipeDto) {
         this.id = data.id;
         this.name = data.name;
         this.lastModified = data.lastModified;
         this.description = data.description;
+        this.groups = data.groups;
         this.positions = data.positions.map(dto => {
             if (isPrepackIngredient(dto)) {
                 return new PrepackIngredient(dto);
@@ -40,12 +42,18 @@ export class Recipe implements NamedEntity {
     }
 }
 
+export interface PositionGroup {
+    name: string;
+    positionIndices: number[];
+}
+
 export interface RecipeDto {
     id: string,
     name: string,
     lastModified: string,
     description: string,
-    positions: PositionDto[]
+    positions: PositionDto[],
+    groups: PositionGroup[],
 }
 
 export function isPrepackIngredient(position: PositionDto): position is PrepackIngredientDto {
@@ -78,6 +86,7 @@ export interface RecipeEntity {
     lastModified: string;
     description: string;
     positions: PositionEntity[];
+    groups: PositionGroup[];
 }
 
 export type PositionEntity = ProductIngredientEntity | PrepackIngredientEntity;

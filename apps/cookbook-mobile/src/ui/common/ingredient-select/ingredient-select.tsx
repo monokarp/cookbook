@@ -23,6 +23,8 @@ export interface IngredientSelectProps {
     requestEdit: () => void,
     onEditConfirmed: (update: Position) => void,
     onDelete: () => void,
+    toggleGroupEditing?: () => void,
+    toggleItemGrouping?: () => void,
 }
 
 function getBase(position: Position): IngredientBase {
@@ -44,7 +46,18 @@ interface IngredientSelectFormData {
 
 export const IngredientSelect = withTheme(_IngredientSelect);
 
-function _IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditConfirmed, onDelete, allowAddingPrepacks, theme }: IngredientSelectProps & { theme }) {
+function _IngredientSelect({
+    allowAddingPrepacks,
+    ingredient,
+    isEditing,
+    index,
+    requestEdit,
+    onEditConfirmed,
+    onDelete,
+    toggleGroupEditing,
+    toggleItemGrouping,
+    theme
+}: IngredientSelectProps & { theme }) {
     const { t } = useTranslation();
 
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;
@@ -94,7 +107,7 @@ function _IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditCo
     };
 
     return (
-        <View>
+        <View style={{ width:'100%' }}>
             {
                 isEditing
                     ? <View style={{ margin: 2, backgroundColor: 'white' }}>
@@ -202,50 +215,51 @@ function _IngredientSelect({ ingredient, isEditing, index, requestEdit, onEditCo
                     </View >
 
                     : <View style={{ margin: 1 }}>
-                        <View style={{ padding: 5 }}>
+                        <Pressable onPress={() => toggleItemGrouping?.()} onLongPress={() => toggleGroupEditing?.()}>
+                            <View style={{ padding: 5 }}>
+                                <View style={{ flexDirection: 'row' }}>
 
-                            <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
 
-                                <View style={{ flex: 4, flexDirection: 'row', flexWrap: 'wrap' }}>
+                                        <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
+                                            <Text
+                                                testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
+                                                variant="titleMedium"
+                                            >
+                                                {getBase(ingredient).name} {isPrepack(getBase(ingredient)) ? t('recipe.details.isPrepack') : ''}
+                                            </Text>
 
-                                    <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
-                                        <Text
-                                            testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
-                                            variant="titleMedium"
-                                        >
-                                            {getBase(ingredient).name} {isPrepack(getBase(ingredient)) ? t('recipe.details.isPrepack') : ''}
-                                        </Text>
+                                            <Text
+                                                testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Price, index)}
+                                                variant="labelSmall"
+                                            >
+                                                {`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredient.price())}`}
+                                            </Text>
+                                        </View>
 
-                                        <Text
-                                            testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Price, index)}
-                                            variant="labelSmall"
-                                        >
-                                            {`${t('recipe.ingredientPrice')} ${FormatNumber.Money(ingredient.price())}`}
-                                        </Text>
+                                        <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center' }}>
+
+                                            <Text style={{ flexGrow: 1, fontSize: 16 }} variant="labelSmall" >
+                                                {measuringUnits}
+                                            </Text>
+
+                                        </View>
                                     </View>
 
-                                    <View style={{ width: '40%', flexDirection: 'row', alignItems: 'center' }}>
-
-                                        <Text style={{ flexGrow: 1, fontSize: 16 }} variant="labelSmall" >
-                                            {measuringUnits}
-                                        </Text>
-
+                                    <View style={{ flex: 1, alignItems: 'center' }}>
+                                        <IconButton
+                                            testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
+                                            icon={'file-edit'}
+                                            onPress={requestEdit}
+                                        />
                                     </View>
-                                </View>
 
-                                <View style={{ flex: 1, alignItems: 'center' }}>
-                                    <IconButton
-                                        testID={collectionElementId(TestIds.IngredientSelect.Edit, index)}
-                                        icon={'file-edit'}
-                                        onPress={requestEdit}
-                                    />
                                 </View>
-
                             </View>
-                        </View>
+                        </Pressable>
                     </View>
             }
             <Divider />
-        </View>
+        </View >
     );
 }

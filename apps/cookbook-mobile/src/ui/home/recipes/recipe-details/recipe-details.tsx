@@ -9,13 +9,14 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, Divider, FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, Divider, FAB, Text, TextInput, Button, IconButton } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
 import { useRecipesStore } from "../recipes.store";
 import { RecipeDetailsContext } from "./recipe-details.store";
 import { styles } from "./recipe-details.style";
+import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
 
 
 export interface RecipeDetailsFormData {
@@ -44,6 +45,14 @@ export function RecipeDetails({ navigation }) {
     });
 
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
+
+    const [isEditingGroups, setGroupEditing] = useState(false);
+    const [activeGroup, setActiveGroup] = useState([]);
+
+    function dismissGroupEditing() {
+        setGroupEditing(false);
+        setActiveGroup([]);
+    }
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
         const updatedRecipe = new Recipe({ ...recipe, name: data.recipeName });
@@ -127,33 +136,62 @@ export function RecipeDetails({ navigation }) {
                     }
                     data={positions}
                     renderItem={({ item, index }) =>
-                        <IngredientSelect
-                            allowAddingPrepacks={true}
-                            ingredient={item}
-                            index={index}
-                            isEditing={currentlyEditedItemIndex === index}
-                            requestEdit={() => {
-                                setCurrentlyEditedItemIndex(index)
-                            }}
-                            onEditConfirmed={(position) => {
-                                console.log('position edit confirmed', position)
-                                setPosition(position, index);
-                                setCurrentlyEditedItemIndex(null);
-                            }}
-                            onDelete={() => {
-                                deleteIngredient(index);
-                            }}
-                        />
+                        <GroupRowWrapper recipeGroups={recipe.groups} rowIndex={index}>
+                            <IngredientSelect
+                                allowAddingPrepacks={true}
+                                ingredient={item}
+                                index={index}
+                                isEditing={currentlyEditedItemIndex === index}
+                                requestEdit={() => {
+                                    setCurrentlyEditedItemIndex(index)
+                                }}
+                                onEditConfirmed={(position) => {
+                                    console.log('position edit confirmed', position)
+                                    setPosition(position, index);
+                                    setCurrentlyEditedItemIndex(null);
+                                }}
+                                onDelete={() => {
+                                    deleteIngredient(index);
+                                }}
+                                toggleGroupEditing={() => {
+                                    if (!isEditingGroups) { setGroupEditing(true) }
+
+                                    // lookup if the item belongs to a group and set its state to active
+
+                                    if (!activeGroup.includes(index)) {
+                                        setActiveGroup([...activeGroup, index].sort())
+                                    }
+                                }}
+                                toggleItemGrouping={() => {
+                                    if (!isEditingGroups) { return; }
+
+                                    if (activeGroup.includes(index)) { return setActiveGroup(activeGroup.filter(one => one !== index)) }
+
+                                    setActiveGroup([...activeGroup, index].sort())
+                                }}
+                            />
+                        </GroupRowWrapper>
                     }
                     ListFooterComponentStyle={{ justifyContent: 'center' }}
                     ListFooterComponent={() =>
-                        <FAB
-                            testID={TestIds.RecipeDetails.AddIngredient}
-                            disabled={currentlyEditedItemIndex !== null}
-                            icon="plus"
-                            style={{ margin: 10, alignSelf: 'center' }}
-                            onPress={addEmptyIngredient}
-                        />
+                        isEditingGroups
+                            ? <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-evenly' }}>
+                                <Button mode="outlined" onPress={() => dismissGroupEditing()}>
+                                    Cancel group
+                                </Button>
+                                <Button mode="outlined" onPress={() => {
+                                    dismissGroupEditing();
+                                }}>
+                                    Confirm group
+                                </Button>
+                            </View>
+                            : <FAB
+                                testID={TestIds.RecipeDetails.AddIngredient}
+                                disabled={currentlyEditedItemIndex !== null}
+                                icon="plus"
+                                style={{ margin: 10, alignSelf: 'center' }}
+                                onPress={addEmptyIngredient}
+                            />
                     }
                 />
             </KeyboardAvoidingView>

@@ -117,7 +117,8 @@ export class SeedData {
                         units: 50
                     }
                 }
-            ]
+            ],
+            groups: [],
         },
         {
             id: 'b0250c1d-c8aa-4dfa-873f-4a64490028bf',
@@ -139,7 +140,8 @@ export class SeedData {
                         units: 20
                     }
                 }
-            ]
+            ],
+            groups: [],
         },
         {
             id: '4493f114-3fca-4a3b-aab4-ad48e3ca6372',
@@ -158,7 +160,62 @@ export class SeedData {
                     prepackId: '13435459-4493-4326-b7f9-ff18b2630590',
                     weightInGrams: 200
                 }
-            ]
+            ],
+            groups: [],
+        },
+        {
+            id: '3ff1c88a-2ce3-48cb-bbfb-be2544081d54',
+            name: 'Рецепт с группами',
+            lastModified: new Date().toISOString(),
+            description: '',
+            positions: [
+                {
+                    productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 101
+                    }
+                },
+                {
+                    productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
+                    serving: {
+                        measuring: ProductMeasuring.Grams,
+                        units: 102
+                    }
+                },
+                {
+                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    serving: {
+                        measuring: ProductMeasuring.Units,
+                        units: 3
+                    }
+                },
+                {
+                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    serving: {
+                        measuring: ProductMeasuring.Units,
+                        units: 5
+                    }
+                },
+                {
+                    prepackId: '13435459-4493-4326-b7f9-ff18b2630590',
+                    weightInGrams: 104
+                },
+                {
+                    prepackId: '526d1a69-2a24-4b10-a747-8a6cda882d3e',
+                    weightInGrams: 105
+                },
+            ],
+            groups: [
+                {
+                    name: 'Продукты',
+                    positionIndices: [1, 2, 3],
+                },
+                {
+                    name: 'Пфы',
+                    positionIndices: [4, 5],
+                }
+            ],
         }
     ];
 
