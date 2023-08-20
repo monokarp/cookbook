@@ -87,6 +87,10 @@ export function RecipeDetails({ navigation }) {
     };
 
     function deleteIngredient(index: number) {
+        const isGrouped = !!recipe.groups.find(one => one.positionIndices.includes(index));
+
+        if (isGrouped) { return; }
+
         removePosition(index);
         setCurrentlyEditedItemIndex(null);
     };

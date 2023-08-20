@@ -51,12 +51,20 @@ export function createRecipeDetailsStore(defaultValue: Recipe) {
         applyGroup: (group: PositionGroup) =>
             set(
                 state => {
-                    const prunedRecipeGroups = state.recipe.groups.map(
-                        one => ({
-                            ...one,
-                            positionIndices: one.positionIndices.filter(idx => !group.positionIndices.includes(idx))
-                        })
-                    );
+                    const prunedRecipeGroups = state.recipe.groups.reduce(
+                        (groups, next) => {
+                            const prunedIndices = next.positionIndices.filter(idx => !group.positionIndices.includes(idx));
+
+                            if (prunedIndices.length) {
+                                groups.push({
+                                    ...next,
+                                    positionIndices: prunedIndices
+                                });
+                            }
+
+                            return groups;
+                        }
+                        , []);
 
                     const updatedGroupsLastIndex = group.positionIndices[group.positionIndices.length - 1];
                     const nextGroupIndex = state.recipe.groups.findIndex(existingGroup => existingGroup.positionIndices[0] > updatedGroupsLastIndex);
