@@ -1,13 +1,28 @@
 import { PositionGroup } from "@cookbook/domain/types/recipe/recipe";
-import { PropsWithChildren } from "react";
+import { PropsWithChildren, useContext } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { IconButton, Text } from "react-native-paper";
+import { ModalsContext } from "../../../../common/modals/modals.context";
+import { GroupNameInput } from "./group-name-input/group-name-input";
 import { styles } from "./group-wrapper.style";
 
-export type GroupWrapperProps = PropsWithChildren<{ recipeGroups: PositionGroup[], rowIndex: number }>;
+export type GroupWrapperProps = PropsWithChildren<{
+    recipeGroups: PositionGroup[],
+    rowIndex: number,
+    groupEditing?: {
+        isActive: boolean,
+        onRemove: (groupName: string) => void,
+        onConfirm: (updatedName: string) => void,
+        onCancel: () => void,
+    }
+}>;
 
 
-export function GroupRowWrapper({ recipeGroups, children, rowIndex }: GroupWrapperProps) {
+export function GroupRowWrapper({ recipeGroups, children, rowIndex, groupEditing }: GroupWrapperProps) {
+    const { t } = useTranslation();
+
+    const { confirmation } = useContext(ModalsContext);
 
     let rowStyle = styles.base;
 
@@ -30,7 +45,45 @@ export function GroupRowWrapper({ recipeGroups, children, rowIndex }: GroupWrapp
 
     return (
         <View style={rowStyle}>
-            {isFirstItemInGroup && <Text style={{ width: '100%', padding:2 }} variant="bodyMedium">{matchingGroup.name}</Text>}
+            {
+                isFirstItemInGroup &&
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    {
+                        groupEditing
+
+                            ? groupEditing.isActive
+                                ? <GroupNameInput
+                                    groupName={matchingGroup.name}
+                                    onConfirm={groupEditing.onConfirm}
+                                    onCancel={groupEditing.onCancel}
+                                />
+
+                                : <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={{ flexGrow: 1, paddingLeft: 5 }} variant="bodyLarge">
+                                        {matchingGroup.name}
+                                    </Text>
+                                    <IconButton
+                                        icon="trash-can"
+                                        size={22}
+                                        onPress={() => {
+                                            confirmation(
+                                                t('recipe.groups.remove'),
+                                                (result) => {
+                                                    if (result === 'confirm') {
+                                                        groupEditing.onRemove(matchingGroup.name)
+                                                    }
+                                                }
+                                            )
+                                        }}
+                                    />
+                                </View>
+
+                            : <Text style={{ flexGrow: 1, paddingLeft: 5 }} variant="bodyLarge">
+                                {matchingGroup.name}
+                            </Text>
+                    }
+                </View>
+            }
             {children}
         </View>
     );

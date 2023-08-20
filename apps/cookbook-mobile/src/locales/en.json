@@ -53,15 +53,23 @@
             "isPrepack": "Prepack",
             "title": "Recipe details",
             "servingSizeInGrams": "Kilos",
-            "servingSizeInUnits": "Units"
+            "servingSizeInUnits": "Units",
+            "addIngredient": "Add ingredient"
         },
-        "ingredientPrice": "Ingredient price"
+        "ingredientPrice": "Ingredient price",
+        "groups": {
+            "confirm": "Confirm group",
+            "cancel": "Cancel group",
+            "name": "Group name",
+            "new": "New group",
+            "remove": "Remove this group?"
+        }
     },
     "prepack": {
         "name": "Prepack name",
         "finalWeight": "Final weight",
         "addNew": "Add new prepack",
-        "details":{
+        "details": {
             "title": "Prepack details"
         }
     },

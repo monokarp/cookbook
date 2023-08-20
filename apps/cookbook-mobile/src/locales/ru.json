@@ -53,9 +53,17 @@
             "isPrepack": "(П/Ф)",
             "title": "Детали рецепта",
             "servingSizeInGrams": "Кило",
-            "servingSizeInUnits": "Штуки"
+            "servingSizeInUnits": "Штуки",
+            "addIngredient": "Добавить ингредиент"
         },
-        "ingredientPrice": "Стоимость"
+        "ingredientPrice": "Стоимость",
+        "groups": {
+            "confirm": "Подтвердить группу",
+            "cancel": "Отменить группу",
+            "name": "Имя группы",
+            "new": "Новая группа",
+            "remove": "Удалить группу?"
+        }
     },
     "prepack": {
         "name": "Название",

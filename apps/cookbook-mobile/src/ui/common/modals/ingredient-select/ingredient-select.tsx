@@ -1,7 +1,7 @@
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 import { forwardRef, useEffect, useImperativeHandle } from "react";
 import { useTranslation } from "react-i18next";
-import { FlatList, KeyboardAvoidingView, View } from "react-native";
+import { FlatList, View } from "react-native";
 import { Divider, List, Modal, Portal, TextInput } from "react-native-paper";
 import { usePrepacksStore } from "../../../home/prepacks/prepacks.store";
 import { useProductsStore } from "../../../home/products/products.store";

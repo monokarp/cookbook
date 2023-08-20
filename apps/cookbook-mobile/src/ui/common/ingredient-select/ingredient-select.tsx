@@ -11,7 +11,7 @@ import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import { Divider, FAB, IconButton, List, Switch, Text, TextInput, withTheme } from "react-native-paper";
+import { Divider, IconButton, Switch, Text, TextInput, withTheme } from "react-native-paper";
 import { ModalsContext } from "../modals/modals.context";
 import { styles } from "./ingredient-select.style";
 
@@ -144,7 +144,7 @@ function _IngredientSelect({
                                                 >
                                                     <Text
                                                         testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
-                                                        variant="titleMedium">
+                                                        variant="titleSmall">
                                                         {selectedBase?.name ? selectedBase.name : t('product.search.noneSelected')} {isPrepack(selectedBase) ? t('recipe.details.isPrepack') : ''}
                                                     </Text>
                                                 </Pressable>
@@ -224,7 +224,7 @@ function _IngredientSelect({
                                         <View style={{ width: '60%', flexDirection: 'column', justifyContent: 'center' }}>
                                             <Text
                                                 testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}
-                                                variant="titleMedium"
+                                                variant="titleSmall"
                                             >
                                                 {getBase(ingredient).name} {isPrepack(getBase(ingredient)) ? t('recipe.details.isPrepack') : ''}
                                             </Text>

@@ -1,7 +1,7 @@
 
 import { RegexPatterns } from "@cookbook/domain/constants";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { Position, PositionGroup, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
@@ -9,14 +9,14 @@ import { useContext, useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, Divider, FAB, Text, TextInput, Button, IconButton } from "react-native-paper";
+import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
 import { useRecipesStore } from "../recipes.store";
+import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
 import { RecipeDetailsContext } from "./recipe-details.store";
 import { styles } from "./recipe-details.style";
-import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
 
 
 export interface RecipeDetailsFormData {
@@ -30,7 +30,7 @@ export function RecipeDetails({ navigation }) {
     const recipeRepo = useInjection(RecipesRepository);
 
     const store = useContext(RecipeDetailsContext);
-    const { addPosition, removePosition, setPosition } = store();
+    const { addPosition, removePosition, setPosition, applyGroup, removeGroup } = store();
     const recipe = store(state => state.recipe);
     const positions = store(state => state.recipe.positions);
 
@@ -47,11 +47,25 @@ export function RecipeDetails({ navigation }) {
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
     const [isEditingGroups, setGroupEditing] = useState(false);
-    const [activeGroup, setActiveGroup] = useState([]);
+    const [activeGroup, setActiveGroup] = useState<PositionGroup | null>(null);
 
-    function dismissGroupEditing() {
+    function clearGroupEditing() {
         setGroupEditing(false);
-        setActiveGroup([]);
+        setActiveGroup(null);
+    }
+
+    function isAdjacentToActiveGroup(positionIndex: number): boolean {
+        const firstIndex = activeGroup.positionIndices[0];
+        const lastIndex = activeGroup.positionIndices[activeGroup.positionIndices.length - 1];
+
+        const isFirstOrAdjacent = [firstIndex - 1, firstIndex].includes(positionIndex);
+        const isLastOrAdjacent = [lastIndex, lastIndex + 1].includes(positionIndex);
+
+        return isFirstOrAdjacent || isLastOrAdjacent;
+    }
+
+    function isLastInActiveGroup(positionIndex: number): boolean {
+        return activeGroup.positionIndices.length === 1 && activeGroup.positionIndices[0] === positionIndex;
     }
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
@@ -136,7 +150,24 @@ export function RecipeDetails({ navigation }) {
                     }
                     data={positions}
                     renderItem={({ item, index }) =>
-                        <GroupRowWrapper recipeGroups={recipe.groups} rowIndex={index}>
+                        <GroupRowWrapper
+                            recipeGroups={
+                                isEditingGroups
+                                    ? [activeGroup]
+                                    : recipe.groups
+                            }
+                            rowIndex={index}
+                            groupEditing={{
+                                isActive: isEditingGroups,
+                                onRemove: removeGroup,
+                                onConfirm: name => {
+                                    removeGroup(activeGroup.name);
+                                    applyGroup({ ...activeGroup, name });
+                                    clearGroupEditing();
+                                },
+                                onCancel: clearGroupEditing,
+                            }}
+                        >
                             <IngredientSelect
                                 allowAddingPrepacks={true}
                                 ingredient={item}
@@ -146,7 +177,6 @@ export function RecipeDetails({ navigation }) {
                                     setCurrentlyEditedItemIndex(index)
                                 }}
                                 onEditConfirmed={(position) => {
-                                    console.log('position edit confirmed', position)
                                     setPosition(position, index);
                                     setCurrentlyEditedItemIndex(null);
                                 }}
@@ -154,44 +184,44 @@ export function RecipeDetails({ navigation }) {
                                     deleteIngredient(index);
                                 }}
                                 toggleGroupEditing={() => {
-                                    if (!isEditingGroups) { setGroupEditing(true) }
+                                    if (isEditingGroups) { return; }
 
-                                    // lookup if the item belongs to a group and set its state to active
+                                    const existingGroup = recipe.groups.find(one => one.positionIndices.includes(index));
 
-                                    if (!activeGroup.includes(index)) {
-                                        setActiveGroup([...activeGroup, index].sort())
-                                    }
+                                    setActiveGroup({
+                                        name: existingGroup ? existingGroup.name : t('recipe.groups.new'),
+                                        positionIndices: existingGroup
+                                            ? [...existingGroup.positionIndices]
+                                            : [index]
+                                    });
+
+                                    setGroupEditing(true);
                                 }}
                                 toggleItemGrouping={() => {
-                                    if (!isEditingGroups) { return; }
+                                    if (!isEditingGroups || isLastInActiveGroup(index) || !isAdjacentToActiveGroup(index)) { return; }
 
-                                    if (activeGroup.includes(index)) { return setActiveGroup(activeGroup.filter(one => one !== index)) }
+                                    const updatedIndices = activeGroup.positionIndices.includes(index)
+                                        ? activeGroup.positionIndices.filter(one => one !== index)
+                                        : [...activeGroup.positionIndices, index].sort();
 
-                                    setActiveGroup([...activeGroup, index].sort())
+                                    setActiveGroup({
+                                        name: activeGroup.name,
+                                        positionIndices: updatedIndices
+                                    });
                                 }}
                             />
                         </GroupRowWrapper>
                     }
                     ListFooterComponentStyle={{ justifyContent: 'center' }}
                     ListFooterComponent={() =>
-                        isEditingGroups
-                            ? <View style={{ flexDirection: 'row', padding: 10, justifyContent: 'space-evenly' }}>
-                                <Button mode="outlined" onPress={() => dismissGroupEditing()}>
-                                    Cancel group
-                                </Button>
-                                <Button mode="outlined" onPress={() => {
-                                    dismissGroupEditing();
-                                }}>
-                                    Confirm group
-                                </Button>
-                            </View>
-                            : <FAB
-                                testID={TestIds.RecipeDetails.AddIngredient}
-                                disabled={currentlyEditedItemIndex !== null}
-                                icon="plus"
-                                style={{ margin: 10, alignSelf: 'center' }}
-                                onPress={addEmptyIngredient}
-                            />
+                        <Button mode="outlined"
+                            testID={TestIds.RecipeDetails.AddIngredient}
+                            disabled={currentlyEditedItemIndex !== null}
+                            onPress={addEmptyIngredient}
+                            style={{ alignSelf: 'center' }}
+                        >
+                            {t('recipe.details.addIngredient')}
+                        </Button>
                     }
                 />
             </KeyboardAvoidingView>

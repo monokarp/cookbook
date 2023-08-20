@@ -1,8 +1,8 @@
-import { FlatList, View } from "react-native";
-import { styles } from "./entity-list.style";
-import { SummaryListItem } from "../summary-list-item";
-import { Button, Divider, Text } from "react-native-paper";
 import { NamedEntity } from "@cookbook/domain/types/named-entity";
+import { FlatList, View } from "react-native";
+import { Button, Divider, Text } from "react-native-paper";
+import { SummaryListItem } from "../summary-list-item";
+import { styles } from "./entity-list.style";
 
 export interface EntityListProps<E extends NamedEntity> {
     items: E[],

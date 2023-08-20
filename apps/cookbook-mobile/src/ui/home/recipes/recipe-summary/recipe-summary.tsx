@@ -1,6 +1,7 @@
 import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
+import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredient";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { useInjection } from "inversify-react-native";
 import { useState } from "react";
@@ -9,6 +10,7 @@ import { ScrollView, View } from "react-native";
 import { Appbar, Divider, List, Text, ToggleButton } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
 import { RootViews } from "../../../root-views.enum";
+import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
@@ -39,6 +41,57 @@ export function RecipeSummary({ navigation, route }) {
         setDescription(value);
 
         setRecipes(await recipeRepo.All());
+    };
+
+
+    const GetPositionNode = (one: Position, recipePositionIndex: number) => {
+        if (isPrepackIngredient(one)) {
+            return GetPrepackNode(one, recipePositionIndex);
+        } else if (isProductIngredient(one)) {
+            return GetProductNode(one);
+        } else {
+            return <Text style={styles.positionLabelMargin}>Unrecognized position type</Text>;
+        }
+    }
+
+    const GetPrepackNode = (one: PrepackIngredient, recipePositionIndex: number) => {
+        const prepackWeightRatio = one.prepack.ingredients.reduce((acc, next) => acc + next.weight(), 0) / one.prepack.finalWeight;
+
+        return <View style={{ width: '100%' }}>
+            <List.Accordion title={one.prepack.name}>
+                {
+                    [
+                        <DividedRow key={`${recipePositionIndex}-0`}>
+                            <View style={styles.recipePriceRow}>
+                                <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
+                                <TotalsRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                                <TotalsRowLabel>{FormatNumber.Money(one.price() * ratio)}</TotalsRowLabel>
+                            </View>
+                        </DividedRow>,
+                        ...one.prepack.ingredients.map((productIngredient, prepackPositionIndex) =>
+                            <DividedRow key={`${recipePositionIndex}-${prepackPositionIndex + 1}`}>
+                                <View style={styles.positionRow}>
+                                    <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Weight(productIngredient.weight() * prepackWeightRatio * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Money(productIngredient.price() * prepackWeightRatio * ratio)}</PositionRowLabel>
+                                </View>
+                            </DividedRow>
+                        )
+                    ]
+                }
+            </List.Accordion>
+            <Divider />
+        </View>;
+    };
+
+    const GetProductNode = (one: ProductIngredient) => {
+        return <DividedRow>
+            <View style={styles.positionRow}>
+                <PositionRowLabel>{one.product.name}</PositionRowLabel>
+                <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
+                <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
+            </View>
+        </DividedRow>;
     };
 
     return (
@@ -73,46 +126,11 @@ export function RecipeSummary({ navigation, route }) {
                     </View>
                     <Divider />
                     {
-                        recipe.positions.reduce((acc, one, recipePositionIndex) => {
-                            if (isPrepackIngredient(one)) {
-                                acc.push(
-                                    <List.Accordion
-                                        key={recipePositionIndex * 2}
-                                        title={one.prepack.name}
-                                    >
-                                        {
-
-                                            [
-                                                <View key={`${recipePositionIndex * 2}-0`} style={styles.recipePriceRow}>
-                                                    <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
-                                                    <TotalsRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
-                                                    <TotalsRowLabel>{FormatNumber.Money(one.price() * ratio)}</TotalsRowLabel>
-                                                </View>,
-                                                ...one.prepack.ingredients.map((productIngredient, prepackPositionIndex) =>
-                                                    <View key={`${recipePositionIndex * 2}-${prepackPositionIndex + 1}`} style={styles.positionRow}>
-                                                        <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
-                                                        <PositionRowLabel>{FormatNumber.Weight(productIngredient.weight() * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
-                                                        <PositionRowLabel>{FormatNumber.Money(productIngredient.price() * ratio)}</PositionRowLabel>
-                                                    </View>
-                                                )
-                                            ]
-                                        }
-                                    </List.Accordion>
-                                );
-                            } else if (isProductIngredient(one)) {
-                                acc.push(<View key={recipePositionIndex * 2} style={styles.positionRow}>
-                                    <PositionRowLabel>{one.product.name}</PositionRowLabel>
-                                    <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-                                </View>);
-                            } else {
-                                acc.push(<Text style={styles.positionLabelMargin}>Unrecognized position type</Text>);
-                            }
-
-                            acc.push(<Divider key={(recipePositionIndex * 2) + 1} />);
-
-                            return acc;
-                        }, [])
+                        recipe.positions.map((one, recipePositionIndex) =>
+                            <GroupRowWrapper key={(recipePositionIndex * 2)} recipeGroups={recipe.groups} rowIndex={recipePositionIndex}>
+                                {GetPositionNode(one, recipePositionIndex * 2)}
+                            </GroupRowWrapper>
+                        )
                     }
                 </View>
 
@@ -132,4 +150,11 @@ function PositionRowLabel(props) {
     return <View style={{ flex: 1 }}>
         <Text {...props} style={styles.positionLabelMargin} />
     </View>
+}
+
+function DividedRow({ children }) {
+    return <View style={{ width: '100%' }}>
+        {children}
+        <Divider />
+    </View >
 }
