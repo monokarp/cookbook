@@ -34,8 +34,6 @@ export function RecipeDetails({ navigation }) {
     const recipe = store(state => state.recipe);
     const positions = store(state => state.recipe.positions);
 
-    console.log(`rendering recipe ${recipe.name}`);
-
     const { set: setRecipes } = useRecipesStore();
 
     const form = useForm({
@@ -69,21 +67,17 @@ export function RecipeDetails({ navigation }) {
     }
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
-        const updatedRecipe = new Recipe({ ...recipe, name: data.recipeName });
+        recipe.name = data.recipeName;
 
-        await recipeRepo.Save(updatedRecipe);
+        await recipeRepo.Save(recipe);
 
         await recipeRepo.All().then(setRecipes);
 
-        navigation.navigate(RootViews.RecipeSummary, { recipe: updatedRecipe });
+        navigation.navigate(RootViews.RecipeSummary, { recipe: recipe.clone() });
     };
 
     function addEmptyIngredient() {
         addPosition(ProductIngredient.Empty());
-        setCurrentlyEditedItemIndex(recipe.positions.length);
-        if (recipe.positions.length) {
-            listElementRef.scrollToIndex({ index: recipe.positions.length - 1 });
-        }
     };
 
     function deleteIngredient(index: number) {
@@ -105,17 +99,20 @@ export function RecipeDetails({ navigation }) {
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
+                    onContentSizeChange={() => {
+                        const lastIngredientEmpty = recipe.positions.length && recipe.positions[recipe.positions.length - 1].id === '';
+
+                        if (lastIngredientEmpty) {
+                            setCurrentlyEditedItemIndex(recipe.positions.length - 1);
+
+                            if (recipe.positions.length) {
+                                listElementRef.scrollToIndex({ index: recipe.positions.length - 1 });
+                            }
+                        }
+                    }}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => {
-                        if (isProductIngredient(item)) {
-                            return `${index}_${item.product.id}`;
-                        }
-
-                        if (isPrepackIngredient(item)) {
-                            return `${index}_${item.prepack.id}`;
-                        }
-
-                        return index.toString();
+                        return `${index}_${item.id}`;
                     }}
                     ListHeaderComponent={() =>
                         <View style={{ flexDirection: 'row' }}>
@@ -165,7 +162,6 @@ export function RecipeDetails({ navigation }) {
                                 isActive: isEditingGroups,
                                 onRemove: removeGroup,
                                 onConfirm: name => {
-                                    removeGroup(activeGroup.name);
                                     applyGroup({ ...activeGroup, name });
                                     clearGroupEditing();
                                 },
@@ -193,7 +189,7 @@ export function RecipeDetails({ navigation }) {
                                     const existingGroup = recipe.groups.find(one => one.positionIndices.includes(index));
 
                                     setActiveGroup({
-                                        name: existingGroup ? existingGroup.name : t('recipe.groups.new'),
+                                        name: existingGroup ? existingGroup.name : '',
                                         positionIndices: existingGroup
                                             ? [...existingGroup.positionIndices]
                                             : [index]
@@ -206,7 +202,7 @@ export function RecipeDetails({ navigation }) {
 
                                     const updatedIndices = activeGroup.positionIndices.includes(index)
                                         ? activeGroup.positionIndices.filter(one => one !== index)
-                                        : [...activeGroup.positionIndices, index].sort();
+                                        : [...activeGroup.positionIndices, index].sort((a, b) => a - b);
 
                                     setActiveGroup({
                                         name: activeGroup.name,
@@ -222,7 +218,7 @@ export function RecipeDetails({ navigation }) {
                             testID={TestIds.RecipeDetails.AddIngredient}
                             disabled={currentlyEditedItemIndex !== null}
                             onPress={addEmptyIngredient}
-                            style={{ alignSelf: 'center' }}
+                            style={{ alignSelf: 'center', margin: 15 }}
                         >
                             {t('recipe.details.addIngredient')}
                         </Button>

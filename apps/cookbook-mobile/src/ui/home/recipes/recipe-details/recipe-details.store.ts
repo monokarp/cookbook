@@ -20,77 +20,45 @@ export function createRecipeDetailsStore(defaultValue: Recipe) {
         recipe: defaultValue,
         addPosition: (value: Position) => {
             set(state => {
+                state.recipe.addPosition(value);
+
                 return {
-                    recipe: new Recipe({
-                        ...state.recipe,
-                        positions: [...state.recipe.positions, value]
-                    })
+                    recipe: state.recipe.clone()
                 };
             })
         },
         setPosition: (value: Position, index: number) => {
             set(state => {
-                const copy = {
-                    recipe: new Recipe({
-                        ...state.recipe,
-                        positions: [...state.recipe.positions]
-                    })
+                state.recipe.setPosition(value, index);
+
+                return {
+                    recipe: state.recipe.clone()
                 };
-
-                copy.recipe.positions[index] = value;
-
-                return copy;
             })
         },
-        removePosition: (index: number) => set(state => ({
-            recipe: new Recipe({
-                ...state.recipe,
-                positions: state.recipe.positions.filter((_, i) => i !== index)
-            })
-        })),
+        removePosition: (index: number) => set(state => {
+            state.recipe.removePosition(index);
+
+            return {
+                recipe: state.recipe.clone()
+            };
+        }),
         applyGroup: (group: PositionGroup) =>
             set(
                 state => {
-                    const prunedRecipeGroups = state.recipe.groups.reduce(
-                        (groups, next) => {
-                            const prunedIndices = next.positionIndices.filter(idx => !group.positionIndices.includes(idx));
-
-                            if (prunedIndices.length) {
-                                groups.push({
-                                    ...next,
-                                    positionIndices: prunedIndices
-                                });
-                            }
-
-                            return groups;
-                        }
-                        , []);
-
-                    const updatedGroupsLastIndex = group.positionIndices[group.positionIndices.length - 1];
-                    const nextGroupIndex = state.recipe.groups.findIndex(existingGroup => existingGroup.positionIndices[0] > updatedGroupsLastIndex);
+                    state.recipe.applyGroup(group);
 
                     return ({
-                        recipe: new Recipe({
-                            ...state.recipe,
-                            groups: nextGroupIndex === -1
-                                ? [...prunedRecipeGroups, group]
-                                : [
-                                    ...prunedRecipeGroups.slice(0, nextGroupIndex),
-                                    group,
-                                    ...prunedRecipeGroups.slice(nextGroupIndex)
-                                ]
-                        })
+                        recipe: state.recipe.clone()
                     });
                 }
             ),
-        removeGroup: (groupName: string) =>
-            set(
-                state => ({
-                    recipe: new Recipe({
-                        ...state.recipe,
-                        groups: state.recipe.groups.filter(one => one.name !== groupName)
-                    })
-                })
-            ),
+        removeGroup: (groupName: string) => set(state => {
+            state.recipe.removeGroup(groupName);
+
+            return {
+                recipe: state.recipe.clone()
+            };
+        }),
     }));
 }

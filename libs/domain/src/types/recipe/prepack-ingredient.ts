@@ -4,6 +4,8 @@ export class PrepackIngredient implements PrepackIngredientDto {
     public readonly prepack: Prepack;
     public readonly weightInGrams: number;
 
+    public get id(): string { return this.prepack.id; }
+
     public static Empty(): PrepackIngredient {
         return new PrepackIngredient({
             prepack: Prepack.Empty(),

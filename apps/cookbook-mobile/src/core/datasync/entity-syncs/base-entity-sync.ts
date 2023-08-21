@@ -1,7 +1,7 @@
 import { DataSync } from "../datasync.service";
 import { EntitySync } from "../entity-sync";
 
-export class BaseEntitySync<E> implements EntitySync {
+export class BaseEntitySync<E extends { id: string }> implements EntitySync {
 
     protected readonly localRepo!: LocalRepo<E>;
     protected readonly cloudRepo!: CloudRepo<E>;
@@ -17,7 +17,11 @@ export class BaseEntitySync<E> implements EntitySync {
         this.log(`downloaded ${entities.length} entities`);
 
         for (const one of entities) {
-            await this.localRepo.SaveEntity(one);
+            try {
+                await this.localRepo.SaveEntity(one);
+            } catch (e) {
+                console.log(`error saving entity ${this.cloudRepo.collectionName} ${one.id}`)
+            }
         }
     }
 

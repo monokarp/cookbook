@@ -1,4 +1,6 @@
+import { RegexPatterns } from "@cookbook/domain/constants";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 
@@ -9,21 +11,26 @@ export interface GroupNameInputProps {
 }
 
 export function GroupNameInput({ groupName, onConfirm, onCancel }: GroupNameInputProps) {
+    const { t } = useTranslation();
 
     const [value, setValue] = useState(groupName);
 
     return (
         <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
-            <TextInput style={{ flexGrow: 1 }} value={value} onChangeText={setValue} />
+            <TextInput style={{ flexGrow: 1 }} placeholder={t('recipe.groups.new')} value={value} onChangeText={setValue} />
             <IconButton
                 icon="cancel"
                 size={22}
-                onPress={() => onCancel()}
+                onTouchStart={() => onCancel()}
             />
             <IconButton
                 icon="check"
                 size={22}
-                onPress={() => onConfirm(value)}
+                onTouchStart={() => {
+                    if (RegexPatterns.EntityName.test(value)) {
+                        onConfirm(value)
+                    }
+                }}
             />
         </View>
     );

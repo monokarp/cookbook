@@ -70,26 +70,27 @@ export class RecipesRepository {
 
         const prepacks = await this.prepackRepository.Many(prepackIds);
 
-        const positionGroups = await this.GetPositionGroupsMap(recipeIds);
+        const groupsMap = await this.GetPositionGroupsMap(recipeIds);
 
         const recipes = [];
 
         for (const productRows of recipeMap.values()) {
-            const recipe = MapRecipe(productRows);
+            const recipe = MapRecipe(productRows, groupsMap);
 
             const prepackPositions = prepackPositionsMap.get(recipe.id) ?? [];
-
-            recipe.groups.push(...positionGroups.get(recipe.id)?.map(MapPositionGroup) ?? []);
 
             for (const prepackPosition of prepackPositions) {
                 const matchingPrepack: Prepack | undefined = prepacks.find(prepack => prepack.id === prepackPosition.PrepackId);
 
                 if (!matchingPrepack) { throw new Error(`Prepack with id ${prepackPosition.PrepackId} not found.`); }
 
-                recipe.positions[prepackPosition.PositionNumber - 1] = new PrepackIngredient({
-                    prepack: matchingPrepack,
-                    weightInGrams: prepackPosition.WeightInGrams
-                });
+                recipe.setPosition(
+                    new PrepackIngredient({
+                        prepack: matchingPrepack,
+                        weightInGrams: prepackPosition.WeightInGrams
+                    }),
+                    prepackPosition.PositionNumber - 1
+                );
             }
 
             recipes.push(recipe);
@@ -138,7 +139,7 @@ export class RecipesRepository {
 
         ingredientPositions.forEach(
             (row: ProductIngredientRecipeRow) => {
-                result.positions[row.PositionNumber - 1] = ProductIngredientRowToModel(row);
+                result.setPosition(ProductIngredientRowToModel(row), row.PositionNumber - 1);
             }
         );
 
@@ -148,10 +149,13 @@ export class RecipesRepository {
 
                 if (!matchingPrepack) { throw new Error(`Prepack with id ${row.PrepackId} not found.`); }
 
-                result.positions[row.PositionNumber - 1] = new PrepackIngredient({
-                    prepack: matchingPrepack,
-                    weightInGrams: row.WeightInGrams
-                });
+                result.setPosition(
+                    new PrepackIngredient({
+                        prepack: matchingPrepack,
+                        weightInGrams: row.WeightInGrams
+                    }),
+                    row.PositionNumber - 1
+                );
             }
         );
 
@@ -284,6 +288,7 @@ export class RecipesRepository {
         await this.database.Transaction([
             ['DELETE FROM [RecipeProductIngredients]  WHERE [RecipeId] = ?;', [id]],
             ['DELETE FROM [RecipePrepackIngredients]  WHERE [RecipeId] = ?;', [id]],
+            ['DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;', [id]],
             ['DELETE FROM [Recipes]  WHERE [Id] = ?;', [id]],
             ['INSERT INTO [RecipesPendingDeletion] VALUES (?)', [id]],
         ]);
@@ -375,19 +380,19 @@ function HasPositions(rows: { PositionNumber: number }[]): boolean {
     return !NoPositions(rows);
 }
 
-function MapRecipe(rows: ProductIngredientRecipeRow[]): Recipe {
+function MapRecipe(rows: ProductIngredientRecipeRow[], allGroups: Map<string, PositionGroupRow[]>): Recipe {
     const recipe = new Recipe({
         id: rows[0].Id,
         name: rows[0].Name,
         lastModified: rows[0].LastModified,
         description: rows[0].Description,
         positions: [],
-        groups: [],
+        groups: allGroups.get(rows[0].Id)?.map(MapPositionGroup) ?? [],
     });
 
     if (HasPositions(rows)) {
         rows.forEach(row => {
-            recipe.positions[row.PositionNumber - 1] = MapRecipePosition(row);
+            recipe.setPosition(MapRecipePosition(row), row.PositionNumber - 1);
         });
     }
 

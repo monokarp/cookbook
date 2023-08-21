@@ -7,6 +7,8 @@ export class ProductIngredient implements ProductIngredientDto {
     public readonly product: Product;
     public readonly serving: Serving;
 
+    public get id(): string { return this.product.id; }
+
     public static Empty(): ProductIngredient {
         return new ProductIngredient({
             product: Product.Empty(),
@@ -28,9 +30,9 @@ export class ProductIngredient implements ProductIngredientDto {
     }
 
     public weight(): number {
-       return this.serving.measuring === ProductMeasuring.Grams
-                ? this.serving.units 
-                : this.serving.units * this.product.pricing.weightInGrams;
+        return this.serving.measuring === ProductMeasuring.Grams
+            ? this.serving.units
+            : this.serving.units * this.product.pricing.weightInGrams;
     }
 
     public units(): number {

@@ -99,7 +99,13 @@ export function RecipeSummary({ navigation, route }) {
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.navigate(RootViews.Home)} />
                 <Appbar.Content title={recipe.name} />
-                <Appbar.Action icon="file-edit-outline" onPress={() => navigation.navigate(RootViews.RecipeDetails, { recipe: new Recipe({ ...recipe, description }) })} />
+                <Appbar.Action icon="file-edit-outline"
+                    onPress={() => {
+                        recipe.description = description;
+
+                        navigation.navigate(RootViews.RecipeDetails, { recipe: recipe.clone() });
+                    }}
+                />
             </Appbar.Header>
 
             <ScrollView>
