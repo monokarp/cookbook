@@ -14,6 +14,7 @@ import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
+import { TestIds } from "@cookbook/ui/test-ids";
 
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
@@ -97,9 +98,9 @@ export function RecipeSummary({ navigation, route }) {
     return (
         <View style={{ height: '100%' }}>
             <Appbar.Header>
-                <Appbar.BackAction onPress={() => navigation.navigate(RootViews.Home)} />
+                <Appbar.BackAction testID={TestIds.RecipeSummary.Back} onPress={() => navigation.navigate(RootViews.Home)} />
                 <Appbar.Content title={recipe.name} />
-                <Appbar.Action icon="file-edit-outline"
+                <Appbar.Action testID={TestIds.RecipeSummary.ToDetails} icon="file-edit-outline"
                     onPress={() => {
                         recipe.description = description;
 

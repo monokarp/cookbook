@@ -1,5 +1,5 @@
 import { device } from 'detox';
 
 beforeAll(async () => {
-  await device.launchApp({ newInstance: true });
+  await device.launchApp({ newInstance: false });
 });

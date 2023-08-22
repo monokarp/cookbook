@@ -12,6 +12,11 @@ export const TestIds = {
         ListItem: 'recipes-view-list-item',
         AddNewButton: 'recipes-view-add',
     },
+    RecipeSummary: {
+        Description: 'recipe-summary-description',
+        ToDetails: 'recipe-summary-to-details',
+        Back: 'recipe-summary-back',
+    },
     RecipeDetails: {
         NameInput: 'recipe-details-name-input',
         NameInputError: 'recipe-details-name-input-error',

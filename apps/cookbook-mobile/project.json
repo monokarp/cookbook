@@ -43,14 +43,16 @@
       "executor": "@nx/react-native:run-android",
       "envFile": ".env.run-android-device",
       "options": {
-        "deviceId": "46ab969d"
+        "deviceId": "46ab969d",
+        "mode": "release"
       }
     },
     "run-android-device2": {
       "executor": "@nx/react-native:run-android",
       "envFile": ".env.run-android",
       "options": {
-        "deviceId": "10aed187"
+        "deviceId": "10aed187",
+        "mode": "release"
       }
     },
     "build-android": {

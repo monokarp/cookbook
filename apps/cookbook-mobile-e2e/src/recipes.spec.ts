@@ -2,7 +2,7 @@ import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
 import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
 
-xdescribe('Recipes view', () => {
+describe('Recipes view', () => {
     beforeAll(async () => {
         await device.reloadReactNative();
     });
@@ -14,15 +14,15 @@ xdescribe('Recipes view', () => {
 
         await untilVisible(TestIds.RecipesView.Container);
 
-        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Яблоко c бананом']);
+        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Рецепт с группами', 'Яблоко c бананом']);
     });
 
     it('filters recipes bases by name', async () => {
         await element(by.id(TestIds.RecipesView.SearchInput)).replaceText('п');
-        await assertRecipesList(['Морковка с П/Ф']);
+        await assertRecipesList(['Морковка с П/Ф', 'Рецепт с группами']);
 
         await element(by.id(TestIds.RecipesView.SearchInput)).clearText();
-        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Яблоко c бананом']);
+        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Рецепт с группами', 'Яблоко c бананом']);
     });
 
     it(`opens recipe details when 'add new recipe' is clicked`, async () => {
@@ -38,13 +38,22 @@ xdescribe('Recipes view', () => {
         await element(by.id(TestIds.RecipeDetails.NameInput)).replaceText('Новый рецепт');
         await element(by.id(TestIds.RecipeDetails.Submit)).tap();
 
+        await untilVisible(TestIds.RecipeSummary.Back);
+        await element(by.id(TestIds.RecipeSummary.Back)).tap();
+
         await untilVisible(TestIds.RecipesView.Container);
 
-        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Новый рецепт', 'Яблоко c бананом']);
+        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Новый рецепт', 'Рецепт с группами', 'Яблоко c бананом']);
     });
 
-    it('opens saved recipe', async () => {
+    it('opens saved recipe summary', async () => {
         await collectionElement(TestIds.RecipesView.ListItem).at(2).tap();
+
+        await untilVisible(TestIds.RecipeSummary.ToDetails);
+    });
+
+    it('proceeds to recipe details', async () => {
+        await element(by.id(TestIds.RecipeSummary.ToDetails)).tap();
 
         await untilVisible(TestIds.RecipeDetails.NameInput);
     });
@@ -115,12 +124,15 @@ xdescribe('Recipes view', () => {
         await collectionElement(TestIds.IngredientSelect.Edit).at(1).tap();
     });
 
-    it('should save updated prepack', async () => {
+    it('should save updated recipe', async () => {
         await element(by.id(TestIds.RecipeDetails.Submit)).tap();
+
+        await untilVisible(TestIds.RecipeSummary.Back);
+        await element(by.id(TestIds.RecipeSummary.Back)).tap();
 
         await untilVisible(TestIds.RecipesView.Container);
 
-        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Новый рецепт', 'Яблоко c бананом']);
+        await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Новый рецепт', 'Рецепт с группами', 'Яблоко c бананом']);
     });
 });
 
