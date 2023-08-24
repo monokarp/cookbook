@@ -56,7 +56,7 @@ export function RecipeSummary({ navigation, route }) {
     }
 
     const GetPrepackNode = (one: PrepackIngredient, recipePositionIndex: number) => {
-        const prepackWeightRatio = one.prepack.ingredients.reduce((acc, next) => acc + next.weight(), 0) / one.prepack.finalWeight;
+        const productRatio = num => num * one.prepack.weightRatio() * one.weightRatio() * ratio;
 
         return <View style={{ width: '100%' }}>
             <List.Accordion title={one.prepack.name}>
@@ -73,8 +73,8 @@ export function RecipeSummary({ navigation, route }) {
                             <DividedRow key={`${recipePositionIndex}-${prepackPositionIndex + 1}`}>
                                 <View style={styles.positionRow}>
                                     <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Weight(productIngredient.weight() * prepackWeightRatio * ratio)} {t('product.measuring.grams')}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Money(productIngredient.price() * prepackWeightRatio * ratio)}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Weight(productRatio(productIngredient.weight()))} {t('product.measuring.grams')}</PositionRowLabel>
+                                    <PositionRowLabel>{FormatNumber.Money(productRatio(productIngredient.price()))}</PositionRowLabel>
                                 </View>
                             </DividedRow>
                         )

@@ -29,6 +29,10 @@ export class PrepackIngredient implements PrepackIngredientDto {
     public units(): number {
         return this.weightInGrams;
     }
+
+    public weightRatio(): number {
+        return this.weightInGrams / this.prepack.finalWeight;
+    }
 }
 
 export interface PrepackIngredientDto {

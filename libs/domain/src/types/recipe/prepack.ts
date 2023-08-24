@@ -35,6 +35,10 @@ export class Prepack implements NamedEntity {
     public pricePerGram(): number {
         return roundMoney(this.finalWeight ? this.price() / this.finalWeight : 0);
     }
+
+    public weightRatio(): number {
+        return this.finalWeight / this.ingredients.reduce((acc, next) => acc + next.weight(), 0);
+    }
 }
 
 export interface PrepackDto {
