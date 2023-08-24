@@ -16,6 +16,7 @@ export class PrepacksRepository {
             [Prepacks].[Name],
             [Prepacks].[LastModified],
             [Prepacks].[FinalWeight],
+            [Prepacks].[Description],
             [PrepackProductIngredients].[PositionNumber],
             [PrepackProductIngredients].[ServingUnits],
             [PrepackProductIngredients].[ServingMeasuring],
@@ -35,8 +36,9 @@ export class PrepacksRepository {
             id: uuid.v4().toString(),
             name: '',
             lastModified: '',
-            ingredients: [],
             finalWeight: 0,
+            description: '',
+            ingredients: [],
         });
     }
 
@@ -76,8 +78,8 @@ export class PrepacksRepository {
     public async Save(prepack: PrepackDto): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified]) VALUES (?, ?, ?, ?);`,
-                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString()]
+                `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified], [Description]) VALUES (?, ?, ?, ?, ?);`,
+                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString(), prepack.description]
             ],
             ...prepack.ingredients.map(
                 (ingredient, idx) =>
@@ -104,8 +106,8 @@ export class PrepacksRepository {
     public async SaveEntity(entity: PrepackEntity): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified]) VALUES (?, ?, ?, ?);`,
-                [entity.id, entity.name, entity.finalWeight, entity.lastModified]
+                `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified], [Description]) VALUES (?, ?, ?, ?, ?);`,
+                [entity.id, entity.name, entity.finalWeight, entity.lastModified, entity.description]
             ],
             ...entity.ingredients.map(
                 (ingredient, idx) =>
@@ -162,6 +164,7 @@ export interface PrepackRow extends ProductIngredientRow {
     Name: string;
     LastModified: string;
     FinalWeight: number;
+    Description: string;
 }
 
 function MapPrepackRowsSet<E>(set: ResultSet, mapper: (rows: PrepackRow[]) => E): E[] {
@@ -178,6 +181,7 @@ function RowToModel(rows: PrepackRow[]): Prepack {
         name: rows[0].Name,
         lastModified: rows[0].LastModified,
         finalWeight: rows[0].FinalWeight,
+        description: rows[0].Description,
         ingredients: isEmptyPrepack ? [] : rows.map(ProductIngredientRowToModel)
     });
 }
@@ -190,6 +194,7 @@ function RowToEntity(rows: PrepackRow[]): PrepackEntity {
         name: rows[0].Name,
         lastModified: rows[0].LastModified,
         finalWeight: rows[0].FinalWeight,
+        description: rows[0].Description,
         ingredients: isEmptyPrepack ? [] : rows.map(ProductIngredientRowToEntity)
     };
 }

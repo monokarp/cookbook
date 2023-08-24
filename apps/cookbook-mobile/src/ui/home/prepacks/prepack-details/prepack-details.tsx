@@ -13,6 +13,7 @@ import { IngredientSelect } from "../../../common/ingredient-select/ingredient-s
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
+import { PrepackDescription } from "./prepack-description/prepack-description";
 
 
 export function PrepackDetails({ navigation }) {
@@ -37,11 +38,17 @@ export function PrepackDetails({ navigation }) {
         defaultValues: {
             name: prepack.name,
             finalWeight: prepack.finalWeight ? FormatNumber.Weight(prepack.finalWeight) : '',
+            description: prepack.description,
         }
     });
 
-    const onSubmit = async (data: { name: string, finalWeight: string }) => {
-        await prepacksRepo.Save({ ...prepack, name: data.name, finalWeight: FormatString.Weight(data.finalWeight) });
+    const onSubmit = async (data: { name: string, finalWeight: string, description: string }) => {
+        await prepacksRepo.Save({
+            ...prepack,
+            name: data.name,
+            finalWeight: FormatString.Weight(data.finalWeight),
+            description: data.description,
+        });
 
         await prepacksRepo.All().then(setPrepacks);
 
@@ -131,6 +138,13 @@ export function PrepackDetails({ navigation }) {
                                 <Text variant="labelLarge" style={{ margin: 5 }}>
                                     {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(prepack.price())}`}
                                 </Text>
+
+                                <Controller
+                                    render={({ field: { onChange, value } }) => (
+                                        <PrepackDescription value={value} onChange={onChange} />
+                                    )}
+                                    name="description"
+                                />
 
                                 <Divider />
                             </View>

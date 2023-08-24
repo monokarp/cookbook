@@ -6,7 +6,8 @@
         "loading": "Loading...",
         "ok": "OK",
         "cancel": "Cancel",
-        "yes": "Yes"
+        "yes": "Yes",
+        "done": "Done"
     },
     "lists": {
         "deleteItemPrompt": "Delete this item?"
@@ -70,7 +71,9 @@
         "finalWeight": "Final weight",
         "addNew": "Add new prepack",
         "details": {
-            "title": "Prepack details"
+            "title": "Prepack details",
+            "descriptionAdd": "Add description",
+            "descriptionView": "View description"
         }
     },
     "validation": {

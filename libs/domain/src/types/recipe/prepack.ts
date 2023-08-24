@@ -9,6 +9,7 @@ export class Prepack implements NamedEntity {
     public readonly lastModified: string;
     public readonly ingredients: ProductIngredient[];
     public readonly finalWeight: number;
+    public readonly description: string;
 
     public static Empty(): Prepack {
         return new Prepack({
@@ -16,6 +17,7 @@ export class Prepack implements NamedEntity {
             name: '',
             lastModified: '',
             finalWeight: 0,
+            description: '',
             ingredients: []
         });
     }
@@ -25,6 +27,7 @@ export class Prepack implements NamedEntity {
         this.name = data.name;
         this.lastModified = data.lastModified;
         this.finalWeight = data.finalWeight;
+        this.description = data.description;
         this.ingredients = data.ingredients.map(dto => new ProductIngredient(dto));
     }
 
@@ -46,6 +49,7 @@ export interface PrepackDto {
     name: string;
     lastModified: string;
     finalWeight: number;
+    description: string;
     ingredients: ProductIngredientDto[];
 }
 
@@ -54,5 +58,6 @@ export interface PrepackEntity {
     name: string;
     lastModified: string;
     finalWeight: number;
+    description: string;
     ingredients: ProductIngredientEntity[];
 }

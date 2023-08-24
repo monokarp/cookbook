@@ -6,7 +6,8 @@
         "loading": "Загрузка...",
         "ok": "OK",
         "cancel": "Отмена",
-        "yes": "Да"
+        "yes": "Да",
+        "done": "Готово"
     },
     "lists": {
         "deleteItemPrompt": "Удалить этот элемент?"
@@ -70,7 +71,9 @@
         "finalWeight": "Финальный вес",
         "addNew": "Добавить полуфабрикат",
         "details": {
-            "title": "Детали полуфабриката"
+            "title": "Детали полуфабриката",
+            "descriptionAdd": "Добавить описание",
+            "descriptionView": "Посмотреть описание"
         }
     },
     "validation": {

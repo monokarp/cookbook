@@ -65,6 +65,7 @@ export const TestIds = {
         WeightInputError: 'prepack-details-weight-input-error',
         AddIngredient: 'prepack-details-add-ingredient',
         Submit: 'prepack-details-submit',
+        Description: 'prepack-details-description',
     },
     IngredientSelect: {
         UnitsInput: 'ingredient-select-units-input',
