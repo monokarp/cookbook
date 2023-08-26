@@ -66,6 +66,12 @@ export class Recipe implements NamedEntity {
     }
 
     public removePosition(index: number): void {
+        const matchingGroup = this.groups.find(one => one.positionIndices.includes(index));
+
+        if (matchingGroup) {
+            throw new Error(`Position ${index} is included into ${matchingGroup.name} group and must be removed first`);
+        }
+
         this.data.positions = this.data.positions.filter((_, i) => i !== index);
     }
 

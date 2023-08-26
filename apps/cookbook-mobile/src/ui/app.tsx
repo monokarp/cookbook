@@ -8,9 +8,9 @@ import { appLightTheme } from './app.theme';
 import { Modals } from './common/modals/modals';
 import { AppModals, ModalsContext } from './common/modals/modals.context';
 import { HomeScreen } from './home/home-screen';
-import { PrepackDetailsWithContext } from './home/prepacks/prepack-details/prepack-details-with-context';
+import { PrepackDetails } from './home/prepacks/prepack-details/prepack-details';
 import { ProductDetails } from './home/products/product-details/product-details';
-import { RecipeDetailsWithContext } from './home/recipes/recipe-details/recipe-details-with-context';
+import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
 import { RecipeSummary } from './home/recipes/recipe-summary/recipe-summary';
 import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
@@ -74,7 +74,7 @@ const App = () => {
               />
               <Stack.Screen
                 name={RootViews.RecipeDetails}
-                component={RecipeDetailsWithContext}
+                component={RecipeDetails}
                 options={{ headerShown: false }}
               />
               <Stack.Screen
@@ -84,7 +84,7 @@ const App = () => {
               />
               <Stack.Screen
                 name={RootViews.PrepackDetails}
-                component={PrepackDetailsWithContext}
+                component={PrepackDetails}
                 options={{ headerShown: false }}
               />
             </Stack.Navigator>

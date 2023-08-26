@@ -1,11 +1,11 @@
 
 import { RegexPatterns } from "@cookbook/domain/constants";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Position, PositionGroup } from "@cookbook/domain/types/recipe/recipe";
+import { Position, PositionGroup, Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
@@ -15,7 +15,6 @@ import { IngredientSelect } from "../../../common/ingredient-select/ingredient-s
 import { RootViews } from "../../../root-views.enum";
 import { useRecipesStore } from "../recipes.store";
 import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
-import { RecipeDetailsContext } from "./recipe-details.store";
 import { styles } from "./recipe-details.style";
 
 
@@ -23,16 +22,24 @@ export interface RecipeDetailsFormData {
     recipeName: string
 };
 
-export function RecipeDetails({ navigation }) {
+export function RecipeDetails({ navigation, route }) {
     let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
     const recipeRepo = useInjection(RecipesRepository);
 
-    const store = useContext(RecipeDetailsContext);
-    const { addPosition, removePosition, setPosition, applyGroup, removeGroup } = store();
-    const recipe = store(state => state.recipe);
-    const positions = store(state => state.recipe.positions);
+    const [recipe, setRecipe] = useState<Recipe>(route.params.recipe);
+
+    const withStoreUpdate = fn => (...args) => {
+        fn.call(recipe, ...args);
+        setRecipe(recipe.clone());
+    }
+
+    const addPosition = withStoreUpdate(recipe.addPosition);
+    const setPosition = withStoreUpdate(recipe.setPosition);
+    const removePosition = withStoreUpdate(recipe.removePosition);
+    const applyGroup = withStoreUpdate(recipe.applyGroup);
+    const removeGroup = withStoreUpdate(recipe.removeGroup);
 
     const { set: setRecipes } = useRecipesStore();
 
@@ -78,6 +85,7 @@ export function RecipeDetails({ navigation }) {
 
     function addEmptyIngredient() {
         addPosition(ProductIngredient.Empty());
+        setCurrentlyEditedItemIndex(recipe.positions.length - 1);
     };
 
     function deleteIngredient(index: number) {
@@ -103,11 +111,7 @@ export function RecipeDetails({ navigation }) {
                         const lastIngredientEmpty = recipe.positions.length && recipe.positions[recipe.positions.length - 1].id === '';
 
                         if (lastIngredientEmpty) {
-                            setCurrentlyEditedItemIndex(recipe.positions.length - 1);
-
-                            if (recipe.positions.length) {
-                                listElementRef.scrollToIndex({ index: recipe.positions.length - 1 });
-                            }
+                            listElementRef.scrollToIndex({ index: recipe.positions.length - 1 });
                         }
                     }}
                     style={{ flexGrow: 0, width: '100%' }}
@@ -149,7 +153,7 @@ export function RecipeDetails({ navigation }) {
                             </View>
                         </View>
                     }
-                    data={positions}
+                    data={recipe.positions}
                     renderItem={({ item, index }) =>
                         <GroupRowWrapper
                             recipeGroups={
@@ -214,7 +218,8 @@ export function RecipeDetails({ navigation }) {
                     }
                     ListFooterComponentStyle={{ justifyContent: 'center' }}
                     ListFooterComponent={() =>
-                        <Button mode="outlined"
+                        <Button
+                            mode="outlined"
                             testID={TestIds.RecipeDetails.AddIngredient}
                             disabled={currentlyEditedItemIndex !== null}
                             onPress={addEmptyIngredient}

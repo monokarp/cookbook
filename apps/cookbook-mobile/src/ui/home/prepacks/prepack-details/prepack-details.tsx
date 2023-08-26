@@ -1,34 +1,48 @@
 import { RegexPatterns } from "@cookbook/domain/constants";
+import { Prepack } from "@cookbook/domain/types/recipe/prepack";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, Divider, FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, Button, Divider, FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
-import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
 
 
-export function PrepackDetails({ navigation }) {
+export function PrepackDetails({ navigation, route }) {
     let listElementRef: FlatList<ProductIngredient> | null = null;
 
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(PrepacksRepository);
 
-    const store = useContext(PrepackDetailsContext);
-    const { addIngredient, removeIngredient, setIngredient } = store();
-    const prepack = store(state => state.prepack);
-    const ingredients = store(state => state.prepack.ingredients);
 
-    console.log(`prepack details rendered ${prepack.name}`)
+    const [prepack, setPrepack] = useState<Prepack>(route.params.prepack);
+
+    const addIngredient = (value: ProductIngredient) => setPrepack(new Prepack({
+        ...prepack,
+        ingredients: [...prepack.ingredients, value]
+    }));
+
+    const setIngredient = (value: ProductIngredient, index: number) => setPrepack(new Prepack({
+        ...prepack,
+        ingredients: prepack.ingredients.reduce((updated, next, idx) => {
+            updated.push(idx === index ? value : next);
+            return updated;
+        }, [])
+    }));
+
+    const removeIngredient = (index: number) => setPrepack(new Prepack({
+        ...prepack,
+        ingredients: prepack.ingredients.filter((_, i) => i !== index)
+    }));
 
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
@@ -80,7 +94,7 @@ export function PrepackDetails({ navigation }) {
                     ref={ref => listElementRef = ref}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => `${index}_${item.product.id}`}
-                    data={ingredients}
+                    data={prepack.ingredients}
                     ListHeaderComponent={
                         <View style={{ flexDirection: 'row' }}>
 
@@ -170,13 +184,15 @@ export function PrepackDetails({ navigation }) {
                     }
                     ListFooterComponentStyle={{ justifyContent: 'center' }}
                     ListFooterComponent={() =>
-                        <FAB
+                        <Button
+                            mode="outlined"
                             testID={TestIds.PrepackDetails.AddIngredient}
                             disabled={currentlyEditedItemIndex !== null}
-                            icon="plus"
-                            style={{ margin: 10, alignSelf: 'center' }}
                             onPress={addEmptyIngredient}
-                        />
+                            style={{ alignSelf: 'center', margin: 15 }}
+                        >
+                            {t('recipe.details.addIngredient')}
+                        </Button>
                     }
                 />
             </KeyboardAvoidingView>
