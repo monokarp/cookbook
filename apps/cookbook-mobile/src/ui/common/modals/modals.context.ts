@@ -1,6 +1,6 @@
 import { Product } from "@cookbook/domain/types/product/product";
 import { Prepack } from "@cookbook/domain/types/recipe/prepack";
-import { createContext } from "react";
+import { createContext, useContext } from "react";
 import { ConfirmationModalResultHandler } from "./confirmation/confirmation.store";
 
 export interface AppModals {
@@ -10,3 +10,5 @@ export interface AppModals {
 }
 
 export const ModalsContext = createContext({} as AppModals);
+
+export const useAppModals = () => useContext(ModalsContext);

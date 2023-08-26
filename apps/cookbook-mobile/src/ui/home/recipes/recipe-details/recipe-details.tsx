@@ -1,7 +1,7 @@
 
 import { RegexPatterns } from "@cookbook/domain/constants";
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Position, PositionGroup, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { Position, PositionGroup } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";

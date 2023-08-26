@@ -11,9 +11,9 @@ import { Appbar, Divider, FAB, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
+import { PrepackDescription } from "./prepack-description/prepack-description";
 import { PrepackDetailsContext } from "./prepack-details.store";
 import { styles } from "./prepack-details.style";
-import { PrepackDescription } from "./prepack-description/prepack-description";
 
 
 export function PrepackDetails({ navigation }) {

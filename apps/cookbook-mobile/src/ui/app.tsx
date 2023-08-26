@@ -52,13 +52,41 @@ const App = () => {
         <ModalsContext.Provider value={modalCtx}>
           <NavigationContainer theme={CombinedDefaultTheme}>
             <Stack.Navigator>
-              <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
-              <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
-              <Stack.Screen name={RootViews.Home} component={HomeScreen} options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }} />
-              <Stack.Screen name={RootViews.RecipeSummary} component={RecipeSummary} options={{ headerShown: false }} />
-              <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetailsWithContext} options={{ headerShown: false }} />
-              <Stack.Screen name={RootViews.ProductDetails} component={ProductDetails} options={{ headerTitle: t('product.details.title') }} />
-              <Stack.Screen name={RootViews.PrepackDetails} component={PrepackDetailsWithContext} options={{ headerShown: false }} />
+              <Stack.Screen
+                name={RootViews.Login}
+                component={LoginScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={RootViews.Loading}
+                component={LoadingScreen}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={RootViews.Home}
+                component={HomeScreen}
+                options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }}
+              />
+              <Stack.Screen
+                name={RootViews.RecipeSummary}
+                component={RecipeSummary}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={RootViews.RecipeDetails}
+                component={RecipeDetailsWithContext}
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name={RootViews.ProductDetails}
+                component={ProductDetails}
+                options={{ headerTitle: t('product.details.title') }}
+              />
+              <Stack.Screen
+                name={RootViews.PrepackDetails}
+                component={PrepackDetailsWithContext}
+                options={{ headerShown: false }}
+              />
             </Stack.Navigator>
           </NavigationContainer>
         </ModalsContext.Provider>

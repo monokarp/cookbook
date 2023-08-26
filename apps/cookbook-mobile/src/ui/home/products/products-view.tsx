@@ -1,7 +1,7 @@
 import { Product } from '@cookbook/domain/types/product/product';
 import { TestIds } from '@cookbook/ui/test-ids';
 import { useInjection } from 'inversify-react-native';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
@@ -9,7 +9,7 @@ import { ProductsRepository } from '../../../core/repositories/products.reposito
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { EntityList } from '../../common/entity-list/entity-list';
 import { FormMode } from '../../common/form-mode.enum';
-import { ModalsContext } from '../../common/modals/modals.context';
+import { useAppModals } from '../../common/modals/modals.context';
 import { RootViews } from '../../root-views.enum';
 import { useProductsStore } from './products.store';
 
@@ -22,7 +22,7 @@ export function ProductsView({ navigation }) {
 
   const { set: setProducts, filteredItems: filteredProducts, filter, deleteItem } = useProductsStore();
 
-  const { toast } = useContext(ModalsContext);
+  const { toast } = useAppModals();
 
   async function tryDeleteProduct(item: Product) {
     try {

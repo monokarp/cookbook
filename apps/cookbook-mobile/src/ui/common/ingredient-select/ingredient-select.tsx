@@ -7,12 +7,12 @@ import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredi
 import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProduct, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Divider, IconButton, Switch, Text, TextInput, withTheme } from "react-native-paper";
-import { ModalsContext } from "../modals/modals.context";
+import { useAppModals } from "../modals/modals.context";
 import { styles } from "./ingredient-select.style";
 
 export interface IngredientSelectProps {
@@ -63,7 +63,7 @@ function _IngredientSelect({
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;
     const measuringUnits = isServedInUnits ? ingredient.units().toString() : FormatNumber.Weight(ingredient.units());
 
-    const { ingredientSelect, confirmation } = useContext(ModalsContext);
+    const { ingredientSelect, confirmation } = useAppModals();
 
     const [selectedBase, setSelectedBase] = useState(getBase(ingredient));
     const isMeasuredInUnits = isProduct(selectedBase) && selectedBase.pricing.measuring === ProductMeasuring.Units;

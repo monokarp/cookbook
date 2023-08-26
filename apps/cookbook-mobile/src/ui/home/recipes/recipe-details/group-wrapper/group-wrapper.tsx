@@ -1,9 +1,9 @@
 import { PositionGroup } from "@cookbook/domain/types/recipe/recipe";
-import { PropsWithChildren, useContext } from "react";
+import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { IconButton, Text } from "react-native-paper";
-import { ModalsContext } from "../../../../common/modals/modals.context";
+import { useAppModals } from "../../../../common/modals/modals.context";
 import { GroupNameInput } from "./group-name-input/group-name-input";
 import { styles } from "./group-wrapper.style";
 
@@ -22,7 +22,7 @@ export type GroupWrapperProps = PropsWithChildren<{
 export function GroupRowWrapper({ recipeGroups, children, rowIndex, groupEditing }: GroupWrapperProps) {
     const { t } = useTranslation();
 
-    const { confirmation } = useContext(ModalsContext);
+    const { confirmation } = useAppModals();
 
     let rowStyle = styles.base;
 

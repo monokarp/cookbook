@@ -1,10 +1,10 @@
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { List } from "react-native-paper";
 import { IconResetTimeoutMs } from "../contsants";
-import { ModalsContext } from "./modals/modals.context";
+import { useAppModals } from "./modals/modals.context";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -23,7 +23,7 @@ enum Icons {
 export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
     const { t } = useTranslation();
 
-    const { confirmation } = useContext(ModalsContext);
+    const { confirmation } = useAppModals();
 
     const [icon, setIcon] = useState(Icons.Default);
 

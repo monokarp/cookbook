@@ -3,6 +3,7 @@ import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredi
 import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
+import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -14,7 +15,6 @@ import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
-import { TestIds } from "@cookbook/ui/test-ids";
 
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
