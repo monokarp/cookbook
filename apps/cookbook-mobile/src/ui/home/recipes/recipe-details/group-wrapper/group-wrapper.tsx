@@ -3,9 +3,9 @@ import { PropsWithChildren } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { IconButton, Text } from "react-native-paper";
-import { useAppModals } from "../../../../common/modals/modals.context";
 import { GroupNameInput } from "./group-name-input/group-name-input";
 import { styles } from "./group-wrapper.style";
+import { useAppModals } from "../../../../common/modals/use-modals.hook";
 
 export type GroupWrapperProps = PropsWithChildren<{
     recipeGroups: PositionGroup[],
@@ -66,14 +66,14 @@ export function GroupRowWrapper({ recipeGroups, children, rowIndex, groupEditing
                                         icon="trash-can"
                                         size={22}
                                         onPress={() => {
-                                            confirmation(
-                                                t('recipe.groups.remove'),
-                                                (result) => {
+                                            confirmation.show({
+                                                message: t('recipe.groups.remove'),
+                                                onResult: (result) => {
                                                     if (result === 'confirm') {
                                                         groupEditing.onRemove(matchingGroup.name)
                                                     }
                                                 }
-                                            )
+                                            })
                                         }}
                                     />
                                 </View>

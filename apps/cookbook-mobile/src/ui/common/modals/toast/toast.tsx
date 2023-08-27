@@ -1,32 +1,26 @@
 import { TestIds } from "@cookbook/ui/test-ids";
-import { forwardRef, useImperativeHandle } from "react";
 import { useTranslation } from "react-i18next";
 import { Portal, Snackbar, Text } from "react-native-paper";
-import { useToast } from "./toast.store";
-
-export const ToastMessage = forwardRef(_ToastMessage);
 
 const DefaultTimeoutMs = 3000;
 
-function _ToastMessage(_, ref) {
+export interface ToastProps {
+    message: string;
+    onResult: () => void;
+}
+
+export function Toast({ message, onResult }: ToastProps) {
     const { t } = useTranslation();
 
-    const { message, hide, show } = useToast();
-
-    useImperativeHandle(ref, () => ({
-        showToastMessage: (message: string, timeout = DefaultTimeoutMs) => {
-            show(message);
-
-            setTimeout(() => hide(), timeout);
-        }
-    }), [show, hide]);
+    setTimeout(() => onResult(), DefaultTimeoutMs);
 
     return (
         <Portal>
             <Snackbar
                 visible={!!message}
-                onDismiss={() => hide()}
+                onDismiss={onResult}
                 action={{
+                    onPress: onResult,
                     label: t('common.ok')
                 }}
             >

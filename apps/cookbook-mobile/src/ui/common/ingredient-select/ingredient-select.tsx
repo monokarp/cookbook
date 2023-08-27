@@ -12,8 +12,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Divider, IconButton, Switch, Text, TextInput, withTheme } from "react-native-paper";
-import { useAppModals } from "../modals/modals.context";
 import { styles } from "./ingredient-select.style";
+import { useAppModals } from "../modals/use-modals.hook";
 
 export interface IngredientSelectProps {
     ingredient: Position,
@@ -63,7 +63,7 @@ function _IngredientSelect({
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;
     const measuringUnits = isServedInUnits ? ingredient.units().toString() : FormatNumber.Weight(ingredient.units());
 
-    const { ingredientSelect, confirmation } = useAppModals();
+    const { ingredientPicker, confirmation } = useAppModals();
 
     const [selectedBase, setSelectedBase] = useState(getBase(ingredient));
     const isMeasuredInUnits = isProduct(selectedBase) && selectedBase.pricing.measuring === ProductMeasuring.Units;
@@ -107,7 +107,7 @@ function _IngredientSelect({
     };
 
     return (
-        <View style={{ width:'100%' }}>
+        <View style={{ width: '100%' }}>
             {
                 isEditing
                     ? <View style={{ margin: 2, backgroundColor: 'white' }}>
@@ -130,17 +130,17 @@ function _IngredientSelect({
                                                 <Pressable
                                                     testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
                                                     style={{ paddingLeft: 5, paddingVertical: 10, marginRight: 10, backgroundColor: theme.colors.secondaryContainer, borderRadius: 5 }}
-                                                    onPress={() => ingredientSelect(allowAddingPrepacks, e => {
-                                                        setSelectedBase(e)
-                                                    })}
+                                                    onPress={() => ingredientPicker.show(allowAddingPrepacks, setSelectedBase)}
                                                     onLongPress={() =>
-                                                        confirmation(
-                                                            t('lists.deleteItemPrompt'),
-                                                            (result) => {
+                                                        confirmation.show({
+                                                            message: t('lists.deleteItemPrompt'),
+                                                            onResult: (result) => {
                                                                 if (result === 'confirm') {
                                                                     onDelete();
                                                                 }
-                                                            })}
+                                                            }
+                                                        })
+                                                    }
                                                 >
                                                     <Text
                                                         testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Name, index)}

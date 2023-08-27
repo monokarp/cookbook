@@ -12,6 +12,7 @@ import { DatasyncRepository } from '../core/repositories/datasync.repository';
 import { PrepacksRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
+import { RegisterModals } from './common/modals/modals.module';
 
 export function buildRootContainer() {
     const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });
@@ -42,5 +43,7 @@ export function buildRootContainer() {
     container.bind(RecipesSync).toSelf();
     container.resolve(RecipesSync);
 
+    RegisterModals(container);
+    
     return container;
 }

@@ -1,20 +1,21 @@
+import { Product } from "@cookbook/domain/types/product/product";
+import { Prepack } from "@cookbook/domain/types/recipe/prepack";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { forwardRef, useEffect, useImperativeHandle } from "react";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Divider, List, Modal, Portal, TextInput } from "react-native-paper";
 import { usePrepacksStore } from "../../../home/prepacks/prepacks.store";
 import { useProductsStore } from "../../../home/products/products.store";
-import { useIngredientItemsStore, useIngredientSelectModal } from "./ingredient-select.store";
+import { useIngredientItemsStore } from "./ingredient-picker.store";
 
-export const IngredientSelect = forwardRef(_IngredientSelectModal);
+export interface IngredientPickerProps {
+    showPrepacks: boolean,
+    onResult: (item: Product | Prepack | null) => void;
+}
 
-function _IngredientSelectModal(_, ref) {
+export function IngredientPicker({ showPrepacks, onResult }: IngredientPickerProps) {
     const { t } = useTranslation();
-
-    console.log('rendering ingredient select')
-
-    const { isVisible, showPrepacks, onSelect, hide, show } = useIngredientSelectModal();
 
     const { set, filteredItems, filter } = useIngredientItemsStore();
 
@@ -25,12 +26,7 @@ function _IngredientSelectModal(_, ref) {
         set(showPrepacks ? [...products, ...prepacks] : products);
     }, [products, prepacks, showPrepacks]);
 
-    function resetAndDismiss() {
-        filter('');
-        hide();
-    }
-
-    useImperativeHandle(ref, () => ({ showIngredientSelectModal: show }), [show]);
+    function reset() { filter(''); }
 
     return (
         <Portal>
@@ -43,8 +39,11 @@ function _IngredientSelectModal(_, ref) {
                     marginVertical: 'auto',
                     marginHorizontal: '5%'
                 }}
-                visible={isVisible}
-                onDismiss={resetAndDismiss}
+                visible={!!filteredItems.length}
+                onDismiss={() => {
+                    reset();
+                    onResult(null);
+                }}
             >
                 <TextInput
                     style={{ marginBottom: 5 }}
@@ -64,8 +63,8 @@ function _IngredientSelectModal(_, ref) {
                                 title={item.name}
                                 testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Modal.ListItem, index)}
                                 onTouchEnd={() => {
-                                    onSelect(item);
-                                    resetAndDismiss();
+                                    onResult(item);
+                                    reset();
                                 }}
                             />
                             <Divider />

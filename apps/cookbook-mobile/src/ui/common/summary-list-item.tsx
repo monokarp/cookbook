@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { List } from "react-native-paper";
 import { IconResetTimeoutMs } from "../contsants";
-import { useAppModals } from "./modals/modals.context";
+import { useAppModals } from "./modals/use-modals.hook";
 
 export interface SummaryListItemProps {
     item: { name: string };
@@ -49,14 +49,14 @@ export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequeste
             }
             onPress={itemSelected}
             onLongPress={() => {
-                confirmation(
-                    t('lists.deleteItemPrompt'),
-                    (result) => {
+                confirmation.show({
+                    message: t('lists.deleteItemPrompt'),
+                    onResult: (result) => {
                         if (result === 'confirm') {
                             deleteRequested();
                         }
                     }
-                )
+                })
             }}
         />
     );

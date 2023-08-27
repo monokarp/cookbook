@@ -9,9 +9,9 @@ import { ProductsRepository } from '../../../core/repositories/products.reposito
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { EntityList } from '../../common/entity-list/entity-list';
 import { FormMode } from '../../common/form-mode.enum';
-import { useAppModals } from '../../common/modals/modals.context';
 import { RootViews } from '../../root-views.enum';
 import { useProductsStore } from './products.store';
+import { useAppModals } from '../../common/modals/use-modals.hook';
 
 
 export function ProductsView({ navigation }) {
@@ -31,8 +31,8 @@ export function ProductsView({ navigation }) {
       deleteItem(item.id);
     } catch (e) {
       switch (e.code) {
-        case 0: toast(t('errors.product.fkViolation')); break;
-        default: toast(t('errors.product.cantDelete'));
+        case 0: toast.show({ message: 'errors.product.fkViolation' }); break;
+        default: toast.show({ message: 'errors.product.cantDelete' });
       }
     }
   }

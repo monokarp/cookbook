@@ -1,22 +1,20 @@
 import { TestIds } from "@cookbook/ui/test-ids";
-import { forwardRef, useImperativeHandle } from "react";
 import { useTranslation } from "react-i18next";
 import { Button, Dialog, Portal } from "react-native-paper";
-import { ConfirmationModalResult, useConfirmationModal } from "./confirmation.store";
 
-export const Confirmation = forwardRef(_ConfirmationModal);
+export type ConfirmationResult = 'confirm' | 'cancel' | 'dismiss';
 
-function _ConfirmationModal(_, ref) {
+export interface ConfirmationProps {
+    message: string;
+    onResult: (type: ConfirmationResult) => void;
+}
+
+export function Confirmation({ message, onResult }: ConfirmationProps) {
     const { t } = useTranslation();
 
-    const { message, onClose, hide, show } = useConfirmationModal();
-
-    function emitAction(result: ConfirmationModalResult) {
-        onClose(result);
-        hide();
+    function emitAction(result: ConfirmationResult) {
+        onResult(result);
     }
-
-    useImperativeHandle(ref, () => ({ showConfirmationModal: show }), [show]);
 
     return (
         <Portal>

@@ -8,10 +8,10 @@ import { TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../core/repositories/prepack.repository";
 import { ExportToClipboard } from "../../common/clipboard-export";
 import { EntityList } from "../../common/entity-list/entity-list";
-import { useAppModals } from "../../common/modals/modals.context";
 import { RootViews } from "../../root-views.enum";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
+import { useAppModals } from "../../common/modals/use-modals.hook";
 
 export function PrepacksView({ navigation }) {
     const { t } = useTranslation();
@@ -34,8 +34,8 @@ export function PrepacksView({ navigation }) {
             deleteItem(id);
         } catch (e) {
             switch (e.code) {
-                case 0: toast(t('errors.prepack.fkViolation')); break;
-                default: toast(t('errors.prepack.cantDelete'));
+                case 0: toast.show({ message: t('errors.prepack.fkViolation') }); break;
+                default: toast.show({ message: t('errors.prepack.cantDelete') });
             }
         }
     };
