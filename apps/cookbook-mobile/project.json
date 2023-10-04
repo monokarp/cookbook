@@ -52,7 +52,7 @@
       "envFile": ".env.run-android",
       "options": {
         "deviceId": "10aed187",
-        "mode": "release"
+        "mode": "debug"
       }
     },
     "build-android": {

@@ -6,9 +6,10 @@ import { View } from 'react-native';
 import { Environment } from '../env';
 import { RootViews } from '../root-views.enum';
 import { useSession } from './session.store';
+import NetInfo from '@react-native-community/netinfo';
 
 GoogleSignin.configure({
-  webClientId: '1011563761916-245cqtlrfd9frupq9i7so8n2ul5rc8t7.apps.googleusercontent.com'
+  webClientId: ''
 });
 
 export function LoginScreen({ navigation }) {
@@ -21,27 +22,35 @@ export function LoginScreen({ navigation }) {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
       if (await GoogleSignin.isSignedIn()) {
-        const userInfo = await GoogleSignin.signInSilently();
+        const userInfo = await GoogleSignin.getCurrentUser();
 
-        await authFirebase(userInfo);
+        NetInfo.fetch().then(({ isConnected }) => {
+          if (isConnected) {
+            authFirebase(userInfo);
+          }
+        });
+
+        finishLogin(userInfo);
+      } else {
+        await signIn();
       }
     } catch (e) {
-      console.log('silent sign in', e)
+      console.log('silent sign in error', e)
     }
-
-    setIsSigninInProgress(false);
   }
 
   async function authFirebase(userInfo: User) {
-    console.log('user info', JSON.stringify(userInfo));
-
     const googleCredential = auth.GoogleAuthProvider.credential(userInfo.idToken);
 
     await auth().signInWithCredential(googleCredential);
+  }
 
+  function finishLogin(userInfo: User) {
     setUser({ id: userInfo.user.id });
 
     navigation.navigate(RootViews.Loading);
+
+    setIsSigninInProgress(false);
   }
 
   async function signIn() {
@@ -61,11 +70,11 @@ export function LoginScreen({ navigation }) {
       const userInfo = await GoogleSignin.signIn();
 
       await authFirebase(userInfo);
+
+      finishLogin(userInfo);
     } catch (error) {
       console.log('login error', error);
     }
-
-    setIsSigninInProgress(false);
   };
 
   useEffect(() => {

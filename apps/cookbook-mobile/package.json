@@ -33,6 +33,7 @@
     "@react-native-firebase/app": "*",
     "@react-native-firebase/firestore": "*",
     "@react-native-firebase/auth": "*",
-    "react-native-dotenv": "*"
+    "react-native-dotenv": "*",
+    "@react-native-community/netinfo": "*"
   }
 }
