@@ -111,3 +111,6 @@ ios/Pods/
 
 apps/cookbook-mobile-e2e/artifacts
 apps/cookbook-mobile/android/app/google-services.json
+
+.env
+.env.*

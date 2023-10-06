@@ -8,9 +8,7 @@ import { RootViews } from '../root-views.enum';
 import { useSession } from './session.store';
 import NetInfo from '@react-native-community/netinfo';
 
-GoogleSignin.configure({
-  webClientId: ''
-});
+GoogleSignin.configure({ webClientId: Environment.ClientID });
 
 export function LoginScreen({ navigation }) {
   const [isSigninInProgress, setIsSigninInProgress] = useState(true);
