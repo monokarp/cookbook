@@ -8,7 +8,12 @@
       "executor": "@nx/react-native:start",
       "options": {
         "port": 8081
-      }
+      },
+      "dependsOn": [
+        "ensure-symlink",
+        "sync-deps",
+        "pod-install"
+      ]
     },
     "serve": {
       "executor": "nx:run-commands",
@@ -18,7 +23,12 @@
     },
     "run-ios": {
       "executor": "@nx/react-native:run-ios",
-      "options": {}
+      "options": {},
+      "dependsOn": [
+        "ensure-symlink",
+        "sync-deps",
+        "pod-install"
+      ]
     },
     "bundle-ios": {
       "executor": "@nx/react-native:bundle",
@@ -29,11 +39,18 @@
         "entryFile": "src/main.tsx",
         "platform": "ios",
         "bundleOutput": "dist/apps/cookbook-mobile/ios/main.jsbundle"
-      }
+      },
+      "dependsOn": [
+        "ensure-symlink"
+      ]
     },
     "run-android": {
       "executor": "@nx/react-native:run-android",
-      "envFile": ".env.run-android"
+      "envFile": ".env.run-android",
+      "dependsOn": [
+        "ensure-symlink",
+        "sync-deps"
+      ]
     },
     "run-android-test": {
       "executor": "@nx/react-native:run-android",
@@ -61,14 +78,23 @@
         "{projectRoot}/android/app/build/outputs/bundle",
         "{projectRoot}/android/app/build/outputs/apk"
       ],
-      "options": {}
+      "options": {},
+      "dependsOn": [
+        "ensure-symlink",
+        "sync-deps"
+      ]
     },
     "build-ios": {
       "executor": "@nx/react-native:build-ios",
       "outputs": [
         "{projectRoot}/ios/build/Build"
       ],
-      "options": {}
+      "options": {},
+      "dependsOn": [
+        "ensure-symlink",
+        "sync-deps",
+        "pod-install"
+      ]
     },
     "pod-install": {
       "executor": "@nx/react-native:pod-install",
@@ -83,7 +109,10 @@
         "entryFile": "src/main.tsx",
         "platform": "android",
         "bundleOutput": "dist/apps/cookbook-mobile/android/main.jsbundle"
-      }
+      },
+      "dependsOn": [
+        "ensure-symlink"
+      ]
     },
     "sync-deps": {
       "executor": "@nx/react-native:sync-deps",
