@@ -21,8 +21,9 @@ const customConfig = {
     sourceExts: [...sourceExts, 'svg'],
     blockList: exclusionList([/^(?!.*node_modules).*\/dist\/.*/]),
     unstable_enableSymlinks: true,
-    unstable_enablePackageExports: true,
+    unstable_enablePackageExports: false,
   },
+  resetCache: true,
 };
 
 module.exports = withNxMetro(mergeConfig(defaultConfig, customConfig), {
