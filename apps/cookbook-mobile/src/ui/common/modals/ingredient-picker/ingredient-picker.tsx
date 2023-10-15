@@ -1,7 +1,7 @@
 import { Product } from "@cookbook/domain/types/product/product";
 import { Prepack } from "@cookbook/domain/types/recipe/prepack";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Divider, List, Modal, Portal, TextInput } from "react-native-paper";
@@ -22,11 +22,16 @@ export function IngredientPicker({ showPrepacks, onResult }: IngredientPickerPro
     const { items: products } = useProductsStore();
     const { items: prepacks } = usePrepacksStore();
 
+    const [visible, setVisible] = useState(true);
+
     useEffect(() => {
         set(showPrepacks ? [...products, ...prepacks] : products);
     }, [products, prepacks, showPrepacks]);
 
-    function reset() { filter(''); }
+    function reset() {
+        setVisible(false);
+        filter('');
+    }
 
     return (
         <Portal>
@@ -39,7 +44,7 @@ export function IngredientPicker({ showPrepacks, onResult }: IngredientPickerPro
                     marginVertical: 'auto',
                     marginHorizontal: '5%'
                 }}
-                visible={!!filteredItems.length}
+                visible={visible}
                 onDismiss={() => {
                     reset();
                     onResult(null);
