@@ -56,7 +56,7 @@
       "executor": "@nx/react-native:run-android",
       "envFile": ".env.run-android-test"
     },
-    "run-android-device1": {
+    "run-android-device-prod": {
       "executor": "@nx/react-native:run-android",
       "envFile": ".env.run-android-device",
       "options": {
@@ -64,7 +64,7 @@
         "mode": "release"
       }
     },
-    "run-android-device2": {
+    "run-android-device-dev": {
       "executor": "@nx/react-native:run-android",
       "envFile": ".env.run-android",
       "options": {

@@ -56,7 +56,7 @@ export function RecipeSummary({ navigation, route }) {
     }
 
     const GetPrepackNode = (one: PrepackIngredient, recipePositionIndex: number) => {
-        const productRatio = num => num * one.prepack.weightRatio() * one.weightRatio() * ratio;
+        const productRatio = num => num * one.weightRatio() * ratio;
 
         return <View style={{ width: '100%' }}>
             <List.Accordion title={one.prepack.name}>
