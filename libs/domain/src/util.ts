@@ -6,6 +6,10 @@ export function roundMoney(value: number): number {
     return Number(value.toFixed(MoneyRoundingPrecision));
 }
 
+export function roundMoneySafe(value: number): number {
+    return Number(value.toFixed(MoneyRoundingPrecision));
+}
+
 export class FormatNumber {
     public static Money(value: number): string {
         return value.toFixed(MoneyRoundingPrecision);

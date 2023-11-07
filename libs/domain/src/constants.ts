@@ -1,4 +1,5 @@
 export const MoneyRoundingPrecision = 2;
+export const MoneyRoundingSafe = 4;
 
 export const WeightRoundingPrecision = 3;
 
