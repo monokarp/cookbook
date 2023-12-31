@@ -1,18 +1,18 @@
-import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
-import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredient";
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
-import { Appbar, Divider, List, Text, ToggleButton } from "react-native-paper";
+import { Appbar, Divider } from "react-native-paper";
 import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
+import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
+import { TotalsRowLabel } from "../../../common/summary/label-components";
 import { RootViews } from "../../../root-views.enum";
 import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
+import { PositionSummary } from "./position-summary/position-summary";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
 
@@ -24,15 +24,7 @@ export function RecipeSummary({ navigation, route }) {
 
     const recipe: Recipe = route.params.recipe;
 
-    function isServedInUnits(ingredient: ProductIngredient) {
-        return ingredient.serving.measuring === ProductMeasuring.Units;
-    }
-
     const [ratio, setRatio] = useState(1);
-    const increment = 0.5;
-    const round = num => Number((num).toFixed(1));
-    const increaseRatio = () => setRatio(round(ratio + increment));
-    const decreaseRatio = () => setRatio(round(ratio - increment ? ratio - increment : ratio));
 
     const [description, setDescription] = useState(recipe.description);
 
@@ -42,57 +34,6 @@ export function RecipeSummary({ navigation, route }) {
         setDescription(value);
 
         setRecipes(await recipeRepo.All());
-    };
-
-
-    const GetPositionNode = (one: Position, recipePositionIndex: number) => {
-        if (isPrepackIngredient(one)) {
-            return GetPrepackNode(one, recipePositionIndex);
-        } else if (isProductIngredient(one)) {
-            return GetProductNode(one);
-        } else {
-            return <Text style={styles.positionLabelMargin}>Unrecognized position type</Text>;
-        }
-    }
-
-    const GetPrepackNode = (one: PrepackIngredient, recipePositionIndex: number) => {
-        const productRatio = num => num * one.weightRatio() * ratio;
-
-        return <View style={{ width: '100%' }}>
-            <List.Accordion title={one.prepack.name}>
-                {
-                    [
-                        <DividedRow key={`${recipePositionIndex}-0`}>
-                            <View style={styles.recipePriceRow}>
-                                <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
-                                <TotalsRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
-                                <TotalsRowLabel>{FormatNumber.Money(one.price() * ratio)}</TotalsRowLabel>
-                            </View>
-                        </DividedRow>,
-                        ...one.prepack.ingredients.map((productIngredient, prepackPositionIndex) =>
-                            <DividedRow key={`${recipePositionIndex}-${prepackPositionIndex + 1}`}>
-                                <View style={styles.positionRow}>
-                                    <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Weight(productRatio(productIngredient.weight()))} {t('product.measuring.grams')}</PositionRowLabel>
-                                    <PositionRowLabel>{FormatNumber.Money(productRatio(productIngredient.price()))}</PositionRowLabel>
-                                </View>
-                            </DividedRow>
-                        )
-                    ]
-                }
-            </List.Accordion>
-            <Divider />
-        </View>;
-    };
-
-    const GetProductNode = (one: ProductIngredient) => {
-        return <DividedRow>
-            <View style={styles.positionRow}>
-                <PositionRowLabel>{one.product.name}</PositionRowLabel>
-                <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
-                <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-            </View>
-        </DividedRow>;
     };
 
     return (
@@ -110,20 +51,7 @@ export function RecipeSummary({ navigation, route }) {
             </Appbar.Header>
 
             <ScrollView>
-                <View style={styles.ratioBoxContainer}>
-                    <Text style={styles.ratioLabel} variant="headlineSmall">{ratio}</Text>
-                    {/* eslint-disable-next-line @typescript-eslint/no-empty-function */}
-                    <ToggleButton.Row style={{ margin: 10 }} onValueChange={() => { }} value="">
-                        <ToggleButton
-                            icon="minus"
-                            onPress={decreaseRatio}
-                        />
-                        <ToggleButton
-                            icon="plus"
-                            onPress={increaseRatio}
-                        />
-                    </ToggleButton.Row>
-                </View>
+                <IngredientRatio value={ratio} onChange={setRatio} />
 
                 <View style={styles.bodyCol}>
                     <View style={styles.recipePriceRow}>
@@ -135,7 +63,7 @@ export function RecipeSummary({ navigation, route }) {
                     {
                         recipe.positions.map((one, recipePositionIndex) =>
                             <GroupRowWrapper key={(recipePositionIndex * 2)} recipeGroups={recipe.groups} rowIndex={recipePositionIndex}>
-                                {GetPositionNode(one, recipePositionIndex * 2)}
+                                <PositionSummary position={one} ratio={ratio} recipePositionKey={recipePositionIndex * 2} />
                             </GroupRowWrapper>
                         )
                     }
@@ -145,23 +73,4 @@ export function RecipeSummary({ navigation, route }) {
             </ScrollView>
         </View>
     );
-}
-
-function TotalsRowLabel(props) {
-    return <View style={{ flex: 1 }}>
-        <Text {...props} variant="bodyLarge" style={styles.positionLabelMargin} />
-    </View>;
-}
-
-function PositionRowLabel(props) {
-    return <View style={{ flex: 1 }}>
-        <Text {...props} style={styles.positionLabelMargin} />
-    </View>
-}
-
-function DividedRow({ children }) {
-    return <View style={{ width: '100%' }}>
-        {children}
-        <Divider />
-    </View >
 }

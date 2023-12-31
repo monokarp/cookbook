@@ -1,8 +1,8 @@
 import { Container } from 'inversify';
-import { ModalService } from './modal.service';
 import { ConfirmationModal } from './confirmation/confirmation.modal';
-import { ToastModal } from './toast/toast.modal';
 import { IngredientPickerModal } from './ingredient-picker/ingredient-picker.modal';
+import { ModalService } from './modal.service';
+import { ToastModal } from './toast/toast.modal';
 
 export function RegisterModals(container: Container) {
     container.bind(ModalService).toSelf();

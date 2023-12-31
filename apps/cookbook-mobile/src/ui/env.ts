@@ -1,4 +1,4 @@
-import { ENV, CLIENT_ID } from "@env";
+import { CLIENT_ID, ENV } from "@env";
 
 console.log('ENV', ENV);
 

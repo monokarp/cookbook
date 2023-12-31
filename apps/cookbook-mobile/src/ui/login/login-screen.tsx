@@ -1,4 +1,5 @@
 import { TestIds } from '@cookbook/ui/test-ids';
+import NetInfo from '@react-native-community/netinfo';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, User } from '@react-native-google-signin/google-signin';
 import { useEffect, useState } from 'react';
@@ -6,7 +7,6 @@ import { View } from 'react-native';
 import { Environment } from '../env';
 import { RootViews } from '../root-views.enum';
 import { useSession } from './session.store';
-import NetInfo from '@react-native-community/netinfo';
 
 GoogleSignin.configure({ webClientId: Environment.ClientID });
 

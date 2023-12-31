@@ -5,5 +5,6 @@ export const enum RootViews {
     ProductDetails = "product-details",
     RecipeSummary = "recipe-summary",
     RecipeDetails = "recipe-details",
+    PrepackSummary = "prepack-summary",
     PrepackDetails = "prepack-details",
 };

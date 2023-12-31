@@ -8,6 +8,7 @@ import { appLightTheme } from './app.theme';
 import { ModalOutlet } from './common/modals/modal-outlet';
 import { HomeScreen } from './home/home-screen';
 import { PrepackDetails } from './home/prepacks/prepack-details/prepack-details';
+import { PrepackSummary } from './home/prepacks/prepack-summary/prepack-summary';
 import { ProductDetails } from './home/products/product-details/product-details';
 import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
 import { RecipeSummary } from './home/recipes/recipe-summary/recipe-summary';
@@ -67,6 +68,11 @@ const App = () => {
               name={RootViews.ProductDetails}
               component={ProductDetails}
               options={{ headerTitle: t('product.details.title') }}
+            />
+            <Stack.Screen
+              name={RootViews.PrepackSummary}
+              component={PrepackSummary}
+              options={{ headerShown: false }}
             />
             <Stack.Screen
               name={RootViews.PrepackDetails}

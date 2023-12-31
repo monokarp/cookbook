@@ -3,8 +3,8 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Pressable } from "react-native";
 import { List } from "react-native-paper";
-import { IconResetTimeoutMs } from "../contsants";
-import { useAppModals } from "./modals/use-modals.hook";
+import { IconResetTimeoutMs } from "../../contsants";
+import { useAppModals } from "../modals/use-modals.hook";
 
 export interface SummaryListItemProps {
     item: { name: string };

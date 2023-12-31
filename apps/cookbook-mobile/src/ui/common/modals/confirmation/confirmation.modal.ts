@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { ModalService } from "../modal.service";
-import { ConfirmationProps, Confirmation } from "./confirmation";
+import { Confirmation, ConfirmationProps } from "./confirmation";
 
 @injectable()
 export class ConfirmationModal {

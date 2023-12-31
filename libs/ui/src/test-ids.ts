@@ -58,6 +58,10 @@ export const TestIds = {
         AddNewButton: 'prepacks-view-add',
         ToastMessage: 'prepacks-view-toast-message',
     },
+    PrepackSummary: {
+        ToDetails: 'prepack-summary-to-details',
+        Back: 'prepack-summary-back',
+    },
     PrepackDetails: {
         NameInput: 'prepack-details-name-input',
         NameInputError: 'prepack-details-name-input-error',

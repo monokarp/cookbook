@@ -9,9 +9,9 @@ import { ProductsRepository } from '../../../core/repositories/products.reposito
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { EntityList } from '../../common/entity-list/entity-list';
 import { FormMode } from '../../common/form-mode.enum';
+import { useAppModals } from '../../common/modals/use-modals.hook';
 import { RootViews } from '../../root-views.enum';
 import { useProductsStore } from './products.store';
-import { useAppModals } from '../../common/modals/use-modals.hook';
 
 
 export function ProductsView({ navigation }) {

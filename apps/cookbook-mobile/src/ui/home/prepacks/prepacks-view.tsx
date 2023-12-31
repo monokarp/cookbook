@@ -8,10 +8,10 @@ import { TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../core/repositories/prepack.repository";
 import { ExportToClipboard } from "../../common/clipboard-export";
 import { EntityList } from "../../common/entity-list/entity-list";
+import { useAppModals } from "../../common/modals/use-modals.hook";
 import { RootViews } from "../../root-views.enum";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
-import { useAppModals } from "../../common/modals/use-modals.hook";
 
 export function PrepacksView({ navigation }) {
     const { t } = useTranslation();
@@ -55,7 +55,7 @@ export function PrepacksView({ navigation }) {
                 itemTestId={TestIds.PrepacksView.ListItem}
                 addNewButtonTestId={TestIds.PrepacksView.AddNewButton}
                 addNewButtonText={t('prepack.addNew')}
-                select={item => navigation.navigate(RootViews.PrepackDetails, { prepack: item })}
+                select={item => navigation.navigate(RootViews.PrepackSummary, { prepack: item })}
                 addNew={() => navigation.navigate(RootViews.PrepackDetails, { prepack: repo.Create() })}
                 remove={item => deletePrepack(item.id)}
                 exportToClipboard={item => clipboardExport.prepack(item)}

@@ -45,6 +45,9 @@ describe('Prepacks view', () => {
   it('opens saved prepack', async () => {
     await collectionElement(TestIds.PrepacksView.ListItem).at(1).tap();
 
+    await untilVisible(TestIds.PrepackSummary.ToDetails);
+    await element(by.id(TestIds.PrepackSummary.ToDetails)).tap();
+
     await untilVisible(TestIds.PrepackDetails.NameInput);
     await untilVisible(TestIds.PrepackDetails.WeightInput);
   });
@@ -96,6 +99,9 @@ describe('Prepacks view', () => {
 
   it('should save updated prepack', async () => {
     await element(by.id(TestIds.PrepackDetails.Submit)).tap();
+
+    await untilVisible(TestIds.PrepackSummary.Back);
+    await element(by.id(TestIds.PrepackSummary.Back)).tap();
 
     await untilVisible(TestIds.PrepacksView.Container);
 

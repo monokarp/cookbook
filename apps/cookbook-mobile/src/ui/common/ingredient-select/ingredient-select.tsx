@@ -12,8 +12,8 @@ import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
 import { Divider, IconButton, Switch, Text, TextInput, withTheme } from "react-native-paper";
-import { styles } from "./ingredient-select.style";
 import { useAppModals } from "../modals/use-modals.hook";
+import { styles } from "./ingredient-select.style";
 
 export interface IngredientSelectProps {
     ingredient: Position,

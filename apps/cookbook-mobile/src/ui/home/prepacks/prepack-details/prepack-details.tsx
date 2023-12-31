@@ -8,12 +8,13 @@ import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
-import { Appbar, Button, Divider, FAB, Text, TextInput } from "react-native-paper";
+import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
 import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
+import { RootViews } from "../../../root-views.enum";
 
 
 export function PrepackDetails({ navigation, route }) {
