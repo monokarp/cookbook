@@ -10,7 +10,7 @@ import { useSession } from './session.store';
 
 GoogleSignin.configure({ webClientId: Environment.ClientID });
 
-export function LoginScreen({ navigation }) {
+export function LoginScreen({ navigation, doSignOut }) {
   const [isSigninInProgress, setIsSigninInProgress] = useState(true);
 
   const { setUser } = useSession();
@@ -22,11 +22,7 @@ export function LoginScreen({ navigation }) {
       if (await GoogleSignin.isSignedIn()) {
         const userInfo = await GoogleSignin.getCurrentUser();
 
-        NetInfo.fetch().then(({ isConnected }) => {
-          if (isConnected) {
-            authFirebase(userInfo);
-          }
-        });
+        authFirebase(userInfo);
 
         finishLogin(userInfo);
       } else {
@@ -38,6 +34,10 @@ export function LoginScreen({ navigation }) {
   }
 
   async function authFirebase(userInfo: User) {
+    const { isConnected } = await NetInfo.fetch();
+
+    if (!isConnected) return;
+
     const googleCredential = auth.GoogleAuthProvider.credential(userInfo.idToken);
 
     await auth().signInWithCredential(googleCredential);
@@ -75,8 +75,20 @@ export function LoginScreen({ navigation }) {
     }
   };
 
+  async function signOut() {
+    if (await GoogleSignin.isSignedIn()) {
+      await GoogleSignin.signOut();
+    }
+
+    setUser(null);
+  }
+
   useEffect(() => {
-    trySilentSignIn();
+    if (doSignOut) {
+      signOut();
+    } else {
+      trySilentSignIn();
+    }
   }, []);
 
   return (

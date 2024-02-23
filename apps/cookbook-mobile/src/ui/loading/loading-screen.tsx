@@ -34,11 +34,13 @@ export function LoadingScreen({ navigation }) {
         }
 
         initialize();
-
-        navigation.navigate(RootViews.Home);
     };
 
-    useEffect(() => { if (!hasInitialized) { loadData() } }, [hasInitialized]);
+    useEffect(() => {
+        if (!hasInitialized) { loadData(); }
+
+        navigation.navigate(RootViews.Home);
+    });
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

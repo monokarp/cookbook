@@ -20,7 +20,7 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
             try {
                 await this.localRepo.SaveEntity(one);
             } catch (e) {
-                console.log(`error saving entity ${this.cloudRepo.collectionName} ${one.id}`)
+                console.log(`error saving entity ${this.cloudRepo.collectionName} ${one.id}`, e);
             }
         }
     }

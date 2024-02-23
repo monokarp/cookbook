@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaperProvider, adaptNavigationTheme } from 'react-native-paper';
+import { Appbar, IconButton, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { appLightTheme } from './app.theme';
 import { ModalOutlet } from './common/modals/modal-outlet';
 import { HomeScreen } from './home/home-screen';
@@ -16,6 +16,9 @@ import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
+import { TestIds } from '@cookbook/ui/test-ids';
+import { useSession } from './login/session.store';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme, materialLight: appLightTheme });
@@ -33,6 +36,8 @@ const container = buildRootContainer();
 
 const App = () => {
   const { t } = useTranslation();
+
+  const { setUser } = useSession();
 
   return (
     <PaperProvider theme={CombinedDefaultTheme}>
@@ -52,7 +57,16 @@ const App = () => {
             <Stack.Screen
               name={RootViews.Home}
               component={HomeScreen}
-              options={{ headerTitle: t('common.cookbook'), headerBackVisible: false }}
+              options={{
+                header: ({ navigation }) =>
+                  <Appbar.Header>
+                    <Appbar.Content title={t('common.cookbook')} />
+                    <Appbar.Action icon="logout" onPress={async () => {
+                      navigation.navigate(RootViews.Login, { doSignOut: true });
+                    }} testID={TestIds.PrepackDetails.Submit} />
+                  </Appbar.Header>,
+                headerBackVisible: false
+              }}
             />
             <Stack.Screen
               name={RootViews.RecipeSummary}

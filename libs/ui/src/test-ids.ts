@@ -27,6 +27,7 @@ export const TestIds = {
         Recipes: 'navigation-recipes',
         Products: 'navigation-products',
         Prepacks: 'navigation-prepacks',
+        Logout: 'navigation-logout',
     },
     ProductsView: {
         Container: 'products-view',
