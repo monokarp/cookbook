@@ -1,4 +1,4 @@
-import { Prepack, PrepackDto } from "./prepack";
+import { Prepack, PrepackDto } from "../prepack/prepack";
 
 export class PrepackIngredient implements PrepackIngredientDto {
     public readonly prepack: Prepack;

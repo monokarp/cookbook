@@ -1,4 +1,4 @@
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
 import { useEffect } from "react";

@@ -1,13 +1,13 @@
 import { roundMoney, roundMoneySafe } from "../../util";
 import { NamedEntity } from "../named-entity";
-import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity } from "./product-ingredient";
+import { Position, PositionDto, PositionEntity, mapPositions } from "../position/position";
 
 
 export class Prepack implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
     public readonly lastModified: string;
-    public readonly ingredients: ProductIngredient[];
+    public readonly ingredients: Position[];
     public readonly finalWeight: number;
     public readonly description: string;
 
@@ -28,7 +28,7 @@ export class Prepack implements NamedEntity {
         this.lastModified = data.lastModified;
         this.finalWeight = data.finalWeight;
         this.description = data.description;
-        this.ingredients = data.ingredients.map(dto => new ProductIngredient(dto));
+        this.ingredients = mapPositions(data.ingredients);
     }
 
     public price(): number {
@@ -50,7 +50,7 @@ export interface PrepackDto {
     lastModified: string;
     finalWeight: number;
     description: string;
-    ingredients: ProductIngredientDto[];
+    ingredients: PositionDto[];
 }
 
 export interface PrepackEntity {
@@ -59,5 +59,5 @@ export interface PrepackEntity {
     lastModified: string;
     finalWeight: number;
     description: string;
-    ingredients: ProductIngredientEntity[];
+    ingredients: PositionEntity[];
 }

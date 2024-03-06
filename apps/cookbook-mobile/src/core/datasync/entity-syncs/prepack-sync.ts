@@ -1,4 +1,4 @@
-import { PrepackEntity } from "@cookbook/domain/types/recipe/prepack";
+import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { injectable } from "inversify";
 import { PrepacksCloudRepository } from "../../cloud-repositories/prepacks.cloud-repo";
 import { PrepacksRepository } from "../../repositories/prepack.repository";

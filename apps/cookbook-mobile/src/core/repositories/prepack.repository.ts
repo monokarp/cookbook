@@ -1,10 +1,12 @@
-import { Prepack, PrepackDto, PrepackEntity } from "@cookbook/domain/types/recipe/prepack";
+import { Prepack, PrepackDto, PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { inject, injectable } from "inversify";
 import { ResultSet } from "react-native-sqlite-storage";
 import uuid from 'react-native-uuid';
 import { Database, Query } from "../database/database";
 import { ProductIngredientRow, ProductIngredientRowToEntity, ProductIngredientRowToModel } from "./recipes.repository";
 import { GroupById } from "./util";
+import { isProductIngredient, isProductIngredientEntity } from "@cookbook/domain/types/position/position";
+import { ProductIngredientDto, ProductIngredientEntity } from "@cookbook/domain/types/position/product-ingredient";
 
 @injectable()
 export class PrepacksRepository {
@@ -76,29 +78,36 @@ export class PrepacksRepository {
     }
 
     public async Save(prepack: PrepackDto): Promise<void> {
+        console.log(JSON.stringify(prepack));
+        return;
+
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified], [Description]) VALUES (?, ?, ?, ?, ?);`,
                 [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString(), prepack.description]
             ],
-            ...prepack.ingredients.map(
-                (ingredient, idx) =>
-                    [
-                        `INSERT OR REPLACE INTO [PrepackProductIngredients] ([PrepackId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
-                        VALUES (?, ?, ?, ?, ?);`,
+            ...prepack.ingredients
+                .filter(e => isProductIngredient(e))
+                .map(
+                    (ingredient: ProductIngredientDto, idx) =>
+                        // If it's a prepack ingredient I need to flatten its tree into rows?
                         [
-                            prepack.id,
-                            idx + 1,
-                            ingredient.product.id,
-                            ingredient.serving.units,
-                            ingredient.serving.measuring
-                        ]
-                    ] as Query
-            ),
+                            `INSERT OR REPLACE INTO [PrepackProductIngredients] ([PrepackId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
+                        VALUES (?, ?, ?, ?, ?);`,
+                            [
+                                prepack.id,
+                                idx + 1,
+                                ingredient.product.id,
+                                ingredient.serving.units,
+                                ingredient.serving.measuring
+                            ]
+                        ] as Query
+                ),
             [
                 `DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ? AND [PositionNumber] > ?;`,
                 [prepack.id, prepack.ingredients.length]
-            ]
+            ],
+            // same from prepacks but more complicated
         ]);
     }
 
@@ -109,20 +118,22 @@ export class PrepacksRepository {
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified], [Description]) VALUES (?, ?, ?, ?, ?);`,
                 [entity.id, entity.name, entity.finalWeight, entity.lastModified, entity.description]
             ],
-            ...entity.ingredients.map(
-                (ingredient, idx) =>
-                    [
-                        `INSERT OR REPLACE INTO [PrepackProductIngredients] ([PrepackId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
-                        VALUES (?, ?, ?, ?, ?);`,
+            ...entity.ingredients
+                .filter(e => isProductIngredientEntity(e))
+                .map(
+                    (ingredient: ProductIngredientEntity, idx) =>
                         [
-                            entity.id,
-                            idx + 1,
-                            ingredient.productId,
-                            ingredient.serving.units,
-                            ingredient.serving.measuring
-                        ]
-                    ] as Query
-            ),
+                            `INSERT OR REPLACE INTO [PrepackProductIngredients] ([PrepackId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
+                        VALUES (?, ?, ?, ?, ?);`,
+                            [
+                                entity.id,
+                                idx + 1,
+                                ingredient.productId,
+                                ingredient.serving.units,
+                                ingredient.serving.measuring
+                            ]
+                        ] as Query
+                ),
             [
                 `DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ? AND [PositionNumber] > ?;`,
                 [entity.id, entity.ingredients.length]

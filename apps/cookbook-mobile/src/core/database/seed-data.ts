@@ -1,6 +1,6 @@
 import { ProductEntity } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
-import { PrepackEntity } from "@cookbook/domain/types/recipe/prepack";
+import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
 import { inject, injectable } from "inversify";
 import { PrepacksRepository } from "../repositories/prepack.repository";

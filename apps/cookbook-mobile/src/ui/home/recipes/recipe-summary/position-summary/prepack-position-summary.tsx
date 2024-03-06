@@ -1,4 +1,4 @@
-import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredient";
+import { PrepackIngredient } from "@cookbook/domain/types/position/prepack-ingredient";
 import { FormatNumber } from "@cookbook/domain/util";
 import { t } from "i18next";
 import React from "react";

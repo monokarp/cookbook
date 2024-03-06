@@ -1,4 +1,4 @@
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useState } from "react";

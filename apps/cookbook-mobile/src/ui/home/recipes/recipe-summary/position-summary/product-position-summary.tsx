@@ -1,4 +1,4 @@
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
 import { FormatNumber } from "@cookbook/domain/util";
 import { t } from "i18next";
 import { View } from "react-native";

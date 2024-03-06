@@ -1,6 +1,6 @@
 import { RegexPatterns } from "@cookbook/domain/constants";
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
@@ -14,16 +14,19 @@ import { IngredientSelect } from "../../../common/ingredient-select/ingredient-s
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
-import { RootViews } from "../../../root-views.enum";
+import { Position, containsNestedIngredient } from "@cookbook/domain/types/position/position";
+import { useProductsStore } from "../../products/products.store";
 
 
 export function PrepackDetails({ navigation, route }) {
-    let listElementRef: FlatList<ProductIngredient> | null = null;
+    let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(PrepacksRepository);
 
+    const { items: products } = useProductsStore();
+    const { items: prepacks, set: setPrepacks } = usePrepacksStore();
 
     const [prepack, setPrepack] = useState<Prepack>(route.params.prepack);
 
@@ -32,7 +35,7 @@ export function PrepackDetails({ navigation, route }) {
         ingredients: [...prepack.ingredients, value]
     }));
 
-    const setIngredient = (value: ProductIngredient, index: number) => setPrepack(new Prepack({
+    const setIngredient = (value: Position, index: number) => setPrepack(new Prepack({
         ...prepack,
         ingredients: prepack.ingredients.reduce((updated, next, idx) => {
             updated.push(idx === index ? value : next);
@@ -46,8 +49,6 @@ export function PrepackDetails({ navigation, route }) {
     }));
 
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
-
-    const { set: setPrepacks } = usePrepacksStore();
 
     const form = useForm({
         defaultValues: {
@@ -94,7 +95,7 @@ export function PrepackDetails({ navigation, route }) {
                 <FlatList
                     ref={ref => listElementRef = ref}
                     style={{ flexGrow: 0, width: '100%' }}
-                    keyExtractor={(item, index) => `${index}_${item.product.id}`}
+                    keyExtractor={(item, index) => `${index}_${item.id}`}
                     data={prepack.ingredients}
                     ListHeaderComponent={
                         <View style={{ flexDirection: 'row' }}>
@@ -167,7 +168,10 @@ export function PrepackDetails({ navigation, route }) {
                     }
                     renderItem={({ item, index }) =>
                         <IngredientSelect
-                            allowAddingPrepacks={false}
+                            ingredientList={[
+                                ...products,
+                                ...prepacks.filter(p => p.id !== prepack.id && !containsNestedIngredient(item, prepack))
+                            ]}
                             ingredient={item}
                             index={index}
                             isEditing={currentlyEditedItemIndex === index}
@@ -175,7 +179,7 @@ export function PrepackDetails({ navigation, route }) {
                                 setCurrentlyEditedItemIndex(index)
                             }}
                             onEditConfirmed={(position) => {
-                                setIngredient(position as ProductIngredient, index);
+                                setIngredient(position, index);
                                 setCurrentlyEditedItemIndex(null);
                             }}
                             onDelete={() => {

@@ -1,12 +1,10 @@
 import { roundMoney } from "../../util";
-import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity } from "./product-ingredient";
 import { NamedEntity } from "../named-entity";
-import { PrepackIngredient, PrepackIngredientDto, PrepackIngredientEntity } from "./prepack-ingredient";
-import { Product, ProductDto } from "../product/product";
-import { Prepack, PrepackDto } from "./prepack";
+import { Position, PositionDto, PositionEntity, mapPositions } from "../position/position";
 
 
 export class Recipe implements NamedEntity {
+    private readonly data: RecipeDto;
 
     public get id(): string { return this.data.id; }
 
@@ -19,17 +17,7 @@ export class Recipe implements NamedEntity {
     public set description(value: string) { this.data.description = value; }
 
     public get positions(): Position[] {
-        return this.data.positions.map(dto => {
-            if (isPrepackIngredient(dto)) {
-                return new PrepackIngredient(dto);
-            }
-
-            if (isProductIngredient(dto)) {
-                return new ProductIngredient(dto);
-            }
-
-            throw new Error('Unknown position type');
-        });
+        return mapPositions(this.data.positions);
     };
 
     public get groups(): PositionGroup[] {
@@ -38,8 +26,6 @@ export class Recipe implements NamedEntity {
             positionIndices: [...one.positionIndices]
         }));
     };
-
-    private readonly data: RecipeDto;
 
     constructor(data: RecipeDto) {
         this.data = JSON.parse(JSON.stringify(data));
@@ -123,30 +109,6 @@ export interface RecipeDto {
     groups: PositionGroup[],
 }
 
-export function isPrepackIngredient(position: PositionDto): position is PrepackIngredientDto {
-    const prepackPosition = position as PrepackIngredientDto;
-
-    return isPrepack(prepackPosition.prepack);
-}
-
-export function isProductIngredient(position: PositionDto): position is ProductIngredientDto {
-    return isProduct((position as ProductIngredientDto).product);
-}
-
-export type Position = ProductIngredient | PrepackIngredient;
-
-export type PositionDto = ProductIngredientDto | PrepackIngredientDto;
-
-export type IngredientBase = ProductDto | PrepackDto;
-
-export function isProduct(ingredient: IngredientBase): ingredient is Product {
-    return (ingredient as Product)?.pricing !== undefined;
-}
-
-export function isPrepack(ingredient: IngredientBase): ingredient is Prepack {
-    return (ingredient as Prepack)?.finalWeight !== undefined;
-}
-
 export interface RecipeEntity {
     id: string;
     name: string;
@@ -154,18 +116,4 @@ export interface RecipeEntity {
     description: string;
     positions: PositionEntity[];
     groups: PositionGroup[];
-}
-
-export type PositionEntity = ProductIngredientEntity | PrepackIngredientEntity;
-
-export function isPrepackIngredientEntity(position: PositionEntity): position is PrepackIngredientEntity {
-    const prepackPosition = position as PrepackIngredientEntity;
-
-    return !!prepackPosition.prepackId;
-}
-
-export function isProductIngredientEntity(position: PositionEntity): position is ProductIngredientEntity {
-    const prepackPosition = position as ProductIngredientEntity;
-
-    return !!prepackPosition.productId;
 }

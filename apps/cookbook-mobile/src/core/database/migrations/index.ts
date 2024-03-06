@@ -10,4 +10,5 @@ export const migrations = [
     pendingDeletionTables,
     addRecipePositionGroups,
     prepackDescription,
+    // @TODO add new migration
 ];
