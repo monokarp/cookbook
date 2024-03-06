@@ -1,11 +1,10 @@
-import { SQLiteDatabase, Transaction } from "react-native-sqlite-storage";
+import { SQLiteDatabase } from "react-native-sqlite-storage";
 import { Migration } from "../database";
 
 export const addRecipePositionGroups: Migration = {
     version: '4',
     up: async (db: SQLiteDatabase) => {
-        await db.transaction(async (tx: Transaction) => {
-            tx.executeSql(`
+        await db.executeSql(`
                 CREATE TABLE IF NOT EXISTS [RecipePositionGroups] (
                     [RecipeId] TEXT NOT NULL,
                     [Name] TEXT NOT NULL,
@@ -14,6 +13,5 @@ export const addRecipePositionGroups: Migration = {
                     FOREIGN KEY ([RecipeId]) REFERENCES [Recipes]([Id])
                 );
             `);
-        });
     }
 };

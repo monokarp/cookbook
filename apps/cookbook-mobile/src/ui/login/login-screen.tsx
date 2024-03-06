@@ -59,6 +59,7 @@ export function LoginScreen({ navigation, doSignOut }) {
 
       navigation.navigate(RootViews.Loading);
 
+      setIsSigninInProgress(false);
       return;
     }
 
@@ -89,7 +90,7 @@ export function LoginScreen({ navigation, doSignOut }) {
     } else {
       trySilentSignIn();
     }
-  }, []);
+  }, [doSignOut]);
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

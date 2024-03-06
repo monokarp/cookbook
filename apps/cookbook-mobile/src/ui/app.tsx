@@ -1,9 +1,10 @@
+import { TestIds } from '@cookbook/ui/test-ids';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
-import React from 'react';
+import React, { lazy } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Appbar, IconButton, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
+import { Appbar, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { appLightTheme } from './app.theme';
 import { ModalOutlet } from './common/modals/modal-outlet';
 import { HomeScreen } from './home/home-screen';
@@ -14,11 +15,9 @@ import { RecipeDetails } from './home/recipes/recipe-details/recipe-details';
 import { RecipeSummary } from './home/recipes/recipe-summary/recipe-summary';
 import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
+import { useSession } from './login/session.store';
 import { RootViews } from './root-views.enum';
 import { buildRootContainer } from './root.container';
-import { TestIds } from '@cookbook/ui/test-ids';
-import { useSession } from './login/session.store';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme, materialLight: appLightTheme });

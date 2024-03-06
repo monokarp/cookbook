@@ -55,6 +55,7 @@ export class SeedData {
             name: 'Яблоко c бананом',
             lastModified: new Date().toISOString(),
             finalWeight: 130,
+            description: '',
             ingredients: [
                 {
                     productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
@@ -77,6 +78,7 @@ export class SeedData {
             name: 'Банан c морковкой',
             lastModified: new Date().toISOString(),
             finalWeight: 50,
+            description: '',
             ingredients: [
                 {
                     productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',

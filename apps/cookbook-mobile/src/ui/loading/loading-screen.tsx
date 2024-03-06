@@ -37,9 +37,11 @@ export function LoadingScreen({ navigation }) {
     };
 
     useEffect(() => {
-        if (!hasInitialized) { loadData(); }
+        (async function () {
+            if (!hasInitialized) { await loadData(); }
 
-        navigation.navigate(RootViews.Home);
+            navigation.navigate(RootViews.Home);
+        })();
     });
 
     return (
