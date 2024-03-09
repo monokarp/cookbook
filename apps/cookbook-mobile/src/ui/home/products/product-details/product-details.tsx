@@ -3,13 +3,13 @@ import { RegexPatterns } from '@cookbook/domain/constants';
 import { Product } from '@cookbook/domain/types/product/product';
 import { ProductMeasuring } from '@cookbook/domain/types/product/product-pricing';
 import { TestIds } from '@cookbook/ui/test-ids';
+import { Products } from '../../../../core/models/products';
 import { useInjection } from 'inversify-react-native';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Button, SegmentedButtons, Text, TextInput } from 'react-native-paper';
-import { ProductsRepository } from '../../../../core/repositories/products.repository';
 import { useProductsStore } from '../products.store';
 import { FormDataFacade, ProductDetailsFormData } from './form-data-facade';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
@@ -19,7 +19,7 @@ import { styles } from './product-defails.style';
 export function ProductDetails({ route: { params: { product, mode } }, navigation }) {
     const { t } = useTranslation();
 
-    const repo = useInjection(ProductsRepository);
+    const repo = useInjection(Products);
 
     const { set: setProducts } = useProductsStore();
 

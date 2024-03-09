@@ -1,8 +1,9 @@
+import { Position, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/position/position";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { Product } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product/product-pricing";
-import { Prepack } from '@cookbook/domain/types/recipe/prepack';
-import { ProductIngredient } from '@cookbook/domain/types/recipe/product-ingredient';
-import { Position, Recipe, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
+import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber, roundMoney } from "@cookbook/domain/util";
 import Clipboard from '@react-native-clipboard/clipboard';
 
@@ -56,7 +57,7 @@ export class ExportToClipboard {
 
     private summarizePosition(entity: Position): string {
         if (isProductIngredient(entity)) {
-            return this.summarizeIngredient(entity);
+            return this.summarizeProductIngredient(entity);
         }
 
         if (isPrepackIngredient(entity)) {
@@ -66,7 +67,7 @@ export class ExportToClipboard {
         throw new Error('Unknown position type');
     }
 
-    private summarizeIngredient(entity: ProductIngredient): string {
+    private summarizeProductIngredient(entity: ProductIngredient): string {
         return `${entity.product.name} - ${entity.serving.measuring === ProductMeasuring.Units ? entity.serving.units : FormatNumber.Weight(entity.serving.units)} ${this.t(`product.measuring.${entity.serving.measuring}`)}`;
     }
 
@@ -74,7 +75,7 @@ export class ExportToClipboard {
         return [
             entity.name,
             '\n',
-            ...entity.ingredients.map(one => this.summarizeIngredient(one)),
+            ...entity.ingredients.map(one => this.summarizePosition(one)),
         ].join('\n');
     }
 }

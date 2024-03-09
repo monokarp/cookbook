@@ -9,13 +9,14 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
-import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
+import { Prepacks } from "../../../../core/models/prepacks";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
-import { Position, containsNestedIngredient } from "@cookbook/domain/types/position/position";
+import { Position, containsAsNestedIngredient } from "@cookbook/domain/types/position/position";
 import { useProductsStore } from "../../products/products.store";
+import { RootViews } from "../../../root-views.enum";
 
 
 export function PrepackDetails({ navigation, route }) {
@@ -23,12 +24,17 @@ export function PrepackDetails({ navigation, route }) {
 
     const { t } = useTranslation();
 
-    const prepacksRepo = useInjection(PrepacksRepository);
+    const prepacksRepo = useInjection(Prepacks);
 
     const { items: products } = useProductsStore();
     const { items: prepacks, set: setPrepacks } = usePrepacksStore();
 
     const [prepack, setPrepack] = useState<Prepack>(route.params.prepack);
+
+    const validIngredients = [
+        ...products,
+        ...prepacks.filter(p => !containsAsNestedIngredient(p, prepack))
+    ];
 
     const addIngredient = (value: ProductIngredient) => setPrepack(new Prepack({
         ...prepack,
@@ -59,16 +65,16 @@ export function PrepackDetails({ navigation, route }) {
     });
 
     const onSubmit = async (data: { name: string, finalWeight: string, description: string }) => {
-        await prepacksRepo.Save({
+        await prepacksRepo.Save(new Prepack({
             ...prepack,
             name: data.name,
             finalWeight: FormatString.Weight(data.finalWeight),
             description: data.description,
-        });
+        }));
 
         await prepacksRepo.All().then(setPrepacks);
 
-        navigation.goBack();
+        navigation.navigate(RootViews.PrepackSummary, { prepack: prepack.clone() });
     };
 
     function addEmptyIngredient() {
@@ -89,7 +95,12 @@ export function PrepackDetails({ navigation, route }) {
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title={t('prepack.details.title')} />
-                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} testID={TestIds.PrepackDetails.Submit} />
+                <Appbar.Action
+                    icon="check-bold"
+                    onPress={form.handleSubmit(onSubmit)}
+                    disabled={currentlyEditedItemIndex !== null}
+                    testID={TestIds.PrepackDetails.Submit}
+                />
             </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
@@ -168,10 +179,7 @@ export function PrepackDetails({ navigation, route }) {
                     }
                     renderItem={({ item, index }) =>
                         <IngredientSelect
-                            ingredientList={[
-                                ...products,
-                                ...prepacks.filter(p => p.id !== prepack.id && !containsNestedIngredient(item, prepack))
-                            ]}
+                            ingredientList={validIngredients}
                             ingredient={item}
                             index={index}
                             isEditing={currentlyEditedItemIndex === index}

@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { RecipesRepository } from '../../../core/repositories/recipes.repository';
+import { Recipes } from "../../../core/models/recipes";
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { EntityList } from '../../common/entity-list/entity-list';
 import { RootViews } from '../../root-views.enum';
@@ -16,7 +16,7 @@ export function RecipesView({ navigation }) {
   const { t } = useTranslation();
   const clipboardExport = new ExportToClipboard(t);
 
-  const repo = useInjection(RecipesRepository);
+  const repo = useInjection(Recipes);
 
   const { items: products } = useProductsStore();
   const { filteredItems: filteredRecipes, set: setRecipes, filter, deleteItem } = useRecipesStore();

@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
     positionRow: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     positionLabelMargin: {
         margin: 5

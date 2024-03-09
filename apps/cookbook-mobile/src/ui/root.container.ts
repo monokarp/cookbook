@@ -13,6 +13,9 @@ import { PrepacksRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
 import { RegisterModals } from './common/modals/modals.module';
+import { Prepacks } from '../core/models/prepacks';
+import { Products } from '../core/models/products';
+import { Recipes } from '../core/models/recipes';
 
 export function buildRootContainer() {
     const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });
@@ -42,6 +45,10 @@ export function buildRootContainer() {
 
     container.bind(RecipesSync).toSelf();
     container.resolve(RecipesSync);
+
+    container.bind(Products).toSelf();
+    container.bind(Prepacks).toSelf();
+    container.bind(Recipes).toSelf();
 
     RegisterModals(container);
     

@@ -11,7 +11,7 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
-import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
+import { Recipes } from "../../../../core/models/recipes";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
 import { useRecipesStore } from "../recipes.store";
@@ -29,7 +29,7 @@ export function RecipeDetails({ navigation, route }) {
     let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
-    const recipeRepo = useInjection(RecipesRepository);
+    const recipeRepo = useInjection(Recipes);
 
     const { items: products } = useProductsStore();
     const { items: prepacks } = usePrepacksStore();

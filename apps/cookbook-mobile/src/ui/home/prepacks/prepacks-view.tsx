@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { PrepacksRepository } from "../../../core/repositories/prepack.repository";
+import { Prepacks } from "../../../core/models/prepacks";
 import { ExportToClipboard } from "../../common/clipboard-export";
 import { EntityList } from "../../common/entity-list/entity-list";
 import { useAppModals } from "../../common/modals/use-modals.hook";
@@ -17,7 +17,7 @@ export function PrepacksView({ navigation }) {
     const { t } = useTranslation();
     const clipboardExport = new ExportToClipboard(t);
 
-    const repo = useInjection(PrepacksRepository);
+    const repo = useInjection(Prepacks);
     const { toast } = useAppModals();
 
     const { items: products } = useProductsStore();

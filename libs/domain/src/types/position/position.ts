@@ -36,9 +36,9 @@ export function isPrepackIngredientEntity(position: PositionEntity): position is
 }
 
 export function isProductIngredientEntity(position: PositionEntity): position is ProductIngredientEntity {
-    const prepackPosition = position as ProductIngredientEntity;
+    const productPosition = position as ProductIngredientEntity;
 
-    return !!prepackPosition.productId;
+    return !!productPosition.productId;
 }
 
 export function mapPositions(data: PositionDto[]): Position[] {
@@ -55,12 +55,13 @@ export function mapPositions(data: PositionDto[]): Position[] {
     });
 }
 
-export function containsNestedIngredient(host: Position, target: Prepack): boolean {
-    if (isProductIngredient(host)) {
-        return false;
-    } else if (host.id === target.id) {
-        return true;
-    } else {
-        return host.prepack.ingredients.reduce((result, next) => result || containsNestedIngredient(next, target), false);
-    }
+export function containsAsNestedIngredient(host: Prepack, target: Prepack): boolean {
+    if (host.id === target.id) { return true; }
+
+    return host.ingredients.reduce((result, next) => {
+        const node = isPrepackIngredient(next)
+            ? containsAsNestedIngredient(next.prepack, target)
+            : false;
+        return result || node;
+    }, false);
 }

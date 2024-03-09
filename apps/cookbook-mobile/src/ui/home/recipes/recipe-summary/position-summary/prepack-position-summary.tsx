@@ -4,31 +4,31 @@ import { t } from "i18next";
 import React from "react";
 import { View } from "react-native";
 import { Divider, List } from "react-native-paper";
-import { DividedRow, PositionRowLabel, TotalsRowLabel } from "../../../../common/summary/label-components";
+import { DividedRow, TotalsRowLabel } from "../../../../common/summary/label-components";
 import { styles } from "../recipe-summary.style";
+import { PositionSummary } from "./position-summary";
 
-export function PrepackPositionSummary(one: PrepackIngredient, ratio: number, recipePositionKey: number) {
+export function PrepackPositionSummary(one: PrepackIngredient, ratio: number, key: string) {
     const productRatio = num => num * one.weightRatio() * ratio;
 
-    return <View style={{ width: '100%' }}>
+    return <View style={{ width: '100%', borderWidth: 1, marginLeft: 2, marginBottom: 1 }}>
         <List.Accordion title={one.prepack.name}>
             {
                 [
-                    <DividedRow key={`${recipePositionKey}-0`}>
+                    <DividedRow key={`${key}-0`}>
                         <View style={styles.recipePriceRow}>
                             <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
                             <TotalsRowLabel>{FormatNumber.Weight(one.weightInGrams * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
                             <TotalsRowLabel>{FormatNumber.Money(one.price() * ratio)}</TotalsRowLabel>
                         </View>
                     </DividedRow>,
-                    ...one.prepack.ingredients.map((productIngredient, prepackPositionIndex) =>
-                        <DividedRow key={`${recipePositionKey}-${prepackPositionIndex + 1}`}>
-                            <View style={styles.positionRow}>
-                                <PositionRowLabel>{productIngredient.product.name}</PositionRowLabel>
-                                <PositionRowLabel>{FormatNumber.Weight(productRatio(productIngredient.weight()))} {t('product.measuring.grams')}</PositionRowLabel>
-                                <PositionRowLabel>{FormatNumber.Money(productRatio(productIngredient.price()))}</PositionRowLabel>
-                            </View>
-                        </DividedRow>
+                    ...one.prepack.ingredients.map((ingredient, prepackPositionIndex) =>
+                        <PositionSummary
+                            key={`${key}-${prepackPositionIndex + 1}`}
+                            recipePositionKey={`${key}-${prepackPositionIndex + 1}`}
+                            position={ingredient}
+                            ratio={productRatio(ratio)}
+                        />
                     )
                 ]
             }

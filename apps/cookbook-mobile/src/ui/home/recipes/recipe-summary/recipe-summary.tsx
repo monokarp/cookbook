@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { Appbar, Divider } from "react-native-paper";
-import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
+import { Recipes } from "../../../../core/models/recipes";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
 import { TotalsRowLabel } from "../../../common/summary/label-components";
 import { RootViews } from "../../../root-views.enum";
@@ -19,7 +19,7 @@ import { styles } from "./recipe-summary.style";
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
 
-    const recipeRepo = useInjection(RecipesRepository);
+    const recipeRepo = useInjection(Recipes);
     const { set: setRecipes } = useRecipesStore();
 
     const recipe: Recipe = route.params.recipe;

@@ -1,7 +1,7 @@
+import NetInfo from "@react-native-community/netinfo";
 import { inject, injectable } from "inversify";
 import { DatasyncRepository } from "../repositories/datasync.repository";
 import { EntitySync } from "./entity-sync";
-import NetInfo from "@react-native-community/netinfo";
 
 const SyncIntervalMs = 10 * 1000;
 

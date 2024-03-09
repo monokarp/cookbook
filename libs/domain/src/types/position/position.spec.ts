@@ -1,7 +1,7 @@
 import { Prepack } from "../prepack/prepack";
 import { Product } from "../product/product";
 import { ProductMeasuring } from "../product/product-pricing";
-import { Position, containsNestedIngredient } from "./position";
+import { Position, containsAsNestedIngredient } from "./position";
 import { PrepackIngredient } from "./prepack-ingredient";
 import { ProductIngredient } from "./product-ingredient";
 
@@ -34,77 +34,66 @@ const target: Prepack = dummyPrepack('target');
 
 describe('containsNestedIngredient', () => {
     it('returns true when host ingredient is the target prepack', () => {
-        const host: Position = new PrepackIngredient({
-            prepack: target,
-            weightInGrams: 100,
-        });
-
-        expect(containsNestedIngredient(host, target)).toEqual(true);
+        expect(containsAsNestedIngredient(target, target)).toEqual(true);
     });
 
     it('returns false when nested prepack ingredient tree does not include target prepack', () => {
-        const host: Position = new PrepackIngredient({
-            prepack: dummyPrepack('1', [
-                new ProductIngredient({
-                    product: dummyProduct('1'),
-                    serving: {
-                        units: 1,
-                        measuring: ProductMeasuring.Units,
-                    }
-                }),
-                new PrepackIngredient({
-                    prepack: dummyPrepack('2'),
-                    weightInGrams: 100,
-                })
-            ]),
-            weightInGrams: 100,
-        });
+        const host = dummyPrepack('1', [
+            new ProductIngredient({
+                product: dummyProduct('1'),
+                serving: {
+                    units: 1,
+                    measuring: ProductMeasuring.Units,
+                }
+            }),
+            new PrepackIngredient({
+                prepack: dummyPrepack('2'),
+                weightInGrams: 100,
+            })
+        ]);
 
-        expect(containsNestedIngredient(host, target)).toEqual(false);
+        expect(containsAsNestedIngredient(host, target)).toEqual(false);
     });
 
     it('returns true when target prepack is nested inside one of the ingredients', () => {
-        const host: Position = new PrepackIngredient({
-            prepack: dummyPrepack('1', [
-                new ProductIngredient({
-                    product: dummyProduct('1'),
-                    serving: {
-                        units: 1,
-                        measuring: ProductMeasuring.Units,
-                    }
-                }),
-                new PrepackIngredient({
-                    prepack: dummyPrepack('2', [
-                        new ProductIngredient({
-                            product: dummyProduct('1'),
-                            serving: {
-                                units: 1,
-                                measuring: ProductMeasuring.Units,
-                            }
-                        }),
-                        new PrepackIngredient({
-                            prepack: dummyPrepack('3', [
-                                new ProductIngredient({
-                                    product: dummyProduct('1'),
-                                    serving: {
-                                        units: 1,
-                                        measuring: ProductMeasuring.Units,
-                                    }
-                                }),
-                                new PrepackIngredient({
-                                    prepack: target,
-                                    weightInGrams: 100,
-                                })
-                            ]),
-                            weightInGrams: 100,
-                        })
-                    ]),
-                    weightInGrams: 100,
-                })
-            ]),
-            weightInGrams: 100,
-        });
+        const host = dummyPrepack('1', [
+            new ProductIngredient({
+                product: dummyProduct('1'),
+                serving: {
+                    units: 1,
+                    measuring: ProductMeasuring.Units,
+                }
+            }),
+            new PrepackIngredient({
+                prepack: dummyPrepack('2', [
+                    new ProductIngredient({
+                        product: dummyProduct('1'),
+                        serving: {
+                            units: 1,
+                            measuring: ProductMeasuring.Units,
+                        }
+                    }),
+                    new PrepackIngredient({
+                        prepack: dummyPrepack('3', [
+                            new ProductIngredient({
+                                product: dummyProduct('1'),
+                                serving: {
+                                    units: 1,
+                                    measuring: ProductMeasuring.Units,
+                                }
+                            }),
+                            new PrepackIngredient({
+                                prepack: target,
+                                weightInGrams: 100,
+                            })
+                        ]),
+                        weightInGrams: 100,
+                    })
+                ]),
+                weightInGrams: 100,
+            })
+        ]);
 
-        expect(containsNestedIngredient(host, target)).toEqual(true);
+        expect(containsAsNestedIngredient(host, target)).toEqual(true);
     });
 });

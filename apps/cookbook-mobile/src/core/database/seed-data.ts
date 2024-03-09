@@ -1,6 +1,6 @@
+import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { ProductEntity } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
-import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
 import { inject, injectable } from "inversify";
 import { PrepacksRepository } from "../repositories/prepack.repository";
@@ -93,6 +93,26 @@ export class SeedData {
                         measuring: ProductMeasuring.Units,
                         units: 2
                     }
+                }
+            ]
+        },
+        {
+            id: 'a9db14d4-2246-46d0-a23f-a6cc0ee5a13b',
+            name: 'Морковка с ПФ яблоко/банан',
+            lastModified: new Date().toISOString(),
+            finalWeight: 50,
+            description: '',
+            ingredients: [
+                {
+                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    serving: {
+                        measuring: ProductMeasuring.Units,
+                        units: 1
+                    }
+                },
+                {
+                    prepackId: '13435459-4493-4326-b7f9-ff18b2630590',
+                    weightInGrams: 120
                 }
             ]
         }
@@ -223,15 +243,15 @@ export class SeedData {
 
     public async Seed(): Promise<void> {
         for (const product of this.products) {
-            await this.productsRepo.SaveEntity(product);
+            await this.productsRepo.Save(product);
         }
 
         for (const prepack of this.prepacks) {
-            await this.prepacksRepo.SaveEntity(prepack);
+            await this.prepacksRepo.Save(prepack);
         }
 
         for (const recipe of this.recipes) {
-            await this.recipesRepo.SaveEntity(recipe);
+            await this.recipesRepo.Save(recipe);
         }
     }
 }
