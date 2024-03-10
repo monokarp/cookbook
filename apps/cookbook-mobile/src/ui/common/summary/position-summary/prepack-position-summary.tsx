@@ -10,7 +10,7 @@ import { PositionSummary } from "./position-summary";
 
 export function PrepackPositionSummary(one: PrepackIngredient, ratio: number, key: string) {
     return <View style={{ width: '100%', borderWidth: 1, marginLeft: 2, marginBottom: 1 }}>
-        <List.Accordion title={one.prepack.name}>
+        <List.Accordion title={one.prepack.name} description={`${FormatNumber.Weight(one.weightInGrams * ratio)} ${t('product.measuring.grams')}`}>
             {
                 [
                     <DividedRow key={`${key}-0`}>

@@ -63,7 +63,7 @@ export function RecipeSummary({ navigation, route }) {
                     {
                         recipe.positions.map((one, recipePositionIndex) =>
                             <GroupRowWrapper key={(recipePositionIndex * 2)} recipeGroups={recipe.groups} rowIndex={recipePositionIndex}>
-                                <PositionSummary position={one} ratio={ratio} recipePositionKey={recipePositionIndex * 2} />
+                                <PositionSummary position={one} ratio={ratio} recipePositionKey={`${recipePositionIndex * 2}`} />
                             </GroupRowWrapper>
                         )
                     }
