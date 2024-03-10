@@ -8,14 +8,14 @@ import { DataSync } from '../core/datasync/datasync.service';
 import { PrepacksSync } from '../core/datasync/entity-syncs/prepack-sync';
 import { ProductsSync } from '../core/datasync/entity-syncs/products-sync';
 import { RecipesSync } from '../core/datasync/entity-syncs/recipe-sync';
+import { Prepacks } from '../core/models/prepacks';
+import { Products } from '../core/models/products';
+import { Recipes } from '../core/models/recipes';
 import { DatasyncRepository } from '../core/repositories/datasync.repository';
 import { PrepacksRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
 import { RegisterModals } from './common/modals/modals.module';
-import { Prepacks } from '../core/models/prepacks';
-import { Products } from '../core/models/products';
-import { Recipes } from '../core/models/recipes';
 
 export function buildRootContainer() {
     const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });

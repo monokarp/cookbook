@@ -2,7 +2,7 @@ import { TestIds } from '@cookbook/ui/test-ids';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'inversify-react-native';
-import React, { lazy } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Appbar, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
 import { appLightTheme } from './app.theme';

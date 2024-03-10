@@ -1,6 +1,7 @@
 import { RegexPatterns } from "@cookbook/domain/constants";
-import { Prepack } from "@cookbook/domain/types/prepack/prepack";
+import { Position, containsAsNestedIngredient } from "@cookbook/domain/types/position/position";
 import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
@@ -11,12 +12,11 @@ import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
 import { Prepacks } from "../../../../core/models/prepacks";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
+import { RootViews } from "../../../root-views.enum";
+import { useProductsStore } from "../../products/products.store";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
-import { Position, containsAsNestedIngredient } from "@cookbook/domain/types/position/position";
-import { useProductsStore } from "../../products/products.store";
-import { RootViews } from "../../../root-views.enum";
 
 
 export function PrepackDetails({ navigation, route }) {

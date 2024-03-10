@@ -4,8 +4,8 @@ import { t } from "i18next";
 import React from "react";
 import { View } from "react-native";
 import { Divider, List } from "react-native-paper";
-import { DividedRow, TotalsRowLabel } from "../label-components";
 import { styles } from "../../../home/recipes/recipe-summary/recipe-summary.style";
+import { DividedRow, TotalsRowLabel } from "../label-components";
 import { PositionSummary } from "./position-summary";
 
 export function PrepackPositionSummary(one: PrepackIngredient, ratio: number, key: string) {

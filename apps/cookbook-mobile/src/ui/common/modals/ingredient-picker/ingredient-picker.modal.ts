@@ -1,5 +1,5 @@
-import { Product } from "@cookbook/domain/types/product/product";
 import { Prepack } from "@cookbook/domain/types/prepack/prepack";
+import { Product } from "@cookbook/domain/types/product/product";
 import { inject, injectable } from "inversify";
 import { ModalService } from "../modal.service";
 import { IngredientPicker } from "./ingredient-picker";

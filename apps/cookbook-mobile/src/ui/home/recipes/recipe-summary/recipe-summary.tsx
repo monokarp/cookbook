@@ -9,10 +9,10 @@ import { Appbar, Divider } from "react-native-paper";
 import { Recipes } from "../../../../core/models/recipes";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
 import { TotalsRowLabel } from "../../../common/summary/label-components";
+import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { RootViews } from "../../../root-views.enum";
 import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
-import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
 

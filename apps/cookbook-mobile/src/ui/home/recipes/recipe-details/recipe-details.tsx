@@ -14,11 +14,11 @@ import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
 import { Recipes } from "../../../../core/models/recipes";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
+import { usePrepacksStore } from "../../prepacks/prepacks.store";
+import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
 import { styles } from "./recipe-details.style";
-import { usePrepacksStore } from "../../prepacks/prepacks.store";
-import { useProductsStore } from "../../products/products.store";
 
 
 export interface RecipeDetailsFormData {
