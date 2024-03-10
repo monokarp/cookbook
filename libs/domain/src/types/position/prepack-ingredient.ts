@@ -5,6 +5,7 @@ export class PrepackIngredient implements PrepackIngredientDto {
     public readonly weightInGrams: number;
 
     public get id(): string { return this.prepack.id; }
+    public get name(): string { return this.prepack.name; }
 
     public static Empty(): PrepackIngredient {
         return new PrepackIngredient({

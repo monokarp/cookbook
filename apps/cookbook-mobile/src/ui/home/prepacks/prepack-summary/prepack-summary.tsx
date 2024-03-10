@@ -8,7 +8,7 @@ import { Appbar, Divider } from "react-native-paper";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
 import { TotalsRowLabel } from "../../../common/summary/label-components";
 import { RootViews } from "../../../root-views.enum";
-import { PositionSummary } from "../../recipes/recipe-summary/position-summary/position-summary";
+import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { styles } from "./prepack-summary.style";
 
 export function PrepackSummary({ navigation, route }) {

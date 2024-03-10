@@ -1,5 +1,7 @@
-export const MoneyRoundingPrecision = 2;
+export const MoneyRoundingPrecision = 4;
+export const MoneyFormatPrecision = 2;
 export const MoneyRoundingSafe = 4;
+export const WeightFormatPrecision = 2;
 
 export const WeightRoundingPrecision = 3;
 

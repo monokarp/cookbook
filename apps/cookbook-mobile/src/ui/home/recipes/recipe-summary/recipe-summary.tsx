@@ -12,7 +12,7 @@ import { TotalsRowLabel } from "../../../common/summary/label-components";
 import { RootViews } from "../../../root-views.enum";
 import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
-import { PositionSummary } from "./position-summary/position-summary";
+import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
 

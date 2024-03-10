@@ -1,6 +1,6 @@
 import { Position, isPrepackIngredient, isProductIngredient } from "@cookbook/domain/types/position/position";
 import { Text } from "react-native-paper";
-import { styles } from "../recipe-summary.style";
+import { styles } from "../../../home/recipes/recipe-summary/recipe-summary.style";
 import { PrepackPositionSummary } from "./prepack-position-summary";
 import { ProductPositionSummary } from "./product-position-summary";
 

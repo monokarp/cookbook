@@ -4,13 +4,11 @@ import { t } from "i18next";
 import React from "react";
 import { View } from "react-native";
 import { Divider, List } from "react-native-paper";
-import { DividedRow, TotalsRowLabel } from "../../../../common/summary/label-components";
-import { styles } from "../recipe-summary.style";
+import { DividedRow, TotalsRowLabel } from "../label-components";
+import { styles } from "../../../home/recipes/recipe-summary/recipe-summary.style";
 import { PositionSummary } from "./position-summary";
 
 export function PrepackPositionSummary(one: PrepackIngredient, ratio: number, key: string) {
-    const productRatio = num => num * one.weightRatio() * ratio;
-
     return <View style={{ width: '100%', borderWidth: 1, marginLeft: 2, marginBottom: 1 }}>
         <List.Accordion title={one.prepack.name}>
             {
@@ -27,7 +25,7 @@ export function PrepackPositionSummary(one: PrepackIngredient, ratio: number, ke
                             key={`${key}-${prepackPositionIndex + 1}`}
                             recipePositionKey={`${key}-${prepackPositionIndex + 1}`}
                             position={ingredient}
-                            ratio={productRatio(ratio)}
+                            ratio={one.weightRatio() * ratio}
                         />
                     )
                 ]

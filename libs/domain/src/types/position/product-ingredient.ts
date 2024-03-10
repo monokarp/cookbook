@@ -8,6 +8,7 @@ export class ProductIngredient implements ProductIngredientDto {
     public readonly serving: Serving;
 
     public get id(): string { return this.product.id; }
+    public get name(): string { return this.product.name; }
 
     public static Empty(): ProductIngredient {
         return new ProductIngredient({
