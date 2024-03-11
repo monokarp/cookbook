@@ -11,9 +11,11 @@ import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
 import { Prepacks } from "../../../../core/models/prepacks";
+import { Recipes } from "../../../../core/models/recipes";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
 import { useProductsStore } from "../../products/products.store";
+import { useRecipesStore } from "../../recipes/recipes.store";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
@@ -25,9 +27,11 @@ export function PrepackDetails({ navigation, route }) {
     const { t } = useTranslation();
 
     const prepacksRepo = useInjection(Prepacks);
+    const recipeRepo = useInjection(Recipes);
 
     const { items: products } = useProductsStore();
     const { items: prepacks, set: setPrepacks } = usePrepacksStore();
+    const { set: setRecipes } = useRecipesStore();
 
     const [prepack, setPrepack] = useState<Prepack>(route.params.prepack);
 
@@ -72,7 +76,10 @@ export function PrepackDetails({ navigation, route }) {
             description: data.description,
         }));
 
-        await prepacksRepo.All().then(setPrepacks);
+        await Promise.all([
+            prepacksRepo.All().then(setPrepacks),
+            recipeRepo.All().then(setRecipes),
+        ]);
 
         navigation.navigate(RootViews.PrepackSummary, { prepack: prepack.clone() });
     };

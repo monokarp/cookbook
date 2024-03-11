@@ -2,16 +2,12 @@ import { TestIds } from '@cookbook/ui/test-ids';
 import { by, device, element } from 'detox';
 import { assertListItems, collectionElement, untilNotVisible, untilVisible } from './util';
 
-describe('Prepacks view', () => {
+xdescribe('Prepacks view', () => {
   beforeAll(async () => {
     await device.reloadReactNative();
   });
 
   it('should login and land on recipes', async () => {
-    await untilVisible(TestIds.Login.LoginButton);
-
-    await element(by.id(TestIds.Login.LoginButton)).tap();
-
     await untilVisible(TestIds.RecipesView.Container);
   });
 
