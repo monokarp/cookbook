@@ -1,9 +1,9 @@
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
 import { FormatNumber } from "@cookbook/domain/util";
 import { t } from "i18next";
 import { View } from "react-native";
-import { DividedRow, PositionRowLabel, isServedInUnits } from "../../../../common/summary/label-components";
-import { styles } from "../recipe-summary.style";
+import { styles } from "../../../home/recipes/recipe-summary/recipe-summary.style";
+import { DividedRow, PositionRowLabel, isServedInUnits } from "../label-components";
 
 export function ProductPositionSummary(one: ProductIngredient, ratio: number) {
     return <DividedRow>

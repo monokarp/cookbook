@@ -1,4 +1,4 @@
-import { PrepackEntity } from "@cookbook/domain/types/recipe/prepack";
+import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { injectable } from "inversify";
 import { FirestoreRepository } from "./base-firestore.cloud-repo";
 import { CloudRepositoryBase } from "./cloud-repo";

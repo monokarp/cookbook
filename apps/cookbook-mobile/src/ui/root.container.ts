@@ -8,6 +8,9 @@ import { DataSync } from '../core/datasync/datasync.service';
 import { PrepacksSync } from '../core/datasync/entity-syncs/prepack-sync';
 import { ProductsSync } from '../core/datasync/entity-syncs/products-sync';
 import { RecipesSync } from '../core/datasync/entity-syncs/recipe-sync';
+import { Prepacks } from '../core/models/prepacks';
+import { Products } from '../core/models/products';
+import { Recipes } from '../core/models/recipes';
 import { DatasyncRepository } from '../core/repositories/datasync.repository';
 import { PrepacksRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
@@ -42,6 +45,10 @@ export function buildRootContainer() {
 
     container.bind(RecipesSync).toSelf();
     container.resolve(RecipesSync);
+
+    container.bind(Products).toSelf();
+    container.bind(Prepacks).toSelf();
+    container.bind(Recipes).toSelf();
 
     RegisterModals(container);
     

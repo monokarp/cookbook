@@ -1,6 +1,6 @@
-import { MoneyRoundingPrecision, WeightRoundingPrecision } from "./constants";
+import { MoneyFormatPrecision, MoneyRoundingPrecision, WeightFormatPrecision, WeightRoundingPrecision } from "./constants";
 import { ProductMeasuring } from "./types/product/product-pricing";
-import { Serving } from "./types/recipe/product-ingredient";
+import { Serving } from "./types/position/product-ingredient";
 
 export function roundMoney(value: number): number {
     return Number(value.toFixed(MoneyRoundingPrecision));
@@ -12,7 +12,7 @@ export function roundMoneySafe(value: number): number {
 
 export class FormatNumber {
     public static Money(value: number): string {
-        return value.toFixed(MoneyRoundingPrecision);
+        return value.toFixed(MoneyFormatPrecision);
     }
 
     public static Weight(integer: number): string {
@@ -20,7 +20,7 @@ export class FormatNumber {
     }
 
     public static Units(value: number): string {
-        return Number(value.toFixed(2)).toString();
+        return Number(value.toFixed(WeightFormatPrecision)).toString();
     }
 
     public static ServingUnits(value: Serving): string {

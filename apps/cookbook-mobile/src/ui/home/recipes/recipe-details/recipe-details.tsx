@@ -1,7 +1,8 @@
 
 import { RegexPatterns } from "@cookbook/domain/constants";
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { Position, PositionGroup, Recipe } from "@cookbook/domain/types/recipe/recipe";
+import { Position } from "@cookbook/domain/types/position/position";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
+import { PositionGroup, Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
@@ -10,9 +11,11 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
-import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
+import { Recipes } from "../../../../core/models/recipes";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
+import { usePrepacksStore } from "../../prepacks/prepacks.store";
+import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../recipes.store";
 import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
 import { styles } from "./recipe-details.style";
@@ -26,7 +29,10 @@ export function RecipeDetails({ navigation, route }) {
     let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
-    const recipeRepo = useInjection(RecipesRepository);
+    const recipeRepo = useInjection(Recipes);
+
+    const { items: products } = useProductsStore();
+    const { items: prepacks } = usePrepacksStore();
 
     const [recipe, setRecipe] = useState<Recipe>(route.params.recipe);
 
@@ -173,7 +179,7 @@ export function RecipeDetails({ navigation, route }) {
                             }}
                         >
                             <IngredientSelect
-                                allowAddingPrepacks={true}
+                                ingredientList={[...products, ...prepacks]}
                                 ingredient={item}
                                 index={index}
                                 isEditing={currentlyEditedItemIndex === index}

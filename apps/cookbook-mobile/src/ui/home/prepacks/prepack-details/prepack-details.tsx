@@ -1,6 +1,7 @@
 import { RegexPatterns } from "@cookbook/domain/constants";
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
+import { Position, containsAsNestedIngredient } from "@cookbook/domain/types/position/position";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
@@ -9,30 +10,42 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
-import { PrepacksRepository } from "../../../../core/repositories/prepack.repository";
+import { Prepacks } from "../../../../core/models/prepacks";
+import { Recipes } from "../../../../core/models/recipes";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
+import { RootViews } from "../../../root-views.enum";
+import { useProductsStore } from "../../products/products.store";
+import { useRecipesStore } from "../../recipes/recipes.store";
 import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
-import { RootViews } from "../../../root-views.enum";
 
 
 export function PrepackDetails({ navigation, route }) {
-    let listElementRef: FlatList<ProductIngredient> | null = null;
+    let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
 
-    const prepacksRepo = useInjection(PrepacksRepository);
+    const prepacksRepo = useInjection(Prepacks);
+    const recipeRepo = useInjection(Recipes);
 
+    const { items: products } = useProductsStore();
+    const { items: prepacks, set: setPrepacks } = usePrepacksStore();
+    const { set: setRecipes } = useRecipesStore();
 
     const [prepack, setPrepack] = useState<Prepack>(route.params.prepack);
+
+    const validIngredients = [
+        ...products,
+        ...prepacks.filter(p => !containsAsNestedIngredient(p, prepack))
+    ];
 
     const addIngredient = (value: ProductIngredient) => setPrepack(new Prepack({
         ...prepack,
         ingredients: [...prepack.ingredients, value]
     }));
 
-    const setIngredient = (value: ProductIngredient, index: number) => setPrepack(new Prepack({
+    const setIngredient = (value: Position, index: number) => setPrepack(new Prepack({
         ...prepack,
         ingredients: prepack.ingredients.reduce((updated, next, idx) => {
             updated.push(idx === index ? value : next);
@@ -47,8 +60,6 @@ export function PrepackDetails({ navigation, route }) {
 
     const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
 
-    const { set: setPrepacks } = usePrepacksStore();
-
     const form = useForm({
         defaultValues: {
             name: prepack.name,
@@ -58,16 +69,19 @@ export function PrepackDetails({ navigation, route }) {
     });
 
     const onSubmit = async (data: { name: string, finalWeight: string, description: string }) => {
-        await prepacksRepo.Save({
+        await prepacksRepo.Save(new Prepack({
             ...prepack,
             name: data.name,
             finalWeight: FormatString.Weight(data.finalWeight),
             description: data.description,
-        });
+        }));
 
-        await prepacksRepo.All().then(setPrepacks);
+        await Promise.all([
+            prepacksRepo.All().then(setPrepacks),
+            recipeRepo.All().then(setRecipes),
+        ]);
 
-        navigation.goBack();
+        navigation.navigate(RootViews.PrepackSummary, { prepack: prepack.clone() });
     };
 
     function addEmptyIngredient() {
@@ -88,13 +102,18 @@ export function PrepackDetails({ navigation, route }) {
             <Appbar.Header>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title={t('prepack.details.title')} />
-                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} testID={TestIds.PrepackDetails.Submit} />
+                <Appbar.Action
+                    icon="check-bold"
+                    onPress={form.handleSubmit(onSubmit)}
+                    disabled={currentlyEditedItemIndex !== null}
+                    testID={TestIds.PrepackDetails.Submit}
+                />
             </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
                     ref={ref => listElementRef = ref}
                     style={{ flexGrow: 0, width: '100%' }}
-                    keyExtractor={(item, index) => `${index}_${item.product.id}`}
+                    keyExtractor={(item, index) => `${index}_${item.id}`}
                     data={prepack.ingredients}
                     ListHeaderComponent={
                         <View style={{ flexDirection: 'row' }}>
@@ -167,7 +186,7 @@ export function PrepackDetails({ navigation, route }) {
                     }
                     renderItem={({ item, index }) =>
                         <IngredientSelect
-                            allowAddingPrepacks={false}
+                            ingredientList={validIngredients}
                             ingredient={item}
                             index={index}
                             isEditing={currentlyEditedItemIndex === index}
@@ -175,7 +194,7 @@ export function PrepackDetails({ navigation, route }) {
                                 setCurrentlyEditedItemIndex(index)
                             }}
                             onEditConfirmed={(position) => {
-                                setIngredient(position as ProductIngredient, index);
+                                setIngredient(position, index);
                                 setCurrentlyEditedItemIndex(null);
                             }}
                             onDelete={() => {

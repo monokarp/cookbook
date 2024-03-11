@@ -8,10 +8,6 @@ describe('Prepacks view', () => {
   });
 
   it('should login and land on recipes', async () => {
-    await untilVisible(TestIds.Login.LoginButton);
-
-    await element(by.id(TestIds.Login.LoginButton)).tap();
-
     await untilVisible(TestIds.RecipesView.Container);
   });
 
@@ -20,7 +16,7 @@ describe('Prepacks view', () => {
 
     await untilVisible(TestIds.PrepacksView.Container);
 
-    await assertPrepacksList(['Банан c морковкой', 'Яблоко с бананом']);
+    await assertPrepacksList(['Банан c морковкой', 'Морковка с ПФ яблоко/банан', 'Яблоко с бананом']);
   });
 
   it(`opens prepack details when 'add new prepack' is clicked`, async () => {
@@ -37,13 +33,16 @@ describe('Prepacks view', () => {
     await element(by.id(TestIds.PrepackDetails.NameInput)).replaceText('Новый');
     await element(by.id(TestIds.PrepackDetails.Submit)).tap();
 
+    await untilVisible(TestIds.PrepackSummary.Back);
+    await element(by.id(TestIds.PrepackSummary.Back)).tap();
+
     await untilVisible(TestIds.PrepacksView.Container);
 
-    await assertPrepacksList(['Банан с морковкой', 'Новый', 'Яблоко с бананом']);
+    await assertPrepacksList(['Банан с морковкой', 'Морковка с ПФ яблоко/банан', 'Новый', 'Яблоко с бананом']);
   });
 
   it('opens saved prepack', async () => {
-    await collectionElement(TestIds.PrepacksView.ListItem).at(1).tap();
+    await collectionElement(TestIds.PrepacksView.ListItem).at(2).tap();
 
     await untilVisible(TestIds.PrepackSummary.ToDetails);
     await element(by.id(TestIds.PrepackSummary.ToDetails)).tap();
@@ -62,15 +61,15 @@ describe('Prepacks view', () => {
     await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(0).tap();
 
     await untilVisible(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput);
-    await assertIngredientProducts(['Банан', 'Морковка', 'Яблоко']);
+    await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Морковка с ПФ яблоко/банан', 'Яблоко', 'Яблоко с бананом']);
   });
 
   it('filters ingredient bases by name', async () => {
     await element(by.id(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput)).replaceText('я');
-    await assertIngredientProducts(['Яблоко']);
+    await assertIngredientProducts(['Морковка с ПФ яблоко/банан', 'Яблоко', 'Яблоко с бананом']);
 
     await element(by.id(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput)).clearText();
-    await assertIngredientProducts(['Банан', 'Морковка', 'Яблоко']);
+    await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Морковка с ПФ яблоко/банан', 'Яблоко', 'Яблоко с бананом']);
   });
 
   it('adds first ingredient base to prepack', async () => {
@@ -105,7 +104,7 @@ describe('Prepacks view', () => {
 
     await untilVisible(TestIds.PrepacksView.Container);
 
-    await assertPrepacksList(['Банан с морковкой', 'Новый', 'Яблоко с бананом']);
+    await assertPrepacksList(['Банан с морковкой', 'Морковка с ПФ яблоко/банан', 'Новый', 'Яблоко с бананом']);
   });
 
   it('filters prepacks by name', async () => {
@@ -113,30 +112,30 @@ describe('Prepacks view', () => {
     await assertPrepacksList(['Новый']);
 
     await element(by.id(TestIds.PrepacksView.SearchInput)).clearText();
-    await assertPrepacksList(['Банан с морковкой', 'Новый', 'Яблоко с бананом']);
+    await assertPrepacksList(['Банан с морковкой', 'Морковка с ПФ яблоко/банан', 'Новый', 'Яблоко с бананом']);
   });
 
   it('fails to delete a referenced prepack and displays a toast', async () => {
-    await collectionElement(TestIds.PrepacksView.ListItem).at(2).longPress();
+    await collectionElement(TestIds.PrepacksView.ListItem).at(3).longPress();
 
     await untilVisible(TestIds.ConfirmDeleteModal.Container);
     await element(by.id(TestIds.ConfirmDeleteModal.Confirm)).tap();
     await untilNotVisible(TestIds.ConfirmDeleteModal.Container);
 
-    await assertPrepacksList(['Банан с морковкой', 'Новый', 'Яблоко с бананом']);
+    await assertPrepacksList(['Банан с морковкой', 'Морковка с ПФ яблоко/банан', 'Новый', 'Яблоко с бананом']);
 
     await waitFor(element(by.id(TestIds.ProductsView.ToastMessage))).toHaveText('Существуют рецепты ссылающиеся на этот п/ф.');
     await untilNotVisible(TestIds.ProductsView.ToastMessage);
   });
 
   it('deletes the new prepack', async () => {
-    await collectionElement(TestIds.PrepacksView.ListItem).at(1).longPress();
+    await collectionElement(TestIds.PrepacksView.ListItem).at(2).longPress();
 
     await untilVisible(TestIds.ConfirmDeleteModal.Container);
     await element(by.id(TestIds.ConfirmDeleteModal.Confirm)).tap();
     await untilNotVisible(TestIds.ConfirmDeleteModal.Container);
 
-    await assertPrepacksList(['Банан с морковкой', 'Яблоко с бананом']);
+    await assertPrepacksList(['Банан с морковкой', 'Морковка с ПФ яблоко/банан', 'Яблоко с бананом']);
   });
 });
 

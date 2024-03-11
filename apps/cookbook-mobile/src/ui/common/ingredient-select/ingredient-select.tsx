@@ -1,10 +1,10 @@
 import { RegexPatterns } from "@cookbook/domain/constants";
+import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProduct, isProductIngredient } from "@cookbook/domain/types/position/position";
+import { PrepackIngredient } from "@cookbook/domain/types/position/prepack-ingredient";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { Product } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
-import { PrepackIngredient } from "@cookbook/domain/types/recipe/prepack-ingredient";
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
-import { IngredientBase, Position, isPrepack, isPrepackIngredient, isProduct, isProductIngredient } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 import { useState } from "react";
@@ -17,7 +17,7 @@ import { styles } from "./ingredient-select.style";
 
 export interface IngredientSelectProps {
     ingredient: Position,
-    allowAddingPrepacks: boolean,
+    ingredientList: (Product | Prepack)[],
     isEditing: boolean;
     index: number,
     requestEdit: () => void,
@@ -47,7 +47,7 @@ interface IngredientSelectFormData {
 export const IngredientSelect = withTheme(_IngredientSelect);
 
 function _IngredientSelect({
-    allowAddingPrepacks,
+    ingredientList,
     ingredient,
     isEditing,
     index,
@@ -130,7 +130,7 @@ function _IngredientSelect({
                                                 <Pressable
                                                     testID={collectionElementId(TestIds.IngredientSelect.Ingredient.Button, index)}
                                                     style={{ paddingLeft: 5, paddingVertical: 10, marginRight: 10, backgroundColor: theme.colors.secondaryContainer, borderRadius: 5 }}
-                                                    onPress={() => ingredientPicker.show(allowAddingPrepacks, setSelectedBase)}
+                                                    onPress={() => ingredientPicker.show(ingredientList, setSelectedBase)}
                                                     onLongPress={() =>
                                                         confirmation.show({
                                                             message: t('lists.deleteItemPrompt'),

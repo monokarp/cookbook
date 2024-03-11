@@ -1,5 +1,5 @@
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
 import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
-import { ProductIngredient } from "@cookbook/domain/types/recipe/product-ingredient";
 import { View } from "react-native";
 import { Divider, Text } from "react-native-paper";
 import { styles } from "../../home/recipes/recipe-summary/recipe-summary.style";

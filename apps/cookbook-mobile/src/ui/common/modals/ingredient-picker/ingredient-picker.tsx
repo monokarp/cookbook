@@ -1,32 +1,27 @@
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { Product } from "@cookbook/domain/types/product/product";
-import { Prepack } from "@cookbook/domain/types/recipe/prepack";
 import { TestIds, collectionElementId } from "@cookbook/ui/test-ids";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FlatList, View } from "react-native";
 import { Divider, List, Modal, Portal, TextInput } from "react-native-paper";
-import { usePrepacksStore } from "../../../home/prepacks/prepacks.store";
-import { useProductsStore } from "../../../home/products/products.store";
 import { useIngredientItemsStore } from "./ingredient-picker.store";
 
 export interface IngredientPickerProps {
-    showPrepacks: boolean,
+    items: (Product | Prepack)[],
     onResult: (item: Product | Prepack | null) => void;
 }
 
-export function IngredientPicker({ showPrepacks, onResult }: IngredientPickerProps) {
+export function IngredientPicker({ items, onResult }: IngredientPickerProps) {
     const { t } = useTranslation();
 
     const { set, filteredItems, filter } = useIngredientItemsStore();
 
-    const { items: products } = useProductsStore();
-    const { items: prepacks } = usePrepacksStore();
-
     const [visible, setVisible] = useState(true);
 
     useEffect(() => {
-        set(showPrepacks ? [...products, ...prepacks] : products);
-    }, [products, prepacks, showPrepacks]);
+        set(items);
+    }, [set, items]);
 
     function reset() {
         setVisible(false);

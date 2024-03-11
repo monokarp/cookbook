@@ -6,20 +6,20 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { Appbar, Divider } from "react-native-paper";
-import { RecipesRepository } from "../../../../core/repositories/recipes.repository";
+import { Recipes } from "../../../../core/models/recipes";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
 import { TotalsRowLabel } from "../../../common/summary/label-components";
+import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { RootViews } from "../../../root-views.enum";
 import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
 import { useRecipesStore } from "../recipes.store";
-import { PositionSummary } from "./position-summary/position-summary";
 import { RecipeDescription } from "./recipe-description";
 import { styles } from "./recipe-summary.style";
 
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
 
-    const recipeRepo = useInjection(RecipesRepository);
+    const recipeRepo = useInjection(Recipes);
     const { set: setRecipes } = useRecipesStore();
 
     const recipe: Recipe = route.params.recipe;
@@ -63,7 +63,7 @@ export function RecipeSummary({ navigation, route }) {
                     {
                         recipe.positions.map((one, recipePositionIndex) =>
                             <GroupRowWrapper key={(recipePositionIndex * 2)} recipeGroups={recipe.groups} rowIndex={recipePositionIndex}>
-                                <PositionSummary position={one} ratio={ratio} recipePositionKey={recipePositionIndex * 2} />
+                                <PositionSummary position={one} ratio={ratio} recipePositionKey={`${recipePositionIndex * 2}`} />
                             </GroupRowWrapper>
                         )
                     }

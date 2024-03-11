@@ -18,7 +18,7 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
 
         for (const one of entities) {
             try {
-                await this.localRepo.SaveEntity(one);
+                await this.localRepo.Save(one);
             } catch (e) {
                 console.log(`error saving entity ${this.cloudRepo.collectionName} ${one.id}`, e);
             }
@@ -28,7 +28,7 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
     public async sendPending(userId: string, lastSynced: Date): Promise<void> {
         this.log(`sending pending since ${lastSynced.toISOString()}`);
 
-        const pendingEntities = await this.localRepo.EntitiesModifiedAfter(lastSynced);
+        const pendingEntities = await this.localRepo.ModifiedAfter(lastSynced);
 
         this.log(`found ${pendingEntities.length} matching entities`);
 
@@ -51,8 +51,8 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
 }
 
 interface LocalRepo<E> {
-    SaveEntity: (entity: E) => Promise<void>;
-    EntitiesModifiedAfter: (lastSynced: Date) => Promise<E[]>;
+    Save: (entity: E) => Promise<void>;
+    ModifiedAfter: (lastSynced: Date) => Promise<E[]>;
     GetPendingDeletion(): Promise<string[]>;
     ClearPendingDeletion(): Promise<void>;
 }

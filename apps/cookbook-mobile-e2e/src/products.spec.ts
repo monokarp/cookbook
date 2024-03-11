@@ -8,10 +8,6 @@ describe('Products view', () => {
   });
 
   it('should login and land on recipes', async () => {
-    await untilVisible(TestIds.Login.LoginButton);
-
-    await element(by.id(TestIds.Login.LoginButton)).tap();
-
     await untilVisible(TestIds.RecipesView.Container);
   });
 

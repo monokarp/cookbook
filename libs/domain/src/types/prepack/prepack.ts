@@ -1,13 +1,14 @@
 import { roundMoney, roundMoneySafe } from "../../util";
 import { NamedEntity } from "../named-entity";
-import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity } from "./product-ingredient";
+import { Position, PositionDto, PositionEntity, isPrepackIngredient, isProductIngredient, mapPositions } from "../position/position";
+import { Product } from "../product/product";
 
 
 export class Prepack implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
     public readonly lastModified: string;
-    public readonly ingredients: ProductIngredient[];
+    public readonly ingredients: Position[];
     public readonly finalWeight: number;
     public readonly description: string;
 
@@ -28,7 +29,34 @@ export class Prepack implements NamedEntity {
         this.lastModified = data.lastModified;
         this.finalWeight = data.finalWeight;
         this.description = data.description;
-        this.ingredients = data.ingredients.map(dto => new ProductIngredient(dto));
+        this.ingredients = mapPositions(data.ingredients);
+    }
+
+    public clone(): Prepack {
+        return new Prepack({
+            id: this.id,
+            name: this.name,
+            lastModified: this.lastModified,
+            finalWeight: this.finalWeight,
+            description: this.description,
+            ingredients: this.ingredients.map(one => {
+                if (isPrepackIngredient(one)) {
+                    return {
+                        prepack: one.prepack.clone(),
+                        weightInGrams: one.weightInGrams,
+                    };
+                }
+
+                if (isProductIngredient(one)) {
+                    return {
+                        product: new Product(one.product),
+                        serving: { ...one.serving },
+                    }
+                }
+
+                throw new Error(`Cloning prepack: unknown prepack ingredient type:\n${JSON.stringify(one)}`)
+            }),
+        });
     }
 
     public price(): number {
@@ -50,7 +78,7 @@ export interface PrepackDto {
     lastModified: string;
     finalWeight: number;
     description: string;
-    ingredients: ProductIngredientDto[];
+    ingredients: PositionDto[];
 }
 
 export interface PrepackEntity {
@@ -59,5 +87,5 @@ export interface PrepackEntity {
     lastModified: string;
     finalWeight: number;
     description: string;
-    ingredients: ProductIngredientEntity[];
+    ingredients: PositionEntity[];
 }

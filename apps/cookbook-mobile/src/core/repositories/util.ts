@@ -15,3 +15,13 @@ export function GroupById<T extends Entity>(rows: T[]): Map<string, T[]> {
 
     return groups;
 }
+
+export function MapById<T extends { id: string }>(rows: T[]): Map<string, T> {
+    const result = new Map<string, T>();
+
+    for (const one of rows) {
+        result.set(one.id, one);
+    }
+
+    return result;
+}

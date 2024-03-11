@@ -8,10 +8,6 @@ describe('Recipes view', () => {
     });
 
     it('should login and land on recipes', async () => {
-        await untilVisible(TestIds.Login.LoginButton);
-
-        await element(by.id(TestIds.Login.LoginButton)).tap();
-
         await untilVisible(TestIds.RecipesView.Container);
 
         await assertRecipesList(['Банан c морковкой', 'Морковка с П/Ф', 'Рецепт с группами', 'Яблоко c бананом']);
@@ -68,7 +64,7 @@ describe('Recipes view', () => {
         await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(0).tap();
 
         await untilVisible(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput);
-        await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Яблоко', 'Яблоко с бананом']);
+        await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Морковка с ПФ яблоко/банан', 'Яблоко', 'Яблоко с бананом']);
     });
 
     it('adds a prepack ingredient base to the recipe', async () => {
@@ -95,7 +91,7 @@ describe('Recipes view', () => {
         await collectionElement(TestIds.IngredientSelect.Ingredient.Button).at(1).tap();
 
         await untilVisible(TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput);
-        await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Яблоко', 'Яблоко с бананом']);
+        await assertIngredientProducts(['Банан', 'Банан с морковкой', 'Морковка', 'Морковка с ПФ яблоко/банан', 'Яблоко', 'Яблоко с бананом']);
     });
 
     it('adds a product ingredient base to the recipe', async () => {

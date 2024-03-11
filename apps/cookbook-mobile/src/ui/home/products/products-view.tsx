@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { ProductsRepository } from '../../../core/repositories/products.repository';
+import { Products } from '../../../core/models/products';
 import { ExportToClipboard } from '../../common/clipboard-export';
 import { EntityList } from '../../common/entity-list/entity-list';
 import { FormMode } from '../../common/form-mode.enum';
@@ -18,7 +18,7 @@ export function ProductsView({ navigation }) {
   const { t } = useTranslation();
   const clipboardExport = new ExportToClipboard(t);
 
-  const repo = useInjection(ProductsRepository);
+  const repo = useInjection(Products);
 
   const { set: setProducts, filteredItems: filteredProducts, filter, deleteItem } = useProductsStore();
 
