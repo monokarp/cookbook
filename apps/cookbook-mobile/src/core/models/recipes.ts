@@ -21,6 +21,7 @@ export class Recipes {
             name: '',
             lastModified: '',
             description: '',
+            portions: 1,
             positions: [],
             groups: [],
         });
@@ -62,6 +63,7 @@ export class Recipes {
             name: entity.name,
             lastModified: entity.lastModified,
             description: entity.description,
+            portions: entity.portions,
             positions: entity.positions.map(one => {
                 if (isProductIngredientEntity(one)) {
                     return {
@@ -89,6 +91,7 @@ export class Recipes {
             name: recipe.name,
             lastModified: recipe.lastModified,
             description: recipe.description,
+            portions: recipe.portions,
             positions: recipe.positions.map(one => {
                 if (isProductIngredient(one)) {
                     return {

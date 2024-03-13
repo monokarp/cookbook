@@ -55,7 +55,8 @@
             "title": "Детали рецепта",
             "servingSizeInGrams": "Кило",
             "servingSizeInUnits": "Штуки",
-            "addIngredient": "Добавить ингредиент"
+            "addIngredient": "Добавить ингредиент",
+            "portions": "Количество порций"
         },
         "ingredientPrice": "Стоимость",
         "groups": {

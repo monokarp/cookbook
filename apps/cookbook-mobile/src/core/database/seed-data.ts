@@ -124,6 +124,7 @@ export class SeedData {
             name: 'Яблоко c бананом',
             lastModified: new Date().toISOString(),
             description: '',
+            portions: 1,
             positions: [
                 {
                     productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
@@ -147,6 +148,7 @@ export class SeedData {
             name: 'Банан с морковкой',
             lastModified: new Date().toISOString(),
             description: '',
+            portions: 3,
             positions: [
                 {
                     productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
@@ -170,6 +172,7 @@ export class SeedData {
             name: 'Морковка с П/Ф',
             lastModified: new Date().toISOString(),
             description: '',
+            portions: 1,
             positions: [
                 {
                     productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
@@ -190,6 +193,7 @@ export class SeedData {
             name: 'Рецепт с группами',
             lastModified: new Date().toISOString(),
             description: '',
+            portions: 1,
             positions: [
                 {
                     productId: '5cd4091b-c610-4371-a83b-5622438d24d9',

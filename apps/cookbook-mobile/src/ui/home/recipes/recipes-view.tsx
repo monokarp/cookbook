@@ -22,9 +22,7 @@ export function RecipesView({ navigation }) {
   const { filteredItems: filteredRecipes, set: setRecipes, filter, deleteItem } = useRecipesStore();
 
   useEffect(() => {
-    repo.All().then(all => {
-      setRecipes(all);
-    });
+    repo.All().then(setRecipes);
   }, [products]);
 
   return (

@@ -22,7 +22,8 @@ import { styles } from "./recipe-details.style";
 
 
 export interface RecipeDetailsFormData {
-    recipeName: string
+    recipeName: string;
+    portions: string;
 };
 
 export function RecipeDetails({ navigation, route }) {
@@ -52,6 +53,7 @@ export function RecipeDetails({ navigation, route }) {
     const form = useForm({
         defaultValues: {
             recipeName: recipe.name,
+            portions: recipe.portions.toString(),
         }
     });
 
@@ -81,6 +83,7 @@ export function RecipeDetails({ navigation, route }) {
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
         recipe.name = data.recipeName;
+        recipe.portions = Number(data.portions);
 
         await recipeRepo.Save(recipe);
 
@@ -151,6 +154,32 @@ export function RecipeDetails({ navigation, route }) {
                                     form.formState.errors.recipeName &&
                                     <Text style={styles.validationErrorLabel}>{t('validation.required.alphanumeric')}</Text>
                                 }
+
+                                <Controller
+                                    name="portions"
+                                    rules={{
+                                        required: true,
+                                        pattern: /^\d+$/gm,
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <View>
+                                            <TextInput
+                                                testID={TestIds.RecipeDetails.PortionsInput}
+                                                placeholder={t('recipe.details.portions')}
+                                                keyboardType="numeric"
+                                                style={styles.input}
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        </View>
+                                    )}
+                                />
+                                {
+                                    form.formState.errors.portions &&
+                                    <Text style={styles.validationErrorLabel}>{t('validation.required.integerGTE', { gte: 1 })}</Text>
+                                }
+
                                 <Text testID={TestIds.RecipeDetails.NameInputError} variant="labelLarge" style={{ margin: 5 }}>
                                     {`${t('product.pricing.totalPrice')}: ${FormatNumber.Money(recipe.totalPrice())}`}
                                 </Text>

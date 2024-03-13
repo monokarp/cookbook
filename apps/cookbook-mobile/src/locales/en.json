@@ -55,7 +55,8 @@
             "title": "Recipe details",
             "servingSizeInGrams": "Kilos",
             "servingSizeInUnits": "Units",
-            "addIngredient": "Add ingredient"
+            "addIngredient": "Add ingredient",
+            "portions": "Number of portions"
         },
         "ingredientPrice": "Ingredient price",
         "groups": {
