@@ -16,6 +16,9 @@ export class Recipe implements NamedEntity {
     public get description(): string { return this.data.description; }
     public set description(value: string) { this.data.description = value; }
 
+    public get portions(): number { return this.data.portions; }
+    public set portions(value: number) { this.data.portions = value; }
+
     public get positions(): Position[] {
         return mapPositions(this.data.positions);
     };
@@ -105,6 +108,7 @@ export interface RecipeDto {
     name: string,
     lastModified: string,
     description: string,
+    portions: number;
     positions: PositionDto[],
     groups: PositionGroup[],
 }
@@ -114,6 +118,7 @@ export interface RecipeEntity {
     name: string;
     lastModified: string;
     description: string;
+    portions: number;
     positions: PositionEntity[];
     groups: PositionGroup[];
 }

@@ -20,6 +20,8 @@ export const TestIds = {
     RecipeDetails: {
         NameInput: 'recipe-details-name-input',
         NameInputError: 'recipe-details-name-input-error',
+        PortionsInput: 'recipe-details-portions-input',
+        PortionsInputError: 'recipe-details-portions-input-error',
         AddIngredient: 'recipe-details-add-ingredient',
         Submit: 'recipe-details-submit',
     },

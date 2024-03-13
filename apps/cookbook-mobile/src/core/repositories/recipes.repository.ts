@@ -14,7 +14,8 @@ export class RecipesRepository {
             [Recipes].[Id],
             [Recipes].[Name],
             [Recipes].[LastModified],
-            [Recipes].[Description]
+            [Recipes].[Description],
+            [Recipes].[Portions]
         FROM [Recipes]`;
 
     public async All(): Promise<RecipeEntity[]> {
@@ -56,8 +57,8 @@ export class RecipesRepository {
     public async Save(recipe: RecipeEntity): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified], [Description]) VALUES (?, ?, ?, ?);`,
-                [recipe.id, recipe.name, new Date().toISOString(), recipe.description]
+                `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified], [Description], [Portions]) VALUES (?, ?, ?, ?, ?);`,
+                [recipe.id, recipe.name, new Date().toISOString(), recipe.description, recipe.portions]
             ],
             [
                 `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,

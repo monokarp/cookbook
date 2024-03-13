@@ -8,6 +8,7 @@ export interface RecipeRow {
     Name: string;
     LastModified: string;
     Description: string;
+    Portions: number;
 }
 
 export function MapRecipe(row: RecipeRow): RecipeEntity {
@@ -16,6 +17,7 @@ export function MapRecipe(row: RecipeRow): RecipeEntity {
         name: row.Name,
         lastModified: row.LastModified,
         description: row.Description,
+        portions: row.Portions,
         positions: [],
         groups: [],
     };

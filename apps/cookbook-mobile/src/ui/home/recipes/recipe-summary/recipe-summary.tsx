@@ -2,7 +2,7 @@ import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
 import { useInjection } from "inversify-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { Appbar, Divider } from "react-native-paper";
@@ -24,9 +24,10 @@ export function RecipeSummary({ navigation, route }) {
 
     const recipe: Recipe = route.params.recipe;
 
-    const [ratio, setRatio] = useState(1);
+    const [portions, setPortions] = useState(0);
+    const [ratio, setRatio] = useState(0);
 
-    const [description, setDescription] = useState(recipe.description);
+    const [description, setDescription] = useState('');
 
     const updateDescription = async (value: string) => {
         await recipeRepo.UpdateDescription(recipe.id, value);
@@ -35,6 +36,15 @@ export function RecipeSummary({ navigation, route }) {
 
         setRecipes(await recipeRepo.All());
     };
+
+    useEffect(() => {
+        setPortions(recipe.portions);
+        setDescription(recipe.description);
+    }, [recipe]);
+
+    useEffect(() => {
+        setRatio(portions / recipe.portions);
+    }, [recipe, portions]);
 
     return (
         <View style={{ height: '100%' }}>
@@ -51,7 +61,7 @@ export function RecipeSummary({ navigation, route }) {
             </Appbar.Header>
 
             <ScrollView>
-                <IngredientRatio value={ratio} onChange={setRatio} />
+                <IngredientRatio value={portions} onChange={setPortions} />
 
                 <View style={styles.bodyCol}>
                     <View style={styles.recipePriceRow}>
