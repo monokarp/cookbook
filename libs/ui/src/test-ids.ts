@@ -53,6 +53,12 @@ export const TestIds = {
         UnitsInput: 'product-details-units-input',
         UnitsInputError: 'product-details-units-input-error',
         Submit: 'product-details-submit',
+        Carbs: 'product-details-carbs',
+        CarbsError: 'product-details-carbs-error',
+        Prot: 'product-details-prot',
+        ProtError: 'product-details-prot-error',
+        Fat: 'product-details-fat',
+        FatError: 'product-details-fat-error',
     },
     PrepacksView: {
         Container: 'prepacks-view',

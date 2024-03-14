@@ -18,6 +18,11 @@ export class SeedData {
             id: '5cd4091b-c610-4371-a83b-5622438d24d9',
             name: 'Яблоко',
             lastModified: new Date().toISOString(),
+            nutrition: {
+                carbs: 40,
+                prot: 5,
+                fat: 2,
+            },
             pricing: {
                 measuring: ProductMeasuring.Grams,
                 price: 6.54,
@@ -29,6 +34,11 @@ export class SeedData {
             id: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
             name: 'Банан',
             lastModified: new Date().toISOString(),
+            nutrition: {
+                carbs: 70,
+                prot: 5,
+                fat: 10,
+            },
             pricing: {
                 measuring: ProductMeasuring.Grams,
                 price: 8.21,
@@ -40,6 +50,11 @@ export class SeedData {
             id: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
             name: 'Морковка',
             lastModified: new Date().toISOString(),
+            nutrition: {
+                carbs: 8,
+                prot: 2,
+                fat: 0,
+            },
             pricing: {
                 measuring: ProductMeasuring.Units,
                 price: 2.87,

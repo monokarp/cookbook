@@ -159,7 +159,7 @@ export function RecipeDetails({ navigation, route }) {
                                     name="portions"
                                     rules={{
                                         required: true,
-                                        pattern: /^\d+$/gm,
+                                        pattern: RegexPatterns.NonZeroInteger,
                                     }}
                                     render={({ field: { onChange, onBlur, value } }) => (
                                         <View>

@@ -6,6 +6,11 @@ export function MapProductRow(row: ProductWithPricingRow): ProductEntity {
         id: row.ProductId,
         name: row.ProductName,
         lastModified: row.LastModified,
+        nutrition: {
+            carbs: row.Carbs,
+            prot: row.Prot,
+            fat: row.Fat,
+        },
         pricing: {
             measuring: row.Measuring,
             price: row.Price,
@@ -19,6 +24,9 @@ export interface ProductWithPricingRow {
     ProductId: string;
     ProductName: string;
     LastModified: string;
+    Carbs: number;
+    Prot: number;
+    Fat: number;
     Measuring: ProductMeasuring;
     Price: number;
     WeightInGrams: number;

@@ -33,7 +33,11 @@
             "numberOfPieces": "Number of pieces",
             "gramsPerPiece": "Grams per piece",
             "weightPerPiece": "Weight per piece",
-            "weightInGrams": "Weight in grams"
+            "weightInGrams": "Weight in grams",
+            "macros": "Macronutrients",
+            "carbs": "Carbohydrates",
+            "prot": "Protein",
+            "fat": "Fat"
         },
         "pricing": {
             "type": "Pricing type",
@@ -82,7 +86,8 @@
             "integerGTE": "Required integer greater than or equal to {{gte}}",
             "decimalGTE": "Required decimal (precision up to 3 digits) greater than or equal to {{gte}}",
             "alphanumeric": "Required letters or whitespaces",
-            "selectProduct": "Please select a product"
+            "selectProduct": "Please select a product",
+            "real": "Decimal number required"
         }
     },
     "errors": {

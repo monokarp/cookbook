@@ -13,6 +13,11 @@ export class Products {
             id: uuid.v4().toString(),
             name: '',
             lastModified: '',
+            nutrition: {
+                carbs: 0,
+                prot: 0,
+                fat: 0,
+            },
             pricing: new ProductPricing({
                 measuring: ProductMeasuring.Grams,
                 price: 0,

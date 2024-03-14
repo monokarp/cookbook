@@ -11,6 +11,9 @@ export class ProductsRepository {
             [Id] as [ProductId],
             [Name] as [ProductName],
             [LastModified],
+            [Carbs],
+            [Prot],
+            [Fat],
             [Measuring],
             [Price],
             [WeightInGrams],
@@ -43,15 +46,22 @@ export class ProductsRepository {
         `, [id]);
 
         return result.rows.length
-        ? MapProductRow(result.rows.item(0))
+            ? MapProductRow(result.rows.item(0))
             : null;
     }
 
     public async Save(product: ProductEntity): Promise<void> {
         await this.database.Transaction([
             [
-                `INSERT OR REPLACE INTO [Products] ([Id], [Name], [LastModified]) VALUES (?, ?, ?);`,
-                [product.id, product.name, new Date().toISOString()]
+                `INSERT OR REPLACE INTO [Products] ([Id], [Name], [LastModified], [Carbs], [Prot], [Fat]) VALUES (?, ?, ?, ?, ?, ?);`,
+                [
+                    product.id,
+                    product.name,
+                    new Date().toISOString(),
+                    product.nutrition.carbs,
+                    product.nutrition.prot,
+                    product.nutrition.fat
+                ]
             ],
             [
                 `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])

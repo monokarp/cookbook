@@ -25,6 +25,9 @@ export interface ProductDetailsFormData {
     numberOfPieces: string;
     weight: string;
     price: string;
+    carbs: string;
+    prot: string;
+    fat: string;
 }
 
 const GramsMeasuredFormData = {
@@ -38,6 +41,9 @@ const GramsMeasuredFormData = {
             numberOfPieces: '1',
             weight: isEdit ? FormatNumber.Weight(weightInGrams) : '',
             price: isEdit ? FormatNumber.Money(price) : '',
+            carbs: product.nutrition.carbs.toString(),
+            prot: product.nutrition.prot.toString(),
+            fat: product.nutrition.fat.toString(),
         }
     },
     mapPricingInfo: (data: ProductDetailsFormData): ProductPricingDto => ({
@@ -59,6 +65,9 @@ const UnitsMeasuredFormData = {
             numberOfPieces: isEdit ? FormatNumber.Units(numberOfUnits) : '',
             weight: isEdit ? FormatNumber.Weight(numberOfUnits ? weightInGrams / numberOfUnits : 0) : '',
             price: isEdit ? FormatNumber.Money(price) : '',
+            carbs: product.nutrition.carbs.toString(),
+            prot: product.nutrition.prot.toString(),
+            fat: product.nutrition.fat.toString(),
         }
     },
     mapPricingInfo: (data: ProductDetailsFormData): ProductPricingDto => ({
