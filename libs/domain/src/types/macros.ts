@@ -1,4 +1,4 @@
-export interface ProductNutrition {
+export interface Macros {
     carbs: number;
     prot: number;
     fat: number;

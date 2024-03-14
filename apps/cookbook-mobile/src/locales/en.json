@@ -37,7 +37,8 @@
             "macros": "Macronutrients",
             "carbs": "Carbohydrates",
             "prot": "Protein",
-            "fat": "Fat"
+            "fat": "Fat",
+            "kcal": "KCal"
         },
         "pricing": {
             "type": "Pricing type",

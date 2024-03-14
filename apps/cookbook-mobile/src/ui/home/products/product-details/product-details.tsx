@@ -7,7 +7,7 @@ import { useInjection } from 'inversify-react-native';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
-import { View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native';
 import { Button, List, SegmentedButtons, Text, TextInput } from 'react-native-paper';
 import { Products } from '../../../../core/models/products';
 import { useProductsStore } from '../products.store';
@@ -50,7 +50,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
 
     return (
         <FormProvider {...form}>
-            <View testID={TestIds.ProductDetails.Container} style={styles.container}>
+            <KeyboardAvoidingView testID={TestIds.ProductDetails.Container} style={styles.container}>
                 <Text style={styles.inputLabel}>{t('product.name')}</Text>
                 <Controller
                     control={form.control}
@@ -222,7 +222,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                 >
                     {t('common.save')}
                 </Button>
-            </View>
+            </KeyboardAvoidingView>
         </FormProvider>
     );
 }

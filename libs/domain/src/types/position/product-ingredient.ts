@@ -1,4 +1,5 @@
 import { roundMoney } from "../../util";
+import { Macros } from "../macros";
 import { Product, ProductDto } from "../product/product";
 import { ProductMeasuring } from "../product/product-pricing";
 
@@ -38,6 +39,18 @@ export class ProductIngredient implements ProductIngredientDto {
 
     public units(): number {
         return this.serving.units;
+    }
+
+    public macros(): Macros {
+        const { carbs, prot, fat } = this.product.nutrition;
+
+        const adjustedForWeight = (value: number) => this.weight() * (value / 100);
+
+        return {
+            carbs: adjustedForWeight(carbs),
+            prot: adjustedForWeight(prot),
+            fat: adjustedForWeight(fat),
+        };
     }
 }
 

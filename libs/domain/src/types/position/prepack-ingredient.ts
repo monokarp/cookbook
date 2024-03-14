@@ -1,3 +1,4 @@
+import { Macros } from "../macros";
 import { Prepack, PrepackDto } from "../prepack/prepack";
 
 export class PrepackIngredient implements PrepackIngredientDto {
@@ -33,6 +34,18 @@ export class PrepackIngredient implements PrepackIngredientDto {
 
     public weightRatio(): number {
         return this.weightInGrams / this.prepack.finalWeight;
+    }
+
+    public macros(): Macros {
+        const { carbs, prot, fat } = this.prepack.macros();
+
+        const adjustedForWeight = (value: number) => this.weightInGrams * (value / 100);
+
+        return {
+            carbs: adjustedForWeight(carbs),
+            prot: adjustedForWeight(prot),
+            fat: adjustedForWeight(fat),
+        };
     }
 }
 

@@ -1,4 +1,5 @@
 import { roundMoney, roundMoneySafe } from "../../util";
+import { Macros } from "../macros";
 import { NamedEntity } from "../named-entity";
 import { Position, PositionDto, PositionEntity, isPrepackIngredient, isProductIngredient, mapPositions } from "../position/position";
 import { Product } from "../product/product";
@@ -70,6 +71,22 @@ export class Prepack implements NamedEntity {
     public weightRatio(): number {
         return this.finalWeight / this.ingredients.reduce((acc, next) => acc + next.weight(), 0);
     }
+
+    public macros(): Macros {
+        return this.ingredients.reduce((acc, next) => {
+            const { carbs, prot, fat } = next.macros();
+
+            acc.carbs += carbs;
+            acc.prot += prot;
+            acc.fat += fat;
+
+            return acc;
+        }, {
+            carbs: 0,
+            prot: 0,
+            fat: 0,
+        } as Macros);
+    }
 }
 
 export interface PrepackDto {
@@ -88,4 +105,10 @@ export interface PrepackEntity {
     finalWeight: number;
     description: string;
     ingredients: PositionEntity[];
+}
+
+function addMacros(target: Macros, source: Macros) {
+    target.carbs += source.carbs;
+    target.prot += source.prot;
+    target.fat += source.fat;
 }

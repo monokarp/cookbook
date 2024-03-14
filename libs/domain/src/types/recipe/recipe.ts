@@ -1,4 +1,5 @@
 import { roundMoney } from "../../util";
+import { Macros } from "../macros";
 import { NamedEntity } from "../named-entity";
 import { Position, PositionDto, PositionEntity, mapPositions } from "../position/position";
 
@@ -45,6 +46,23 @@ export class Recipe implements NamedEntity {
     public totalWeight(): number {
         return this.positions.reduce((total, next) => total + next.weight(), 0);
     }
+
+    public macros(): Macros {
+        return this.positions.reduce((acc, next) => {
+            const { carbs, prot, fat } = next.macros();
+
+            acc.carbs += carbs;
+            acc.prot += prot;
+            acc.fat += fat;
+
+            return acc;
+        }, {
+            carbs: 0,
+            prot: 0,
+            fat: 0,
+        } as Macros);
+    }
+
 
     public addPosition(value: PositionDto): void {
         this.data.positions.push(value);

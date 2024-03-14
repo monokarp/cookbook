@@ -1,5 +1,5 @@
-import { Product, ProductDto } from "../product/product";
 import { Prepack, PrepackDto } from "../prepack/prepack";
+import { Product, ProductDto } from "../product/product";
 import { PrepackIngredient, PrepackIngredientDto, PrepackIngredientEntity } from "./prepack-ingredient";
 import { ProductIngredient, ProductIngredientDto, ProductIngredientEntity } from "./product-ingredient";
 

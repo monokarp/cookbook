@@ -1,12 +1,12 @@
+import { Macros } from "../macros";
 import { NamedEntity } from "../named-entity";
-import { ProductNutrition } from "./product-nutrition";
 import { ProductMeasuring, ProductPricing, ProductPricingDto } from "./product-pricing";
 
 export class Product implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
     public readonly lastModified: string;
-    public readonly nutrition: ProductNutrition;
+    public readonly nutrition: Macros;
     public readonly pricing: ProductPricing;
 
     public static Empty(): Product {
@@ -41,7 +41,7 @@ export interface ProductDto {
     id: string;
     name: string;
     lastModified: string;
-    nutrition: ProductNutrition,
+    nutrition: Macros,
     pricing: ProductPricingDto;
 }
 

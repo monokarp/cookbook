@@ -8,7 +8,7 @@ import { ScrollView, View } from "react-native";
 import { Appbar, Divider } from "react-native-paper";
 import { Recipes } from "../../../../core/models/recipes";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
-import { TotalsRowLabel } from "../../../common/summary/label-components";
+import { PositionRowLabel, TotalsRowLabel } from "../../../common/summary/label-components";
 import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { RootViews } from "../../../root-views.enum";
 import { GroupRowWrapper } from "../recipe-details/group-wrapper/group-wrapper";
@@ -23,6 +23,9 @@ export function RecipeSummary({ navigation, route }) {
     const { set: setRecipes } = useRecipesStore();
 
     const recipe: Recipe = route.params.recipe;
+
+    const macros = recipe.macros();
+    const kcal = (macros.carbs + macros.prot) * 4 + macros.fat * 9;
 
     const [portions, setPortions] = useState(0);
     const [ratio, setRatio] = useState(0);
@@ -79,8 +82,28 @@ export function RecipeSummary({ navigation, route }) {
                     }
                 </View>
 
+                <View style={{ ...styles.bodyCol, padding: 5, paddingTop: 15 }}>
+                    <View style={styles.recipePriceRow}>
+                        <PositionRowLabel>{t('product.details.carbs')}</PositionRowLabel>
+                        <PositionRowLabel>{t('product.details.prot')}</PositionRowLabel>
+                        <PositionRowLabel>{t('product.details.fat')}</PositionRowLabel>
+                        <PositionRowLabel>{t('product.details.kcal')}</PositionRowLabel>
+                    </View>
+                    <Divider />
+                    <View style={styles.recipePriceRow}>
+                        <MacrosValueLabel value={macros.carbs * ratio} />
+                        <MacrosValueLabel value={macros.prot * ratio} />
+                        <MacrosValueLabel value={macros.fat * ratio} />
+                        <MacrosValueLabel value={kcal * ratio} />
+                    </View>
+                </View>
+
                 <RecipeDescription description={description} onUpdate={updateDescription} />
             </ScrollView>
         </View>
     );
+}
+
+export function MacrosValueLabel(props: { value: number }) {
+    return <PositionRowLabel>{FormatNumber.Money(props.value)}</PositionRowLabel>;
 }
