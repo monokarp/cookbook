@@ -20,15 +20,15 @@ export function LoadingScreen({ navigation }) {
     async function loadData() {
         console.log('Init database');
 
-        // @TODO refactor to isFreshInstall
-        const { didRunMigrations } = await db.Init();
+        const { didRunMigrations, isFreshInstall } = await db.Init();
 
-        if (Environment.Type === 'Test' && didRunMigrations) {
+        if (Environment.Type === 'Test' && isFreshInstall) {
             await seedData.Seed();
         }
 
         if (Environment.Type !== 'Test') {
-            if (didRunMigrations) { await ds.recover(user.id); }
+            if (isFreshInstall) { await ds.recover(user.id); }
+            else if (didRunMigrations) { await ds.pushAllLocal(user.id); }
 
             await ds.start(user.id);
         }

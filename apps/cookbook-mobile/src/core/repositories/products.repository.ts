@@ -84,7 +84,7 @@ export class ProductsRepository {
             [date.toISOString()]
         );
 
-        return result.rows.raw();
+        return result.rows.raw().map(MapProductRow);
     }
 
     public async Delete(id: string): Promise<void> {

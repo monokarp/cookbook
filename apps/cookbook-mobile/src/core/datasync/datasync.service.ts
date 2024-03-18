@@ -18,12 +18,26 @@ export class DataSync {
     public async recover(userId: string): Promise<void> {
         try {
             for (const one of this.syncs) {
+                // @TODO What if this happens offline? Need to schedule a job for this
                 if (await this.hasNetwork()) {
                     await one.recover(userId);
                 }
             }
         } catch (e) {
             console.log('datasync recovery error', e);
+        }
+    }
+
+    public async pushAllLocal(userId: string): Promise<void> {
+        try {
+            for (const one of this.syncs) {
+                // @TODO What if this happens offline? Need to schedule a job for this
+                if (await this.hasNetwork()) {
+                    await one.sendAll(userId);
+                }
+            }
+        } catch (e) {
+            console.log('datasync force push error', e);
         }
     }
 

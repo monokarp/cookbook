@@ -25,6 +25,18 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
         }
     }
 
+    public async sendAll(userId: string): Promise<void> {
+        this.log(`sending all`);
+
+        const pendingEntities = await this.localRepo.All();
+
+        this.log(`found ${pendingEntities.length} entities`);
+
+        if (pendingEntities.length) {
+            await this.cloudRepo.SaveMany(userId, pendingEntities);
+        }
+    }
+
     public async sendPending(userId: string, lastSynced: Date): Promise<void> {
         this.log(`sending pending since ${lastSynced.toISOString()}`);
 
@@ -52,6 +64,7 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
 
 interface LocalRepo<E> {
     Save: (entity: E) => Promise<void>;
+    All: () => Promise<E[]>;
     ModifiedAfter: (lastSynced: Date) => Promise<E[]>;
     GetPendingDeletion(): Promise<string[]>;
     ClearPendingDeletion(): Promise<void>;

@@ -22,7 +22,7 @@ export class Database {
         }
     }
 
-    public async Init(): Promise<{ didRunMigrations: boolean }> {
+    public async Init(): Promise<{ didRunMigrations: boolean, isFreshInstall: boolean }> {
         if (this.sqliteDb) {
             return;
         }
@@ -46,7 +46,10 @@ export class Database {
             console.log(`Migration info saved`);
         }
 
-        return { didRunMigrations: !!pendingMigrations.length };
+        return {
+            didRunMigrations: !!pendingMigrations.length,
+            isFreshInstall: !!pendingMigrations.length && pendingMigrations[0].version === '1'
+        };
     }
 
     public async Transaction(queries: Query[]): Promise<void> {
