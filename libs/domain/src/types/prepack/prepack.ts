@@ -106,9 +106,3 @@ export interface PrepackEntity {
     description: string;
     ingredients: PositionEntity[];
 }
-
-function addMacros(target: Macros, source: Macros) {
-    target.carbs += source.carbs;
-    target.prot += source.prot;
-    target.fat += source.fat;
-}

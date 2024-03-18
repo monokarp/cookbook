@@ -7,7 +7,7 @@ import { useInjection } from 'inversify-react-native';
 import { useState } from 'react';
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView } from 'react-native';
+import { KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Button, List, SegmentedButtons, Text, TextInput } from 'react-native-paper';
 import { Products } from '../../../../core/models/products';
 import { useProductsStore } from '../products.store';
@@ -51,177 +51,179 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
     return (
         <FormProvider {...form}>
             <KeyboardAvoidingView testID={TestIds.ProductDetails.Container} style={styles.container}>
-                <Text style={styles.inputLabel}>{t('product.name')}</Text>
-                <Controller
-                    control={form.control}
-                    rules={{
-                        required: true,
-                        pattern: RegexPatterns.EntityName
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <TextInput
-                            testID={TestIds.ProductDetails.NameInput}
-                            style={styles.input}
-                            mode='outlined'
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                        />
-                    )}
-                    name="productName"
-                />
-                {
-                    form.formState.errors.productName &&
-                    <Text
-                        testID={TestIds.ProductDetails.NameInputError}
-                        style={styles.validationErrorLabel}
+                <ScrollView>
+                    <Text style={styles.inputLabel}>{t('product.name')}</Text>
+                    <Controller
+                        control={form.control}
+                        rules={{
+                            required: true,
+                            pattern: RegexPatterns.EntityName
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <TextInput
+                                testID={TestIds.ProductDetails.NameInput}
+                                style={styles.input}
+                                mode='outlined'
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                            />
+                        )}
+                        name="productName"
+                    />
+                    {
+                        form.formState.errors.productName &&
+                        <Text
+                            testID={TestIds.ProductDetails.NameInputError}
+                            style={styles.validationErrorLabel}
+                        >
+                            {t('validation.required.alphanumeric')}
+                        </Text>
+                    }
+
+                    <Text style={styles.inputLabel}>{t('product.pricing.type')}</Text>
+                    <Controller
+                        control={form.control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { value, onChange } }) => (
+                            <SegmentedButtons
+                                style={styles.input}
+                                value={value}
+                                onValueChange={value => { setMeasuringType(value); onChange(value); }}
+                                buttons={[
+                                    {
+                                        value: ProductMeasuring.Grams,
+                                        label: t('product.pricing.pricedByWeight'),
+                                        testID: TestIds.ProductDetails.PricingToggle.Weight
+                                    },
+                                    {
+                                        value: ProductMeasuring.Units,
+                                        label: t('product.pricing.pricedPerPiece'),
+                                        testID: TestIds.ProductDetails.PricingToggle.Units
+                                    },
+                                ]}
+                            />
+                        )}
+                        name="measuring"
+                    />
+
+                    {
+                        function () {
+                            switch (measuringType) {
+                                case ProductMeasuring.Grams:
+                                    return <PricingByWeightForm />;
+
+                                case ProductMeasuring.Units:
+                                    return <PricingPerPieceForm />
+
+                                default: throw new Error(`No template for pricing type: ${measuringType}`);
+                            }
+                        }()
+                    }
+
+                    {
+                        <List.Accordion title={t('product.details.macros')}>
+                            <Text style={styles.inputLabel}>{t('product.details.carbs')}</Text>
+                            <Controller
+                                name="carbs"
+                                control={form.control}
+                                rules={{
+                                    required: true,
+                                    validate: v => !isNaN(Number(v)) && isFinite(Number(v)),
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        testID={TestIds.ProductDetails.Carbs}
+                                        style={styles.input}
+                                        keyboardType="numeric"
+                                        mode='outlined'
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                    />
+                                )}
+                            />
+                            {
+                                form.formState.errors.carbs &&
+                                <Text
+                                    testID={TestIds.ProductDetails.CarbsError}
+                                    style={styles.validationErrorLabel}
+                                >
+                                    {t('validation.required.real')}
+                                </Text>
+                            }
+
+                            <Text style={styles.inputLabel}>{t('product.details.prot')}</Text>
+                            <Controller
+                                name="prot"
+                                control={form.control}
+                                rules={{
+                                    required: true,
+                                    validate: v => !isNaN(Number(v)) && isFinite(Number(v)),
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        testID={TestIds.ProductDetails.Prot}
+                                        style={styles.input}
+                                        keyboardType="numeric"
+                                        mode='outlined'
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                    />
+                                )}
+                            />
+                            {
+                                form.formState.errors.prot &&
+                                <Text
+                                    testID={TestIds.ProductDetails.ProtError}
+                                    style={styles.validationErrorLabel}
+                                >
+                                    {t('validation.required.real')}
+                                </Text>
+                            }
+
+                            <Text style={styles.inputLabel}>{t('product.details.fat')}</Text>
+                            <Controller
+                                name="fat"
+                                control={form.control}
+                                rules={{
+                                    required: true,
+                                    validate: v => !isNaN(Number(v)) && isFinite(Number(v)),
+                                }}
+                                render={({ field: { onChange, onBlur, value } }) => (
+                                    <TextInput
+                                        testID={TestIds.ProductDetails.Fat}
+                                        style={styles.input}
+                                        keyboardType="numeric"
+                                        mode='outlined'
+                                        onBlur={onBlur}
+                                        onChangeText={onChange}
+                                        value={value}
+                                    />
+                                )}
+                            />
+                            {
+                                form.formState.errors.fat &&
+                                <Text
+                                    testID={TestIds.ProductDetails.FatError}
+                                    style={styles.validationErrorLabel}
+                                >
+                                    {t('validation.required.real')}
+                                </Text>
+                            }
+                        </List.Accordion>
+                    }
+
+                    <Button
+                        testID={TestIds.ProductDetails.Submit}
+                        onPress={form.handleSubmit(onSubmit)}
                     >
-                        {t('validation.required.alphanumeric')}
-                    </Text>
-                }
-
-                <Text style={styles.inputLabel}>{t('product.pricing.type')}</Text>
-                <Controller
-                    control={form.control}
-                    rules={{
-                        required: true,
-                    }}
-                    render={({ field: { value, onChange } }) => (
-                        <SegmentedButtons
-                            style={styles.input}
-                            value={value}
-                            onValueChange={value => { setMeasuringType(value); onChange(value); }}
-                            buttons={[
-                                {
-                                    value: ProductMeasuring.Grams,
-                                    label: t('product.pricing.pricedByWeight'),
-                                    testID: TestIds.ProductDetails.PricingToggle.Weight
-                                },
-                                {
-                                    value: ProductMeasuring.Units,
-                                    label: t('product.pricing.pricedPerPiece'),
-                                    testID: TestIds.ProductDetails.PricingToggle.Units
-                                },
-                            ]}
-                        />
-                    )}
-                    name="measuring"
-                />
-
-                {
-                    function () {
-                        switch (measuringType) {
-                            case ProductMeasuring.Grams:
-                                return <PricingByWeightForm />;
-
-                            case ProductMeasuring.Units:
-                                return <PricingPerPieceForm />
-
-                            default: throw new Error(`No template for pricing type: ${measuringType}`);
-                        }
-                    }()
-                }
-
-                {
-                    <List.Accordion title={t('product.details.macros')}>
-                        <Text style={styles.inputLabel}>{t('product.details.carbs')}</Text>
-                        <Controller
-                            name="carbs"
-                            control={form.control}
-                            rules={{
-                                required: true,
-                                validate: v => !isNaN(Number(v)) && isFinite(Number(v)),
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <TextInput
-                                    testID={TestIds.ProductDetails.Carbs}
-                                    style={styles.input}
-                                    keyboardType="numeric"
-                                    mode='outlined'
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-                            )}
-                        />
-                        {
-                            form.formState.errors.carbs &&
-                            <Text
-                                testID={TestIds.ProductDetails.CarbsError}
-                                style={styles.validationErrorLabel}
-                            >
-                                {t('validation.required.real')}
-                            </Text>
-                        }
-
-                        <Text style={styles.inputLabel}>{t('product.details.prot')}</Text>
-                        <Controller
-                            name="prot"
-                            control={form.control}
-                            rules={{
-                                required: true,
-                                validate: v => !isNaN(Number(v)) && isFinite(Number(v)),
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <TextInput
-                                    testID={TestIds.ProductDetails.Prot}
-                                    style={styles.input}
-                                    keyboardType="numeric"
-                                    mode='outlined'
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-                            )}
-                        />
-                        {
-                            form.formState.errors.prot &&
-                            <Text
-                                testID={TestIds.ProductDetails.ProtError}
-                                style={styles.validationErrorLabel}
-                            >
-                                {t('validation.required.real')}
-                            </Text>
-                        }
-
-                        <Text style={styles.inputLabel}>{t('product.details.fat')}</Text>
-                        <Controller
-                            name="fat"
-                            control={form.control}
-                            rules={{
-                                required: true,
-                                validate: v => !isNaN(Number(v)) && isFinite(Number(v)),
-                            }}
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <TextInput
-                                    testID={TestIds.ProductDetails.Fat}
-                                    style={styles.input}
-                                    keyboardType="numeric"
-                                    mode='outlined'
-                                    onBlur={onBlur}
-                                    onChangeText={onChange}
-                                    value={value}
-                                />
-                            )}
-                        />
-                        {
-                            form.formState.errors.fat &&
-                            <Text
-                                testID={TestIds.ProductDetails.FatError}
-                                style={styles.validationErrorLabel}
-                            >
-                                {t('validation.required.real')}
-                            </Text>
-                        }
-                    </List.Accordion>
-                }
-
-                <Button
-                    testID={TestIds.ProductDetails.Submit}
-                    onPress={form.handleSubmit(onSubmit)}
-                >
-                    {t('common.save')}
-                </Button>
+                        {t('common.save')}
+                    </Button>
+                </ScrollView>
             </KeyboardAvoidingView>
         </FormProvider>
     );

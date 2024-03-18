@@ -39,7 +39,7 @@ export class PrepackIngredient implements PrepackIngredientDto {
     public macros(): Macros {
         const { carbs, prot, fat } = this.prepack.macros();
 
-        const adjustedForWeight = (value: number) => this.weightInGrams * (value / 100);
+        const adjustedForWeight = (value: number) => this.weightInGrams * (value / this.prepack.finalWeight);
 
         return {
             carbs: adjustedForWeight(carbs),
