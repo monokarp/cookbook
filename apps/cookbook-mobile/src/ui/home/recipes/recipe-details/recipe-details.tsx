@@ -82,7 +82,7 @@ export function RecipeDetails({ navigation, route }) {
     }
 
     const onSubmit = async (data: RecipeDetailsFormData) => {
-        recipe.name = data.recipeName;
+        recipe.name = data.recipeName.trim();
         recipe.portions = Number(data.portions);
 
         await recipeRepo.Save(recipe);

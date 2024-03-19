@@ -71,7 +71,7 @@ export function PrepackDetails({ navigation, route }) {
     const onSubmit = async (data: { name: string, finalWeight: string, description: string }) => {
         await prepacksRepo.Save(new Prepack({
             ...prepack,
-            name: data.name,
+            name: data.name.trim(),
             finalWeight: FormatString.Weight(data.finalWeight),
             description: data.description,
         }));

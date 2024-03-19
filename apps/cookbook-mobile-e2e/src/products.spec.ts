@@ -57,6 +57,8 @@ describe('Products view', () => {
   });
 
   it('goes back to products view after saving the product', async () => {
+    // Dismiss native keyboard
+    await device.pressBack();
     await element(by.id(TestIds.ProductDetails.Submit)).tap();
 
     await untilVisible(TestIds.ProductsView.Container);

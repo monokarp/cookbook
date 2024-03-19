@@ -33,7 +33,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
     const onSubmit = async (data: ProductDetailsFormData) => {
         await repo.Save(new Product({
             id: product.id,
-            name: data.productName,
+            name: data.productName.trim(),
             lastModified: product.lastModified,
             nutrition: {
                 carbs: Number(data.carbs),
