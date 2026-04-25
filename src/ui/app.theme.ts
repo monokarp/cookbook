@@ -39,10 +39,10 @@ export const appLightTheme = {
             level2: "rgb(237, 241, 226)",
             level3: "rgb(231, 237, 218)",
             level4: "rgb(229, 236, 216)",
-            level5: "rgb(225, 233, 211)"
+            level5: "rgb(225, 233, 211)",
         },
         surfaceDisabled: "rgba(26, 28, 24, 0.12)",
         onSurfaceDisabled: "rgba(26, 28, 24, 0.38)",
-        backdrop: "rgba(45, 50, 40, 0.4)"
-    }
+        backdrop: "rgba(45, 50, 40, 0.4)",
+    },
 };

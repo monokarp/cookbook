@@ -5,11 +5,10 @@ import { DataSync } from "../datasync.service";
 import { BaseEntitySync } from "./base-entity-sync";
 
 export class PrepacksSync extends BaseEntitySync<PrepackEntity> {
-
     constructor(
         ds: DataSync,
         protected override readonly localRepo: PrepacksRepository,
-        protected override readonly cloudRepo: PrepacksCloudRepository
+        protected override readonly cloudRepo: PrepacksCloudRepository,
     ) {
         super(ds);
     }

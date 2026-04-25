@@ -21,10 +21,12 @@ export function Toast({ message, onResult }: ToastProps) {
                 onDismiss={onResult}
                 action={{
                     onPress: onResult,
-                    label: t('common.ok')
+                    label: t("common.ok"),
                 }}
             >
-                <Text style={{ color: 'white' }} testID={TestIds.PrepacksView.ToastMessage}>{message}</Text>
+                <Text style={{ color: "white" }} testID={TestIds.PrepacksView.ToastMessage}>
+                    {message}
+                </Text>
             </Snackbar>
         </Portal>
     );

@@ -1,13 +1,19 @@
 import { PositionEntity, isPrepackIngredientEntity, isProductIngredientEntity } from "@cookbook/domain/types/position/position";
 import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { Database, Query } from "../database/database";
-import { MapPrepack, MapPrepackIngredient, MapProductIngredient, PrepackIngredientRow, PrepackRow, ProductIngredientRow } from "./types/prepacks";
+import {
+    MapPrepack,
+    MapPrepackIngredient,
+    MapProductIngredient,
+    PrepackIngredientRow,
+    PrepackRow,
+    ProductIngredientRow,
+} from "./types/prepacks";
 
 export class PrepacksRepository {
     constructor(private readonly database: Database) {}
 
-    private readonly SelectPrepackIngredientRowsSQL =
-        `SELECT 
+    private readonly SelectPrepackIngredientRowsSQL = `SELECT 
             [Prepacks].[Id],
             [Prepacks].[Name],
             [Prepacks].[LastModified],
@@ -16,11 +22,11 @@ export class PrepacksRepository {
         FROM [Prepacks]`;
 
     public async All(): Promise<PrepackEntity[]> {
-        const [result] = await this.database.ExecuteSql(
-            `${this.SelectPrepackIngredientRowsSQL};`
-        );
+        const [result] = await this.database.ExecuteSql(`${this.SelectPrepackIngredientRowsSQL};`);
 
-        if (!result.rows.length) { return []; }
+        if (!result.rows.length) {
+            return [];
+        }
 
         return this.MapWithNestedEntities(result.rows.raw());
     }
@@ -28,11 +34,13 @@ export class PrepacksRepository {
     public async Many(ids: string[]): Promise<PrepackEntity[]> {
         const [result] = await this.database.ExecuteSql(
             `${this.SelectPrepackIngredientRowsSQL}
-            WHERE [Prepacks].[Id] IN (${ids.map(() => '?').join(', ')});`,
-            ids
+            WHERE [Prepacks].[Id] IN (${ids.map(() => "?").join(", ")});`,
+            ids,
         );
 
-        if (!result.rows.length) { return []; }
+        if (!result.rows.length) {
+            return [];
+        }
 
         return this.MapWithNestedEntities(result.rows.raw());
     }
@@ -41,10 +49,12 @@ export class PrepacksRepository {
         const [result] = await this.database.ExecuteSql(
             `${this.SelectPrepackIngredientRowsSQL}
             WHERE [Prepacks].[LastModified] >= ?;`,
-            [date.toISOString()]
+            [date.toISOString()],
         );
 
-        if (!result.rows.length) { return []; }
+        if (!result.rows.length) {
+            return [];
+        }
 
         return this.MapWithNestedEntities(result.rows.raw());
     }
@@ -53,10 +63,12 @@ export class PrepacksRepository {
         const [result] = await this.database.ExecuteSql(
             `${this.SelectPrepackIngredientRowsSQL}
             WHERE [Prepacks].[Id] = ?`,
-            [id]
+            [id],
         );
 
-        if (!result.rows.length) { return null; }
+        if (!result.rows.length) {
+            return null;
+        }
 
         const [prepack] = await this.MapWithNestedEntities(result.rows.raw());
 
@@ -67,69 +79,49 @@ export class PrepacksRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Prepacks] ([Id], [Name], [FinalWeight], [LastModified], [Description]) VALUES (?, ?, ?, ?, ?);`,
-                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString(), prepack.description]
+                [prepack.id, prepack.name, prepack.finalWeight, new Date().toISOString(), prepack.description],
             ],
-            [
-                `DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;`,
-                [prepack.id]
-            ],
-            [
-                `DELETE FROM [PrepackPrepackIngredients] WHERE [PrepackId] = ?;`,
-                [prepack.id]
-            ],
-            ...prepack.ingredients
-                .map(
-                    (ingredient: PositionEntity, idx) => {
-                        if (isProductIngredientEntity(ingredient)) {
-                            return [
-                                `INSERT INTO [PrepackProductIngredients] ([PrepackId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
+            [`DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;`, [prepack.id]],
+            [`DELETE FROM [PrepackPrepackIngredients] WHERE [PrepackId] = ?;`, [prepack.id]],
+            ...prepack.ingredients.map((ingredient: PositionEntity, idx) => {
+                if (isProductIngredientEntity(ingredient)) {
+                    return [
+                        `INSERT INTO [PrepackProductIngredients] ([PrepackId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
                         VALUES (?, ?, ?, ?, ?);`,
-                                [
-                                    prepack.id,
-                                    idx + 1,
-                                    ingredient.productId,
-                                    ingredient.serving.units,
-                                    ingredient.serving.measuring
-                                ]
-                            ] as Query;
-                        }
+                        [prepack.id, idx + 1, ingredient.productId, ingredient.serving.units, ingredient.serving.measuring],
+                    ] as Query;
+                }
 
-                        if (isPrepackIngredientEntity(ingredient)) {
-                            return [
-                                `INSERT INTO [PrepackPrepackIngredients] ([PrepackId], [PrepackIngredientId], [PositionNumber], [WeightInGrams])
+                if (isPrepackIngredientEntity(ingredient)) {
+                    return [
+                        `INSERT INTO [PrepackPrepackIngredients] ([PrepackId], [PrepackIngredientId], [PositionNumber], [WeightInGrams])
                             VALUES (?, ?, ?, ?);`,
-                                [
-                                    prepack.id,
-                                    ingredient.prepackId,
-                                    idx + 1,
-                                    ingredient.weightInGrams
-                                ]
-                            ] as Query;
-                        }
+                        [prepack.id, ingredient.prepackId, idx + 1, ingredient.weightInGrams],
+                    ] as Query;
+                }
 
-                        throw new Error('Unknown ingredient type', ingredient);
-                    }
-                ),
+                throw new Error("Unknown ingredient type", ingredient);
+            }),
         ]);
     }
 
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
-            ['DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;', [id]],
-            ['DELETE FROM [PrepackPrepackIngredients] WHERE [PrepackId] = ?;', [id]],
-            ['DELETE FROM [Prepacks] WHERE [Id] = ?;', [id]],
-            ['INSERT INTO [PrepacksPendingDeletion] VALUES (?)', [id]],
+            ["DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;", [id]],
+            ["DELETE FROM [PrepackPrepackIngredients] WHERE [PrepackId] = ?;", [id]],
+            ["DELETE FROM [Prepacks] WHERE [Id] = ?;", [id]],
+            ["INSERT INTO [PrepacksPendingDeletion] VALUES (?)", [id]],
         ]);
     }
 
     public async GetPendingDeletion(): Promise<string[]> {
-        const [result] = await this.database.ExecuteSql('SELECT [Id] FROM [PrepacksPendingDeletion]');
+        const [result] = await this.database.ExecuteSql("SELECT [Id] FROM [PrepacksPendingDeletion]");
 
         return result.rows.raw().map(row => row.Id);
     }
 
     public async ClearPendingDeletion(): Promise<void> {
-        await this.database.ExecuteSql('DELETE FROM [PrepacksPendingDeletion]');
+        await this.database.ExecuteSql("DELETE FROM [PrepacksPendingDeletion]");
     }
 
     private async MapWithNestedEntities(prepacks: PrepackRow[]): Promise<PrepackEntity[]> {
@@ -155,10 +147,7 @@ export class PrepacksRepository {
     }
 
     private async GetNestedEntities(prepackIds: string[]) {
-        return await Promise.all([
-            this.GetProductRows(prepackIds),
-            this.GetPrepackRows(prepackIds),
-        ]);
+        return await Promise.all([this.GetProductRows(prepackIds), this.GetPrepackRows(prepackIds)]);
     }
 
     private async GetProductRows(prepackIds: string[]): Promise<ProductIngredientRow[]> {
@@ -170,8 +159,8 @@ export class PrepacksRepository {
                 [PrepackProductIngredients].[ServingUnits],
                 [PrepackProductIngredients].[ServingMeasuring]
             FROM [PrepackProductIngredients]
-            WHERE [PrepackProductIngredients].[PrepackId] IN (${prepackIds.map(() => '?').join(', ')});`,
-            prepackIds
+            WHERE [PrepackProductIngredients].[PrepackId] IN (${prepackIds.map(() => "?").join(", ")});`,
+            prepackIds,
         );
 
         return productPositionsResult.rows.raw();
@@ -185,8 +174,8 @@ export class PrepacksRepository {
                 [PrepackPrepackIngredients].[PositionNumber],
                 [PrepackPrepackIngredients].[WeightInGrams]
             FROM [PrepackPrepackIngredients]
-            WHERE [PrepackPrepackIngredients].[PrepackId] IN (${prepackIds.map(() => '?').join(', ')});`,
-            prepackIds
+            WHERE [PrepackPrepackIngredients].[PrepackId] IN (${prepackIds.map(() => "?").join(", ")});`,
+            prepackIds,
         );
 
         return prepackPositionsResult.rows.raw();

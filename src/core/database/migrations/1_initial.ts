@@ -2,9 +2,9 @@ import { SQLiteDatabase, Transaction } from "react-native-sqlite-storage";
 import { Migration } from "../database";
 
 export const initialMigration: Migration = {
-    version: '1',
+    version: "1",
     up: async (db: SQLiteDatabase) => {
-        await db.executeSql('PRAGMA foreign_keys = ON;');
+        await db.executeSql("PRAGMA foreign_keys = ON;");
 
         await db.transaction(async (tx: Transaction) => {
             tx.executeSql(`
@@ -106,5 +106,5 @@ export const initialMigration: Migration = {
                 );
             `);
         });
-    }
+    },
 };

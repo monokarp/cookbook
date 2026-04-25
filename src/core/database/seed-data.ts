@@ -15,8 +15,8 @@ export class SeedData {
 
     private readonly products: ProductEntity[] = [
         {
-            id: '5cd4091b-c610-4371-a83b-5622438d24d9',
-            name: 'Яблоко',
+            id: "5cd4091b-c610-4371-a83b-5622438d24d9",
+            name: "Яблоко",
             lastModified: new Date().toISOString(),
             nutrition: {
                 carbs: 40,
@@ -27,12 +27,12 @@ export class SeedData {
                 measuring: ProductMeasuring.Grams,
                 price: 6.54,
                 weightInGrams: 100,
-                numberOfUnits: 1
-            }
+                numberOfUnits: 1,
+            },
         },
         {
-            id: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
-            name: 'Банан',
+            id: "d4ba3654-7f1b-4e19-9be3-81fda9874710",
+            name: "Банан",
             lastModified: new Date().toISOString(),
             nutrition: {
                 carbs: 70,
@@ -43,12 +43,12 @@ export class SeedData {
                 measuring: ProductMeasuring.Grams,
                 price: 8.21,
                 weightInGrams: 50,
-                numberOfUnits: 1
-            }
+                numberOfUnits: 1,
+            },
         },
         {
-            id: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
-            name: 'Морковка',
+            id: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
+            name: "Морковка",
             lastModified: new Date().toISOString(),
             nutrition: {
                 carbs: 8,
@@ -59,205 +59,205 @@ export class SeedData {
                 measuring: ProductMeasuring.Units,
                 price: 2.87,
                 weightInGrams: 25,
-                numberOfUnits: 5
-            }
+                numberOfUnits: 5,
+            },
         },
     ];
 
     private readonly prepacks: PrepackEntity[] = [
         {
-            id: '13435459-4493-4326-b7f9-ff18b2630590',
-            name: 'Яблоко c бананом',
+            id: "13435459-4493-4326-b7f9-ff18b2630590",
+            name: "Яблоко c бананом",
             lastModified: new Date().toISOString(),
             finalWeight: 130,
-            description: '',
+            description: "",
             ingredients: [
                 {
-                    productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
+                    productId: "5cd4091b-c610-4371-a83b-5622438d24d9",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 100
-                    }
+                        units: 100,
+                    },
                 },
                 {
-                    productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
+                    productId: "d4ba3654-7f1b-4e19-9be3-81fda9874710",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 200
-                    }
-                }
-            ]
+                        units: 200,
+                    },
+                },
+            ],
         },
         {
-            id: '526d1a69-2a24-4b10-a747-8a6cda882d3e',
-            name: 'Банан c морковкой',
+            id: "526d1a69-2a24-4b10-a747-8a6cda882d3e",
+            name: "Банан c морковкой",
             lastModified: new Date().toISOString(),
             finalWeight: 50,
-            description: '',
+            description: "",
             ingredients: [
                 {
-                    productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
+                    productId: "d4ba3654-7f1b-4e19-9be3-81fda9874710",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 100
-                    }
+                        units: 100,
+                    },
                 },
                 {
-                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    productId: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
                     serving: {
                         measuring: ProductMeasuring.Units,
-                        units: 2
-                    }
-                }
-            ]
+                        units: 2,
+                    },
+                },
+            ],
         },
         {
-            id: 'a9db14d4-2246-46d0-a23f-a6cc0ee5a13b',
-            name: 'Морковка с ПФ яблоко/банан',
+            id: "a9db14d4-2246-46d0-a23f-a6cc0ee5a13b",
+            name: "Морковка с ПФ яблоко/банан",
             lastModified: new Date().toISOString(),
             finalWeight: 50,
-            description: '',
+            description: "",
             ingredients: [
                 {
-                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    productId: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
                     serving: {
                         measuring: ProductMeasuring.Units,
-                        units: 1
-                    }
+                        units: 1,
+                    },
                 },
                 {
-                    prepackId: '13435459-4493-4326-b7f9-ff18b2630590',
-                    weightInGrams: 120
-                }
-            ]
-        }
+                    prepackId: "13435459-4493-4326-b7f9-ff18b2630590",
+                    weightInGrams: 120,
+                },
+            ],
+        },
     ];
 
     private readonly recipes: RecipeEntity[] = [
         {
-            id: '905379dc-f444-4a9f-8d1b-fbc0576188ce',
-            name: 'Яблоко c бананом',
+            id: "905379dc-f444-4a9f-8d1b-fbc0576188ce",
+            name: "Яблоко c бананом",
             lastModified: new Date().toISOString(),
-            description: '',
+            description: "",
             portions: 1,
             positions: [
                 {
-                    productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
+                    productId: "5cd4091b-c610-4371-a83b-5622438d24d9",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 100
-                    }
+                        units: 100,
+                    },
                 },
                 {
-                    productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
+                    productId: "d4ba3654-7f1b-4e19-9be3-81fda9874710",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 50
-                    }
-                }
+                        units: 50,
+                    },
+                },
             ],
             groups: [],
         },
         {
-            id: 'b0250c1d-c8aa-4dfa-873f-4a64490028bf',
-            name: 'Банан с морковкой',
+            id: "b0250c1d-c8aa-4dfa-873f-4a64490028bf",
+            name: "Банан с морковкой",
             lastModified: new Date().toISOString(),
-            description: '',
+            description: "",
             portions: 3,
             positions: [
                 {
-                    productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
+                    productId: "d4ba3654-7f1b-4e19-9be3-81fda9874710",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 100
-                    }
+                        units: 100,
+                    },
                 },
                 {
-                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    productId: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 20
-                    }
-                }
+                        units: 20,
+                    },
+                },
             ],
             groups: [],
         },
         {
-            id: '4493f114-3fca-4a3b-aab4-ad48e3ca6372',
-            name: 'Морковка с П/Ф',
+            id: "4493f114-3fca-4a3b-aab4-ad48e3ca6372",
+            name: "Морковка с П/Ф",
             lastModified: new Date().toISOString(),
-            description: '',
+            description: "",
             portions: 1,
             positions: [
                 {
-                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    productId: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
                     serving: {
                         measuring: ProductMeasuring.Units,
-                        units: 3
-                    }
+                        units: 3,
+                    },
                 },
                 {
-                    prepackId: '13435459-4493-4326-b7f9-ff18b2630590',
-                    weightInGrams: 200
-                }
+                    prepackId: "13435459-4493-4326-b7f9-ff18b2630590",
+                    weightInGrams: 200,
+                },
             ],
             groups: [],
         },
         {
-            id: '3ff1c88a-2ce3-48cb-bbfb-be2544081d54',
-            name: 'Рецепт с группами',
+            id: "3ff1c88a-2ce3-48cb-bbfb-be2544081d54",
+            name: "Рецепт с группами",
             lastModified: new Date().toISOString(),
-            description: '',
+            description: "",
             portions: 1,
             positions: [
                 {
-                    productId: '5cd4091b-c610-4371-a83b-5622438d24d9',
+                    productId: "5cd4091b-c610-4371-a83b-5622438d24d9",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 101
-                    }
+                        units: 101,
+                    },
                 },
                 {
-                    productId: 'd4ba3654-7f1b-4e19-9be3-81fda9874710',
+                    productId: "d4ba3654-7f1b-4e19-9be3-81fda9874710",
                     serving: {
                         measuring: ProductMeasuring.Grams,
-                        units: 102
-                    }
+                        units: 102,
+                    },
                 },
                 {
-                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    productId: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
                     serving: {
                         measuring: ProductMeasuring.Units,
-                        units: 3
-                    }
+                        units: 3,
+                    },
                 },
                 {
-                    productId: '37feb6f9-f4a2-4b3e-ac30-0b49c95d171a',
+                    productId: "37feb6f9-f4a2-4b3e-ac30-0b49c95d171a",
                     serving: {
                         measuring: ProductMeasuring.Units,
-                        units: 5
-                    }
+                        units: 5,
+                    },
                 },
                 {
-                    prepackId: '13435459-4493-4326-b7f9-ff18b2630590',
-                    weightInGrams: 104
+                    prepackId: "13435459-4493-4326-b7f9-ff18b2630590",
+                    weightInGrams: 104,
                 },
                 {
-                    prepackId: '526d1a69-2a24-4b10-a747-8a6cda882d3e',
-                    weightInGrams: 105
+                    prepackId: "526d1a69-2a24-4b10-a747-8a6cda882d3e",
+                    weightInGrams: 105,
                 },
             ],
             groups: [
                 {
-                    name: 'Продукты',
+                    name: "Продукты",
                     positionIndices: [1, 2, 3],
                 },
                 {
-                    name: 'Пфы',
+                    name: "Пфы",
                     positionIndices: [4, 5],
-                }
+                },
             ],
-        }
+        },
     ];
 
     public async Seed(): Promise<void> {

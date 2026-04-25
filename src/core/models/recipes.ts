@@ -1,12 +1,17 @@
-import { isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, isProductIngredientEntity } from '@cookbook/domain/types/position/position';
-import { PrepackIngredientEntity } from '@cookbook/domain/types/position/prepack-ingredient';
-import { ProductIngredientEntity } from '@cookbook/domain/types/position/product-ingredient';
-import { Recipe } from '@cookbook/domain/types/recipe/recipe';
-import { randomUUID } from 'expo-crypto';
-import { RecipesRepository } from '../repositories/recipes.repository';
-import { MapById } from '../repositories/util';
-import { Prepacks } from './prepacks';
-import { Products } from './products';
+import {
+    isPrepackIngredient,
+    isPrepackIngredientEntity,
+    isProductIngredient,
+    isProductIngredientEntity,
+} from "@cookbook/domain/types/position/position";
+import { PrepackIngredientEntity } from "@cookbook/domain/types/position/prepack-ingredient";
+import { ProductIngredientEntity } from "@cookbook/domain/types/position/product-ingredient";
+import { Recipe } from "@cookbook/domain/types/recipe/recipe";
+import { randomUUID } from "expo-crypto";
+import { RecipesRepository } from "../repositories/recipes.repository";
+import { MapById } from "../repositories/util";
+import { Prepacks } from "./prepacks";
+import { Products } from "./products";
 
 export class Recipes {
     constructor(
@@ -18,9 +23,9 @@ export class Recipes {
     public Create(): Recipe {
         return new Recipe({
             id: randomUUID(),
-            name: '',
-            lastModified: '',
-            description: '',
+            name: "",
+            lastModified: "",
+            description: "",
             portions: 1,
             positions: [],
             groups: [],
@@ -52,37 +57,40 @@ export class Recipes {
         const [products, prepacks] = await Promise.all([
             this.products.Many(productIds),
             // @TODO refactor this to Many in case performance dips
-            this.prepacks.All().then(items => items.filter(item => prepackIds.includes(item.id)))
+            this.prepacks.All().then(items => items.filter(item => prepackIds.includes(item.id))),
         ]);
 
         const productsMap = MapById(products);
         const prepacksMap = MapById(prepacks);
 
-        return allRecipeEntities.map(entity => new Recipe({
-            id: entity.id,
-            name: entity.name,
-            lastModified: entity.lastModified,
-            description: entity.description,
-            portions: entity.portions,
-            positions: entity.positions.map(one => {
-                if (isProductIngredientEntity(one)) {
-                    return {
-                        product: productsMap.get(one.productId)!,
-                        serving: one.serving,
-                    };
-                }
+        return allRecipeEntities.map(
+            entity =>
+                new Recipe({
+                    id: entity.id,
+                    name: entity.name,
+                    lastModified: entity.lastModified,
+                    description: entity.description,
+                    portions: entity.portions,
+                    positions: entity.positions.map(one => {
+                        if (isProductIngredientEntity(one)) {
+                            return {
+                                product: productsMap.get(one.productId)!,
+                                serving: one.serving,
+                            };
+                        }
 
-                if (isPrepackIngredientEntity(one)) {
-                    return {
-                        prepack: prepacksMap.get(one.prepackId)!,
-                        weightInGrams: one.weightInGrams,
-                    }
-                }
+                        if (isPrepackIngredientEntity(one)) {
+                            return {
+                                prepack: prepacksMap.get(one.prepackId)!,
+                                weightInGrams: one.weightInGrams,
+                            };
+                        }
 
-                throw new Error(`Unknown recipe ingredient type\n${JSON.stringify(one)}`);
-            }),
-            groups: entity.groups,
-        }));
+                        throw new Error(`Unknown recipe ingredient type\n${JSON.stringify(one)}`);
+                    }),
+                    groups: entity.groups,
+                }),
+        );
     }
 
     public async Save(recipe: Recipe): Promise<void> {
@@ -104,7 +112,7 @@ export class Recipes {
                     return {
                         prepackId: one.prepack.id,
                         weightInGrams: one.weightInGrams,
-                    } as PrepackIngredientEntity
+                    } as PrepackIngredientEntity;
                 }
 
                 throw new Error(`Unknown recipe ingredient type\n${JSON.stringify(one)}`);
@@ -112,7 +120,6 @@ export class Recipes {
             groups: recipe.groups,
         });
     }
-
 
     public UpdateDescription(id: string, description: string) {
         return this.recipesRepo.UpdateDescription(id, description);

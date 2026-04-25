@@ -8,7 +8,7 @@ export interface PositionSummaryProps {
     position: Position;
     ratio: number;
     recipePositionKey: string;
-};
+}
 
 export function PositionSummary({ position, ratio, recipePositionKey }: PositionSummaryProps) {
     if (isPrepackIngredient(position)) {

@@ -1,9 +1,8 @@
 import { SQLiteDatabase } from "react-native-sqlite-storage";
 import { Migration } from "../database";
 
-
 export const recursivePrepacks: Migration = {
-    version: '6',
+    version: "6",
     up: async (db: SQLiteDatabase) => {
         await db.executeSql(`
             CREATE TABLE IF NOT EXISTS [PrepackPrepackIngredients] (
@@ -16,5 +15,5 @@ export const recursivePrepacks: Migration = {
                 FOREIGN KEY ([PrepackIngredientId]) REFERENCES [Prepacks]([Id])
             );
         `);
-    }
+    },
 };

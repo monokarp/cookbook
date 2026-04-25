@@ -1,11 +1,9 @@
-import { ProductEntity } from '@cookbook/domain/types/product/product';
-import { Database } from '../database/database';
-import { MapProductRow } from './types/products';
+import { ProductEntity } from "@cookbook/domain/types/product/product";
+import { Database } from "../database/database";
+import { MapProductRow } from "./types/products";
 
 export class ProductsRepository {
-
-    private readonly SelectProductWithPricingRowsSQL =
-        `SELECT
+    private readonly SelectProductWithPricingRowsSQL = `SELECT
             [Id] as [ProductId],
             [Name] as [ProductName],
             [LastModified],
@@ -30,22 +28,23 @@ export class ProductsRepository {
     public async Many(ids: string[]): Promise<ProductEntity[]> {
         const [result] = await this.database.ExecuteSql(
             `${this.SelectProductWithPricingRowsSQL}
-            WHERE [ProductId] IN (${ids.map(() => '?').join(', ')});`,
-            ids
+            WHERE [ProductId] IN (${ids.map(() => "?").join(", ")});`,
+            ids,
         );
 
         return result.rows.raw().map(MapProductRow);
     }
 
     public async One(id: string): Promise<ProductEntity | null> {
-        const [result] = await this.database.ExecuteSql(`
+        const [result] = await this.database.ExecuteSql(
+            `
             ${this.SelectProductWithPricingRowsSQL}
             WHERE [Id] = ?;
-        `, [id]);
+        `,
+            [id],
+        );
 
-        return result.rows.length
-            ? MapProductRow(result.rows.item(0))
-            : null;
+        return result.rows.length ? MapProductRow(result.rows.item(0)) : null;
     }
 
     public async Save(product: ProductEntity): Promise<void> {
@@ -58,8 +57,8 @@ export class ProductsRepository {
                     new Date().toISOString(),
                     product.nutrition.carbs,
                     product.nutrition.prot,
-                    product.nutrition.fat
-                ]
+                    product.nutrition.fat,
+                ],
             ],
             [
                 `INSERT OR REPLACE INTO [ProductPricing] ([ProductId], [Measuring], [Price], [WeightInGrams], [NumberOfUnits])
@@ -70,8 +69,8 @@ export class ProductsRepository {
                     product.pricing.price,
                     product.pricing.weightInGrams,
                     product.pricing.numberOfUnits,
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 
@@ -79,7 +78,7 @@ export class ProductsRepository {
         const [result] = await this.database.ExecuteSql(
             `${this.SelectProductWithPricingRowsSQL}
             WHERE [LastModified] >= ?;`,
-            [date.toISOString()]
+            [date.toISOString()],
         );
 
         return result.rows.raw().map(MapProductRow);
@@ -87,19 +86,19 @@ export class ProductsRepository {
 
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
-            ['DELETE FROM [ProductPricing] WHERE [ProductId] = ?;', [id]],
-            ['DELETE FROM [Products] WHERE [Id] = ?;', [id]],
-            ['INSERT INTO [ProductsPendingDeletion] VALUES (?)', [id]],
+            ["DELETE FROM [ProductPricing] WHERE [ProductId] = ?;", [id]],
+            ["DELETE FROM [Products] WHERE [Id] = ?;", [id]],
+            ["INSERT INTO [ProductsPendingDeletion] VALUES (?)", [id]],
         ]);
     }
 
     public async GetPendingDeletion(): Promise<string[]> {
-        const [result] = await this.database.ExecuteSql('SELECT [Id] FROM [ProductsPendingDeletion]');
+        const [result] = await this.database.ExecuteSql("SELECT [Id] FROM [ProductsPendingDeletion]");
 
         return result.rows.raw().map(row => row.Id);
     }
 
     public async ClearPendingDeletion(): Promise<void> {
-        await this.database.ExecuteSql('DELETE FROM [ProductsPendingDeletion]');
+        await this.database.ExecuteSql("DELETE FROM [ProductsPendingDeletion]");
     }
 }

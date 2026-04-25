@@ -1,13 +1,13 @@
 {
-  "extends": "expo/tsconfig.base",
-  "compilerOptions": {
-    "strict": true,
-    "baseUrl": ".",
-    "paths": {
-      "@cookbook/domain/*": ["src/domain/*"],
-      "@cookbook/ui/*": ["src/ui/*"]
+    "extends": "expo/tsconfig.base",
+    "compilerOptions": {
+        "strict": true,
+        "baseUrl": ".",
+        "paths": {
+            "@cookbook/domain/*": ["src/domain/*"],
+            "@cookbook/ui/*": ["src/ui/*"]
+        },
+        "types": ["jest"]
     },
-    "types": ["jest"]
-  },
-  "exclude": ["e2e"]
+    "exclude": ["e2e"]
 }

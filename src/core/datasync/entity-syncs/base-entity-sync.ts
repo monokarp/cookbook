@@ -2,7 +2,6 @@ import { DataSync } from "../datasync.service";
 import { EntitySync } from "../entity-sync";
 
 export class BaseEntitySync<E extends { id: string }> implements EntitySync {
-
     protected readonly localRepo!: LocalRepo<E>;
     protected readonly cloudRepo!: CloudRepo<E>;
 
@@ -11,7 +10,7 @@ export class BaseEntitySync<E extends { id: string }> implements EntitySync {
     }
 
     public async recover(userId: string): Promise<void> {
-        this.log('recovery');
+        this.log("recovery");
         const entities = await this.cloudRepo.Many(userId);
 
         this.log(`downloaded ${entities.length} entities`);

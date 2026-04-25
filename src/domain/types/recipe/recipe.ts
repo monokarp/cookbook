@@ -3,33 +3,48 @@ import { Macros } from "../macros";
 import { NamedEntity } from "../named-entity";
 import { Position, PositionDto, PositionEntity, mapPositions } from "../position/position";
 
-
 export class Recipe implements NamedEntity {
     private readonly data: RecipeDto;
 
-    public get id(): string { return this.data.id; }
+    public get id(): string {
+        return this.data.id;
+    }
 
-    public get name(): string { return this.data.name; }
-    public set name(value: string) { this.data.name = value; }
+    public get name(): string {
+        return this.data.name;
+    }
+    public set name(value: string) {
+        this.data.name = value;
+    }
 
-    public get lastModified(): string { return this.data.lastModified; }
+    public get lastModified(): string {
+        return this.data.lastModified;
+    }
 
-    public get description(): string { return this.data.description; }
-    public set description(value: string) { this.data.description = value; }
+    public get description(): string {
+        return this.data.description;
+    }
+    public set description(value: string) {
+        this.data.description = value;
+    }
 
-    public get portions(): number { return this.data.portions; }
-    public set portions(value: number) { this.data.portions = value; }
+    public get portions(): number {
+        return this.data.portions;
+    }
+    public set portions(value: number) {
+        this.data.portions = value;
+    }
 
     public get positions(): Position[] {
         return mapPositions(this.data.positions);
-    };
+    }
 
     public get groups(): PositionGroup[] {
         return this.data.groups.map(one => ({
             name: one.name,
-            positionIndices: [...one.positionIndices]
+            positionIndices: [...one.positionIndices],
         }));
-    };
+    }
 
     constructor(data: RecipeDto) {
         this.data = JSON.parse(JSON.stringify(data));
@@ -48,21 +63,23 @@ export class Recipe implements NamedEntity {
     }
 
     public macros(): Macros {
-        return this.positions.reduce((acc, next) => {
-            const { carbs, prot, fat } = next.macros();
+        return this.positions.reduce(
+            (acc, next) => {
+                const { carbs, prot, fat } = next.macros();
 
-            acc.carbs += carbs;
-            acc.prot += prot;
-            acc.fat += fat;
+                acc.carbs += carbs;
+                acc.prot += prot;
+                acc.fat += fat;
 
-            return acc;
-        }, {
-            carbs: 0,
-            prot: 0,
-            fat: 0,
-        } as Macros);
+                return acc;
+            },
+            {
+                carbs: 0,
+                prot: 0,
+                fat: 0,
+            } as Macros,
+        );
     }
-
 
     public addPosition(value: PositionDto): void {
         this.data.positions.push(value);
@@ -83,32 +100,30 @@ export class Recipe implements NamedEntity {
     }
 
     public applyGroup(group: PositionGroup) {
-        const prunedGroups = this.groups.reduce(
-            (groups, next) => {
-                if (next.name === group.name) { return groups; }
-
-                const prunedIndices = next.positionIndices.filter(idx => !group.positionIndices.includes(idx));
-
-                if (prunedIndices.length) {
-                    groups.push({
-                        ...next,
-                        positionIndices: prunedIndices
-                    });
-                }
-
+        const prunedGroups = this.groups.reduce((groups, next) => {
+            if (next.name === group.name) {
                 return groups;
-            }, [] as PositionGroup[]);
+            }
+
+            const prunedIndices = next.positionIndices.filter(idx => !group.positionIndices.includes(idx));
+
+            if (prunedIndices.length) {
+                groups.push({
+                    ...next,
+                    positionIndices: prunedIndices,
+                });
+            }
+
+            return groups;
+        }, [] as PositionGroup[]);
 
         const lastIndexOfUpdatedGroup = group.positionIndices[group.positionIndices.length - 1];
         const supersedingGroupIndex = prunedGroups.findIndex(existingGroup => existingGroup.positionIndices[0] > lastIndexOfUpdatedGroup);
 
-        this.data.groups = supersedingGroupIndex === -1
-            ? [...prunedGroups, group]
-            : [
-                ...prunedGroups.slice(0, supersedingGroupIndex),
-                group,
-                ...prunedGroups.slice(supersedingGroupIndex)
-            ]
+        this.data.groups =
+            supersedingGroupIndex === -1
+                ? [...prunedGroups, group]
+                : [...prunedGroups.slice(0, supersedingGroupIndex), group, ...prunedGroups.slice(supersedingGroupIndex)];
     }
 
     public removeGroup(groupName: string): void {
@@ -122,13 +137,13 @@ export interface PositionGroup {
 }
 
 export interface RecipeDto {
-    id: string,
-    name: string,
-    lastModified: string,
-    description: string,
+    id: string;
+    name: string;
+    lastModified: string;
+    description: string;
     portions: number;
-    positions: PositionDto[],
-    groups: PositionGroup[],
+    positions: PositionDto[];
+    groups: PositionGroup[];
 }
 
 export interface RecipeEntity {

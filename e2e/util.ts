@@ -1,5 +1,5 @@
 import { collectionElementId } from "@cookbook/ui/test-ids";
-import { element, by, expect } from 'detox';
+import { element, by, expect } from "detox";
 
 const DefaultTimeout = 4000;
 
@@ -29,12 +29,10 @@ export function collectionElement(testId: string) {
     return {
         at: (index: number) => {
             return element(by.id(collectionElementId(testId, index)));
-        }
+        },
     };
 }
 
 function findElement(testId: string, index?: number) {
-    return Number.isInteger(index)
-        ? collectionElement(testId).at(index)
-        : element(by.id(testId))
+    return Number.isInteger(index) ? collectionElement(testId).at(index) : element(by.id(testId));
 }

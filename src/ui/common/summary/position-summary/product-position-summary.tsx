@@ -6,11 +6,16 @@ import { styles } from "../../../home/recipes/recipe-summary/recipe-summary.styl
 import { DividedRow, PositionRowLabel, isServedInUnits } from "../label-components";
 
 export function ProductPositionSummary(one: ProductIngredient, ratio: number) {
-    return <DividedRow>
-        <View style={styles.positionRow}>
-            <PositionRowLabel>{one.product.name}</PositionRowLabel>
-            <PositionRowLabel>{(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)} {t(isServedInUnits(one) ? 'product.measuring.units' : 'product.measuring.grams')}</PositionRowLabel>
-            <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
-        </View>
-    </DividedRow>;
-};
+    return (
+        <DividedRow>
+            <View style={styles.positionRow}>
+                <PositionRowLabel>{one.product.name}</PositionRowLabel>
+                <PositionRowLabel>
+                    {(isServedInUnits(one) ? FormatNumber.Units : FormatNumber.Weight)(one.units() * ratio)}{" "}
+                    {t(isServedInUnits(one) ? "product.measuring.units" : "product.measuring.grams")}
+                </PositionRowLabel>
+                <PositionRowLabel>{FormatNumber.Money(one.price() * ratio)}</PositionRowLabel>
+            </View>
+        </DividedRow>
+    );
+}

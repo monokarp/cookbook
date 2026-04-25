@@ -1,7 +1,7 @@
-import { Product } from '@cookbook/domain/types/product/product';
-import { ProductMeasuring, ProductPricing } from '@cookbook/domain/types/product/product-pricing';
-import { randomUUID } from 'expo-crypto';
-import { ProductsRepository } from '../repositories/products.repository';
+import { Product } from "@cookbook/domain/types/product/product";
+import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product/product-pricing";
+import { randomUUID } from "expo-crypto";
+import { ProductsRepository } from "../repositories/products.repository";
 
 export class Products {
     constructor(private readonly productsRepo: ProductsRepository) {}
@@ -9,8 +9,8 @@ export class Products {
     public Create(): Product {
         return new Product({
             id: randomUUID(),
-            name: '',
-            lastModified: '',
+            name: "",
+            lastModified: "",
             nutrition: {
                 carbs: 0,
                 prot: 0,
@@ -21,7 +21,7 @@ export class Products {
                 price: 0,
                 weightInGrams: 0,
                 numberOfUnits: 0,
-            })
+            }),
         });
     }
 

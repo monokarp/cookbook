@@ -22,7 +22,7 @@ export class DataSync {
                 }
             }
         } catch (e) {
-            console.log('datasync recovery error', e);
+            console.log("datasync recovery error", e);
         }
     }
 
@@ -35,7 +35,7 @@ export class DataSync {
                 }
             }
         } catch (e) {
-            console.log('datasync force push error', e);
+            console.log("datasync force push error", e);
         }
     }
 
@@ -56,7 +56,7 @@ export class DataSync {
                     await this.dsRepo.setLastSyncedTime(new Date());
                 }
             } catch (e) {
-                console.log('datasync error', e);
+                console.log("datasync error", e);
             }
         }, SyncIntervalMs);
     }

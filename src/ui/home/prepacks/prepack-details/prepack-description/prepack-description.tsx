@@ -3,8 +3,8 @@ import { View } from "react-native";
 import { List, TextInput } from "react-native-paper";
 
 export interface PrepackDescriptionProps {
-    value: string,
-    onChange: (value: string) => void,
+    value: string;
+    onChange: (value: string) => void;
 }
 
 export function PrepackDescription({ value, onChange }: PrepackDescriptionProps) {
@@ -12,8 +12,14 @@ export function PrepackDescription({ value, onChange }: PrepackDescriptionProps)
 
     return (
         <View>
-            <List.Accordion title={t(`prepack.details.${value ? 'descriptionView' : 'descriptionAdd'}`)}>
-                <TextInput style={{ margin: 10, backgroundColor: 'white' }} mode="outlined" value={value} multiline={true} onChangeText={onChange} />
+            <List.Accordion title={t(`prepack.details.${value ? "descriptionView" : "descriptionAdd"}`)}>
+                <TextInput
+                    style={{ margin: 10, backgroundColor: "white" }}
+                    mode="outlined"
+                    value={value}
+                    multiline={true}
+                    onChangeText={onChange}
+                />
             </List.Accordion>
         </View>
     );

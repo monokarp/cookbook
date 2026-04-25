@@ -10,8 +10,8 @@ export interface RecipeDescriptionProps {
 }
 
 enum Icons {
-    Default = 'file-document-edit-outline',
-    Saved = 'check'
+    Default = "file-document-edit-outline",
+    Saved = "check",
 }
 
 export function RecipeDescription({ description, onUpdate }: RecipeDescriptionProps) {
@@ -26,7 +26,9 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
     const [icon, setIcon] = useState(Icons.Default);
 
     function onSave() {
-        if (!textDisplayed) { setTextDisplayed(true); }
+        if (!textDisplayed) {
+            setTextDisplayed(true);
+        }
 
         onUpdate(value);
         setIcon(Icons.Saved);
@@ -35,26 +37,23 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
     }
 
     return (
-        <View style={{ flexWrap: 'wrap', marginTop: 20 }}>
-            <View style={{ width: '100%' }}>
-                {
-                    textDisplayed &&
+        <View style={{ flexWrap: "wrap", marginTop: 20 }}>
+            <View style={{ width: "100%" }}>
+                {textDisplayed && (
                     <TextInput
-                        ref={(ref: NativeTextInput | null) => { inputRef = ref; }}
-                        label={t('recipe.description')}
+                        ref={(ref: NativeTextInput | null) => {
+                            inputRef = ref;
+                        }}
+                        label={t("recipe.description")}
                         style={{ marginHorizontal: 5 }}
                         mode="outlined"
                         multiline={true}
                         value={value}
                         onChange={event => setValue(event.nativeEvent.text)}
                     />
-                }
+                )}
             </View>
-            <IconButton style={{ alignSelf: 'flex-end' }}
-                icon={icon}
-                onTouchStart={() => inputRef?.blur()}
-                onTouchEnd={onSave}
-            />
+            <IconButton style={{ alignSelf: "flex-end" }} icon={icon} onTouchStart={() => inputRef?.blur()} onTouchEnd={onSave} />
         </View>
     );
 }

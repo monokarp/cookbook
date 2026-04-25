@@ -3,23 +3,24 @@ import { TestIds } from "@cookbook/ui/test-ids";
 import { Controller, useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
-import { Text, TextInput } from 'react-native-paper';
+import { Text, TextInput } from "react-native-paper";
 import { ProductDetailsFormData } from "../form-data-facade";
 import { styles } from "../product-defails.style";
-
 
 export function PricingPerPieceForm() {
     const { t } = useTranslation();
 
-    const { formState: { errors } } = useFormContext<ProductDetailsFormData>();
+    const {
+        formState: { errors },
+    } = useFormContext<ProductDetailsFormData>();
 
     return (
         <View>
-            <Text style={styles.inputLabel}>{t('product.details.numberOfPieces')}</Text>
+            <Text style={styles.inputLabel}>{t("product.details.numberOfPieces")}</Text>
             <Controller
                 rules={{
                     required: true,
-                    validate: (value) => RegexPatterns.Money.test(value) && Number(value) > 0,
+                    validate: value => RegexPatterns.Money.test(value) && Number(value) > 0,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
@@ -27,27 +28,23 @@ export function PricingPerPieceForm() {
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        keyboardType='numeric'
+                        keyboardType="numeric"
                         value={value}
                     />
                 )}
                 name="numberOfPieces"
             />
-            {
-                errors.numberOfPieces &&
-                <Text
-                    testID={TestIds.ProductDetails.UnitsInputError}
-                    style={styles.validationErrorLabel}
-                >
-                    {t('validation.required.integerGTE', { gte: 1 })}
+            {errors.numberOfPieces && (
+                <Text testID={TestIds.ProductDetails.UnitsInputError} style={styles.validationErrorLabel}>
+                    {t("validation.required.integerGTE", { gte: 1 })}
                 </Text>
-            }
+            )}
 
-            <Text style={styles.inputLabel}>{t('product.details.gramsPerPiece')}</Text>
+            <Text style={styles.inputLabel}>{t("product.details.gramsPerPiece")}</Text>
             <Controller
                 rules={{
                     required: true,
-                    validate: (value) => RegexPatterns.Weight.test(value) && Number(value) > 0
+                    validate: value => RegexPatterns.Weight.test(value) && Number(value) > 0,
                 }}
                 render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
@@ -55,22 +52,19 @@ export function PricingPerPieceForm() {
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        keyboardType='numeric'
+                        keyboardType="numeric"
                         value={value}
                     />
                 )}
                 name="weight"
             />
-            {
-                errors.weight &&
-                <Text
-                    testID={TestIds.ProductDetails.WeightInputError}
-                    style={styles.validationErrorLabel}
-                >
-                    {t('validation.required.decimalGTE', { gte: 0 })}
-                </Text>}
+            {errors.weight && (
+                <Text testID={TestIds.ProductDetails.WeightInputError} style={styles.validationErrorLabel}>
+                    {t("validation.required.decimalGTE", { gte: 0 })}
+                </Text>
+            )}
 
-            <Text style={styles.inputLabel}>{t('product.pricing.totalPrice')}</Text>
+            <Text style={styles.inputLabel}>{t("product.pricing.totalPrice")}</Text>
             <Controller
                 rules={{
                     required: true,
@@ -82,20 +76,17 @@ export function PricingPerPieceForm() {
                         style={styles.input}
                         onBlur={onBlur}
                         onChangeText={onChange}
-                        keyboardType='numeric'
+                        keyboardType="numeric"
                         value={value}
                     />
                 )}
                 name="price"
             />
-            {
-                errors.price &&
-                <Text
-                    testID={TestIds.ProductDetails.PriceInputError}
-                    style={styles.validationErrorLabel}
-                >
-                    {t('validation.required.decimalGTE', { gte: 0 })}
-                </Text>}
+            {errors.price && (
+                <Text testID={TestIds.ProductDetails.PriceInputError} style={styles.validationErrorLabel}>
+                    {t("validation.required.decimalGTE", { gte: 0 })}
+                </Text>
+            )}
         </View>
     );
 }

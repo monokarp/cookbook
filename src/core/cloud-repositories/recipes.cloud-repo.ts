@@ -2,10 +2,10 @@ import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
 import { FirestoreRepository } from "./base-firestore.cloud-repo";
 import { CloudRepositoryBase } from "./cloud-repo";
 
-export abstract class RecipesCloudRepository extends CloudRepositoryBase<RecipeEntity>{ };
+export abstract class RecipesCloudRepository extends CloudRepositoryBase<RecipeEntity> {}
 
-export class RecipesFirestore extends FirestoreRepository<RecipeEntity>{
+export class RecipesFirestore extends FirestoreRepository<RecipeEntity> {
     constructor() {
-        super('recipes');
+        super("recipes");
     }
-};
+}

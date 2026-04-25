@@ -5,11 +5,10 @@ import { DataSync } from "../datasync.service";
 import { BaseEntitySync } from "./base-entity-sync";
 
 export class ProductsSync extends BaseEntitySync<ProductEntity> {
-
     constructor(
         ds: DataSync,
         protected override readonly localRepo: ProductsRepository,
-        protected override readonly cloudRepo: ProductsCloudRepository
+        protected override readonly cloudRepo: ProductsCloudRepository,
     ) {
         super(ds);
     }

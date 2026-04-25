@@ -5,8 +5,7 @@ import { Product } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product/product-pricing";
 import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber, roundMoney } from "@cookbook/domain/util";
-import * as Clipboard from 'expo-clipboard';
-
+import * as Clipboard from "expo-clipboard";
 
 export class ExportToClipboard {
     private readonly t: (code: string) => string;
@@ -28,31 +27,26 @@ export class ExportToClipboard {
     }
 
     private summarizeProduct(entity: Product): string {
-        return [
-            entity.name,
-            this.summarizeProductPricing(entity.pricing),
-        ].join('\n');
+        return [entity.name, this.summarizeProductPricing(entity.pricing)].join("\n");
     }
 
     private summarizeProductPricing(entity: ProductPricing): string {
-        return (entity.measuring === ProductMeasuring.Grams
-            ? [
-                `${this.t('product.pricing.price')} - ${entity.price}`,
-                `${this.t('product.details.weightInGrams')} - ${entity.weightInGrams}`
-            ]
-            : [
-                `Price - ${entity.price}`,
-                `${this.t('product.details.weightPerPiece')} - ${roundMoney(entity.weightInGrams / entity.numberOfUnits)}`,
-                `${this.t('product.details.numberOfPieces')} - ${entity.numberOfUnits}`,
-            ]).join('\n');
+        return (
+            entity.measuring === ProductMeasuring.Grams
+                ? [
+                      `${this.t("product.pricing.price")} - ${entity.price}`,
+                      `${this.t("product.details.weightInGrams")} - ${entity.weightInGrams}`,
+                  ]
+                : [
+                      `Price - ${entity.price}`,
+                      `${this.t("product.details.weightPerPiece")} - ${roundMoney(entity.weightInGrams / entity.numberOfUnits)}`,
+                      `${this.t("product.details.numberOfPieces")} - ${entity.numberOfUnits}`,
+                  ]
+        ).join("\n");
     }
 
     private summarizeRecipe(entity: Recipe): string {
-        return [
-            entity.name,
-            '\n',
-            ...entity.positions.map(one => this.summarizePosition(one)),
-        ].join('\n');
+        return [entity.name, "\n", ...entity.positions.map(one => this.summarizePosition(one))].join("\n");
     }
 
     private summarizePosition(entity: Position): string {
@@ -64,7 +58,7 @@ export class ExportToClipboard {
             return this.summarizePrepack(entity.prepack);
         }
 
-        throw new Error('Unknown position type');
+        throw new Error("Unknown position type");
     }
 
     private summarizeProductIngredient(entity: ProductIngredient): string {
@@ -72,10 +66,6 @@ export class ExportToClipboard {
     }
 
     private summarizePrepack(entity: Prepack): string {
-        return [
-            entity.name,
-            '\n',
-            ...entity.ingredients.map(one => this.summarizePosition(one)),
-        ].join('\n');
+        return [entity.name, "\n", ...entity.ingredients.map(one => this.summarizePosition(one))].join("\n");
     }
 }

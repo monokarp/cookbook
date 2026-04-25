@@ -5,11 +5,10 @@ import { DataSync } from "../datasync.service";
 import { BaseEntitySync } from "./base-entity-sync";
 
 export class RecipesSync extends BaseEntitySync<RecipeEntity> {
-
     constructor(
         ds: DataSync,
         protected override readonly localRepo: RecipesRepository,
-        protected override readonly cloudRepo: RecipesCloudRepository
+        protected override readonly cloudRepo: RecipesCloudRepository,
     ) {
         super(ds);
     }

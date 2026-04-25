@@ -2,7 +2,7 @@ import { SQLiteDatabase, Transaction } from "react-native-sqlite-storage";
 import { Migration } from "../database";
 
 export const pendingDeletionTables: Migration = {
-    version: '3',
+    version: "3",
     up: async (db: SQLiteDatabase) => {
         await db.transaction(async (tx: Transaction) => {
             tx.executeSql(`
@@ -23,5 +23,5 @@ export const pendingDeletionTables: Migration = {
                 );
             `);
         });
-    }
+    },
 };

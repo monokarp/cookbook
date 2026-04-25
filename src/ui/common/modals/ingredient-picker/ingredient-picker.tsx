@@ -8,7 +8,7 @@ import { Divider, List, Modal, Portal, TextInput } from "react-native-paper";
 import { useIngredientItemsStore } from "./ingredient-picker.store";
 
 export interface IngredientPickerProps {
-    items: (Product | Prepack)[],
+    items: (Product | Prepack)[];
     onResult: (item: Product | Prepack | null) => void;
 }
 
@@ -25,19 +25,19 @@ export function IngredientPicker({ items, onResult }: IngredientPickerProps) {
 
     function reset() {
         setVisible(false);
-        filter('');
+        filter("");
     }
 
     return (
         <Portal>
             <Modal
                 contentContainerStyle={{
-                    backgroundColor: 'white',
+                    backgroundColor: "white",
                     padding: 20,
                     borderRadius: 10,
-                    height: '50%',
-                    marginVertical: 'auto',
-                    marginHorizontal: '5%'
+                    height: "50%",
+                    marginVertical: "auto",
+                    marginHorizontal: "5%",
                 }}
                 visible={visible}
                 onDismiss={() => {
@@ -48,8 +48,8 @@ export function IngredientPicker({ items, onResult }: IngredientPickerProps) {
                 <TextInput
                     style={{ marginBottom: 5 }}
                     testID={TestIds.IngredientSelect.Ingredient.Modal.NameSearchInput}
-                    label={t('product.search.byName')}
-                    defaultValue=''
+                    label={t("product.search.byName")}
+                    defaultValue=""
                     mode="outlined"
                     onChange={event => {
                         filter(event.nativeEvent.text);
@@ -57,7 +57,7 @@ export function IngredientPicker({ items, onResult }: IngredientPickerProps) {
                 />
                 <FlatList
                     data={filteredItems}
-                    renderItem={({ item, index }) =>
+                    renderItem={({ item, index }) => (
                         <View>
                             <List.Item
                                 title={item.name}
@@ -69,7 +69,7 @@ export function IngredientPicker({ items, onResult }: IngredientPickerProps) {
                             />
                             <Divider />
                         </View>
-                    }
+                    )}
                     keyExtractor={item => item.id}
                 />
             </Modal>

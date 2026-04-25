@@ -1,11 +1,11 @@
-import { ResultSet, SQLiteDatabase, Transaction, enablePromise, openDatabase } from 'react-native-sqlite-storage';
-import { migrations } from './migrations';
+import { ResultSet, SQLiteDatabase, Transaction, enablePromise, openDatabase } from "react-native-sqlite-storage";
+import { migrations } from "./migrations";
 
 enablePromise(true);
 
 export type Migration = {
     version: string;
-    up: (db: SQLiteDatabase) => Promise<void>
+    up: (db: SQLiteDatabase) => Promise<void>;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -20,7 +20,7 @@ export class Database {
         }
     }
 
-    public async Init(): Promise<{ didRunMigrations: boolean, isFreshInstall: boolean }> {
+    public async Init(): Promise<{ didRunMigrations: boolean; isFreshInstall: boolean }> {
         if (this.sqliteDb) {
             return;
         }
@@ -29,24 +29,24 @@ export class Database {
 
         const pendingMigrations = await this.GetPendingMigrations();
 
-        console.log('Pending migrations:', pendingMigrations);
+        console.log("Pending migrations:", pendingMigrations);
 
         for (const migration of pendingMigrations) {
             await migration.up(this.sqliteDb);
 
             console.log(`Migration ${migration.version} applied`);
 
-            await this.sqliteDb.executeSql(
-                `INSERT INTO [MigrationHistory] ([Version], [Created]) VALUES (?, ?)`,
-                [migration.version, new Date().toISOString()]
-            );
+            await this.sqliteDb.executeSql(`INSERT INTO [MigrationHistory] ([Version], [Created]) VALUES (?, ?)`, [
+                migration.version,
+                new Date().toISOString(),
+            ]);
 
             console.log(`Migration info saved`);
         }
 
         return {
             didRunMigrations: !!pendingMigrations.length,
-            isFreshInstall: !!pendingMigrations.length && pendingMigrations[0].version === '1'
+            isFreshInstall: !!pendingMigrations.length && pendingMigrations[0].version === "1",
         };
     }
 
@@ -66,20 +66,20 @@ export class Database {
     }
 
     private async Open(): Promise<void> {
-        this.sqliteDb = await openDatabase({ name: 'cookbook.db', location: 'default' });
+        this.sqliteDb = await openDatabase({ name: "cookbook.db", location: "default" });
     }
 
     private async GetPendingMigrations(): Promise<Migration[]> {
-        if (!await this.MigrationTableExists()) {
-            console.log('Migration table does not exist, running all migrations');
+        if (!(await this.MigrationTableExists())) {
+            console.log("Migration table does not exist, running all migrations");
             return migrations;
-        };
+        }
 
         const appliedVersions = await this.GetAppliedMigrationVersions();
-        console.log('Already applied migrations:', appliedVersions);
+        console.log("Already applied migrations:", appliedVersions);
 
         if (appliedVersions.length > migrations.length) {
-            throw new Error('Downgrade attempt, please uninstall local app version first');
+            throw new Error("Downgrade attempt, please uninstall local app version first");
         }
 
         const output = [];
@@ -89,7 +89,9 @@ export class Database {
 
             if (appliedVersion) {
                 if (migration.version !== appliedVersion) {
-                    throw new Error(`Migration mismatch at index ${index}: ${migration} (in DB) !== ${migrations[index].version} (pending)`);
+                    throw new Error(
+                        `Migration mismatch at index ${index}: ${migration} (in DB) !== ${migrations[index].version} (pending)`,
+                    );
                 }
             } else {
                 output.push(migration);
@@ -106,7 +108,7 @@ export class Database {
     }
 
     private async GetAppliedMigrationVersions(): Promise<string[]> {
-        const [migrationsHistory] = await this.sqliteDb.executeSql('SELECT [Version] FROM [MigrationHistory]');
+        const [migrationsHistory] = await this.sqliteDb.executeSql("SELECT [Version] FROM [MigrationHistory]");
         return migrationsHistory.rows.raw().map((row: { Version: string }) => row.Version);
     }
 }

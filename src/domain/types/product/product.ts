@@ -11,9 +11,9 @@ export class Product implements NamedEntity {
 
     public static Empty(): Product {
         return new Product({
-            id: '',
-            name: '',
-            lastModified: '',
+            id: "",
+            name: "",
+            lastModified: "",
             nutrition: {
                 carbs: 0,
                 prot: 0,
@@ -24,7 +24,7 @@ export class Product implements NamedEntity {
                 price: 0,
                 weightInGrams: 0,
                 numberOfUnits: 0,
-            }
+            },
         });
     }
 
@@ -41,7 +41,7 @@ export interface ProductDto {
     id: string;
     name: string;
     lastModified: string;
-    nutrition: Macros,
+    nutrition: Macros;
     pricing: ProductPricingDto;
 }
 

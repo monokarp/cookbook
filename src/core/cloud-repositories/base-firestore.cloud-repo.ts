@@ -1,19 +1,17 @@
-import { NamedEntity } from '@cookbook/domain/types/named-entity';
-import firestore from '@react-native-firebase/firestore';
-import { Environment } from '../../ui/env';
-import { CloudRepository } from './cloud-repo';
-
+import { NamedEntity } from "@cookbook/domain/types/named-entity";
+import firestore from "@react-native-firebase/firestore";
+import { Environment } from "../../ui/env";
+import { CloudRepository } from "./cloud-repo";
 
 export abstract class FirestoreRepository<T extends NamedEntity> implements CloudRepository<T> {
-
-    constructor(public readonly collectionName: string) { }
+    constructor(public readonly collectionName: string) {}
 
     public async Many(userId: string): Promise<T[]> {
-        const data = await firestore().collection<RemotelyStored<T>>(this.getCollectionName()).where('userId', '==', userId).get();
+        const data = await firestore().collection<RemotelyStored<T>>(this.getCollectionName()).where("userId", "==", userId).get();
 
         return data.docs.map(one => {
             return { ...one.data(), id: one.id } as unknown as T;
-        })
+        });
     }
 
     public SaveMany(userId: string, entities: T[]): Promise<void> {
@@ -47,10 +45,10 @@ export abstract class FirestoreRepository<T extends NamedEntity> implements Clou
     }
 
     private getCollectionName(): string {
-        return `${Environment.Type === 'Prod' ? '' : 'dev-'}${this.collectionName}`;
+        return `${Environment.Type === "Prod" ? "" : "dev-"}${this.collectionName}`;
     }
 }
 
 type RemotelyStored<T> = T & {
     userId: string;
-}
+};

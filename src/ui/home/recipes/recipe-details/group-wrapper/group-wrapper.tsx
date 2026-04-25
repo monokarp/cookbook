@@ -8,16 +8,15 @@ import { GroupNameInput } from "./group-name-input/group-name-input";
 import { styles } from "./group-wrapper.style";
 
 export type GroupWrapperProps = PropsWithChildren<{
-    recipeGroups: PositionGroup[],
-    rowIndex: number,
+    recipeGroups: PositionGroup[];
+    rowIndex: number;
     groupEditing?: {
-        isActive: boolean,
-        onRemove: (groupName: string) => void,
-        onConfirm: (updatedName: string) => void,
-        onCancel: () => void,
-    }
+        isActive: boolean;
+        onRemove: (groupName: string) => void;
+        onConfirm: (updatedName: string) => void;
+        onCancel: () => void;
+    };
 }>;
-
 
 export function GroupRowWrapper({ recipeGroups, children, rowIndex, groupEditing }: GroupWrapperProps) {
     const { t } = useTranslation();
@@ -45,45 +44,43 @@ export function GroupRowWrapper({ recipeGroups, children, rowIndex, groupEditing
 
     return (
         <View style={rowStyle}>
-            {
-                isFirstItemInGroup &&
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    {
-                        groupEditing
-
-                            ? groupEditing.isActive
-                                ? <GroupNameInput
-                                    groupName={matchingGroup.name}
-                                    onConfirm={groupEditing.onConfirm}
-                                    onCancel={groupEditing.onCancel}
-                                />
-
-                                : <View style={{ width: '100%', flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ flexGrow: 1, paddingLeft: 5 }} variant="bodyLarge">
-                                        {matchingGroup.name}
-                                    </Text>
-                                    <IconButton
-                                        icon="trash-can"
-                                        size={22}
-                                        onPress={() => {
-                                            confirmation.show({
-                                                message: t('recipe.groups.remove'),
-                                                onResult: (result) => {
-                                                    if (result === 'confirm') {
-                                                        groupEditing.onRemove(matchingGroup.name)
-                                                    }
+            {isFirstItemInGroup && (
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    {groupEditing ? (
+                        groupEditing.isActive ? (
+                            <GroupNameInput
+                                groupName={matchingGroup.name}
+                                onConfirm={groupEditing.onConfirm}
+                                onCancel={groupEditing.onCancel}
+                            />
+                        ) : (
+                            <View style={{ width: "100%", flexDirection: "row", alignItems: "center" }}>
+                                <Text style={{ flexGrow: 1, paddingLeft: 5 }} variant="bodyLarge">
+                                    {matchingGroup.name}
+                                </Text>
+                                <IconButton
+                                    icon="trash-can"
+                                    size={22}
+                                    onPress={() => {
+                                        confirmation.show({
+                                            message: t("recipe.groups.remove"),
+                                            onResult: result => {
+                                                if (result === "confirm") {
+                                                    groupEditing.onRemove(matchingGroup.name);
                                                 }
-                                            })
-                                        }}
-                                    />
-                                </View>
-
-                            : <Text style={{ flexGrow: 1, paddingLeft: 5 }} variant="bodyLarge">
-                                {matchingGroup.name}
-                            </Text>
-                    }
+                                            },
+                                        });
+                                    }}
+                                />
+                            </View>
+                        )
+                    ) : (
+                        <Text style={{ flexGrow: 1, paddingLeft: 5 }} variant="bodyLarge">
+                            {matchingGroup.name}
+                        </Text>
+                    )}
                 </View>
-            }
+            )}
             {children}
         </View>
     );

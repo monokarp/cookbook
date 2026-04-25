@@ -16,7 +16,7 @@ export function MapProductRow(row: ProductWithPricingRow): ProductEntity {
             price: row.Price,
             weightInGrams: row.WeightInGrams,
             numberOfUnits: row.NumberOfUnits,
-        }
+        },
     };
 }
 

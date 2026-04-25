@@ -1,9 +1,14 @@
-import { isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, isProductIngredientEntity } from '@cookbook/domain/types/position/position';
-import { Prepack, PrepackEntity } from '@cookbook/domain/types/prepack/prepack';
-import { randomUUID } from 'expo-crypto';
-import { PrepacksRepository } from '../repositories/prepack.repository';
-import { MapById } from '../repositories/util';
-import { Products } from './products';
+import {
+    isPrepackIngredient,
+    isPrepackIngredientEntity,
+    isProductIngredient,
+    isProductIngredientEntity,
+} from "@cookbook/domain/types/position/position";
+import { Prepack, PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
+import { randomUUID } from "expo-crypto";
+import { PrepacksRepository } from "../repositories/prepack.repository";
+import { MapById } from "../repositories/util";
+import { Products } from "./products";
 
 export class Prepacks {
     constructor(
@@ -14,10 +19,10 @@ export class Prepacks {
     public Create(): Prepack {
         return new Prepack({
             id: randomUUID(),
-            name: '',
-            lastModified: '',
+            name: "",
+            lastModified: "",
             finalWeight: 0,
-            description: '',
+            description: "",
             ingredients: [],
         });
     }
@@ -60,7 +65,7 @@ export class Prepacks {
                         return {
                             prepack: AttachIngredients(prepacksMap.get(one.prepackId)!),
                             weightInGrams: one.weightInGrams,
-                        }
+                        };
                     }
 
                     throw new Error(`Unknown prepack ingredient type\n${JSON.stringify(one)}`);
@@ -88,14 +93,14 @@ function PrepackToEntity(model: Prepack): PrepackEntity {
                 return {
                     productId: one.product.id,
                     serving: one.serving,
-                }
+                };
             }
 
             if (isPrepackIngredient(one)) {
                 return {
                     prepackId: one.prepack.id,
                     weightInGrams: one.weightInGrams,
-                }
+                };
             }
 
             throw new Error(`Unknown prepack ingredient type\n${JSON.stringify(one)}`);

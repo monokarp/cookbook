@@ -36,7 +36,7 @@ export function MapProductIngredient(row: ProductIngredientRow): ProductIngredie
         serving: {
             measuring: row.ServingMeasuring,
             units: row.ServingUnits,
-        }
+        },
     };
 }
 

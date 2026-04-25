@@ -37,8 +37,11 @@ export function PrepacksView({ navigation }: Props) {
             deleteItem(id);
         } catch (e) {
             switch ((e as { code?: number }).code) {
-                case 0: toast.show({ message: t('errors.prepack.fkViolation') }); break;
-                default: toast.show({ message: t('errors.prepack.cantDelete') });
+                case 0:
+                    toast.show({ message: t("errors.prepack.fkViolation") });
+                    break;
+                default:
+                    toast.show({ message: t("errors.prepack.cantDelete") });
             }
         }
     };
@@ -47,9 +50,9 @@ export function PrepacksView({ navigation }: Props) {
         <View testID={TestIds.PrepacksView.Container} style={{ flexGrow: 1 }}>
             <TextInput
                 testID={TestIds.PrepacksView.SearchInput}
-                mode='flat'
-                label={t('product.search.byName')}
-                defaultValue=''
+                mode="flat"
+                label={t("product.search.byName")}
+                defaultValue=""
                 onChange={event => filter(event.nativeEvent.text)}
             />
 
@@ -57,7 +60,7 @@ export function PrepacksView({ navigation }: Props) {
                 items={filteredPrepacks}
                 itemTestId={TestIds.PrepacksView.ListItem}
                 addNewButtonTestId={TestIds.PrepacksView.AddNewButton}
-                addNewButtonText={t('prepack.addNew')}
+                addNewButtonText={t("prepack.addNew")}
                 select={item => navigation.navigate(RootViews.PrepackSummary, { prepack: item })}
                 addNew={() => navigation.navigate(RootViews.PrepackDetails, { prepack: repo.Create() })}
                 remove={item => deletePrepack(item.id)}

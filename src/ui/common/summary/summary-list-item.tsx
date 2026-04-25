@@ -16,8 +16,8 @@ export interface SummaryListItemProps {
 }
 
 enum Icons {
-    Default = 'content-copy',
-    Done = 'arrow-up',
+    Default = "content-copy",
+    Done = "arrow-up",
 }
 
 export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequested, exportRequested, index }: SummaryListItemProps) {
@@ -30,7 +30,7 @@ export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequeste
     function onExportPress() {
         setIcon(Icons.Done);
 
-        setTimeout(() => setIcon(Icons.Default), IconResetTimeoutMs)
+        setTimeout(() => setIcon(Icons.Default), IconResetTimeoutMs);
 
         exportRequested();
     }
@@ -39,24 +39,21 @@ export function SummaryListItem({ item, itemTestId, itemSelected, deleteRequeste
         <List.Item
             testID={`${itemTestId}-${index}`}
             title={item.name}
-            right={() =>
-                <Pressable
-                    testID={`${TestIds.ListItem.ClipboardExport}-${index}`}
-                    onPress={onExportPress}
-                >
+            right={() => (
+                <Pressable testID={`${TestIds.ListItem.ClipboardExport}-${index}`} onPress={onExportPress}>
                     <List.Icon icon={icon} />
                 </Pressable>
-            }
+            )}
             onPress={itemSelected}
             onLongPress={() => {
                 confirmation.show({
-                    message: t('lists.deleteItemPrompt'),
-                    onResult: (result) => {
-                        if (result === 'confirm') {
+                    message: t("lists.deleteItemPrompt"),
+                    onResult: result => {
+                        if (result === "confirm") {
                             deleteRequested();
                         }
-                    }
-                })
+                    },
+                });
             }}
         />
     );

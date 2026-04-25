@@ -6,22 +6,28 @@ import { Divider, Text } from "react-native-paper";
 import { styles } from "../../home/recipes/recipe-summary/recipe-summary.style";
 
 export function TotalsRowLabel(props: ComponentProps<typeof Text>) {
-    return <View style={{ flex: 1 }}>
-        <Text {...props} variant="bodyLarge" style={styles.positionLabelMargin} />
-    </View>;
+    return (
+        <View style={{ flex: 1 }}>
+            <Text {...props} variant="bodyLarge" style={styles.positionLabelMargin} />
+        </View>
+    );
 }
 
 export function PositionRowLabel(props: ComponentProps<typeof Text>) {
-    return <View style={{ flex: 1 }}>
-        <Text {...props} style={styles.positionLabelMargin} />
-    </View>
+    return (
+        <View style={{ flex: 1 }}>
+            <Text {...props} style={styles.positionLabelMargin} />
+        </View>
+    );
 }
 
 export function DividedRow({ children }: { children: ReactNode }) {
-    return <View style={{ width: '100%' }}>
-        {children}
-        <Divider />
-    </View >
+    return (
+        <View style={{ width: "100%" }}>
+            {children}
+            <Divider />
+        </View>
+    );
 }
 
 export function isServedInUnits(ingredient: ProductIngredient) {

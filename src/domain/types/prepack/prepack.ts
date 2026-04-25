@@ -4,7 +4,6 @@ import { NamedEntity } from "../named-entity";
 import { Position, PositionDto, PositionEntity, isPrepackIngredient, isProductIngredient, mapPositions } from "../position/position";
 import { Product } from "../product/product";
 
-
 export class Prepack implements NamedEntity {
     public readonly id: string;
     public readonly name: string;
@@ -15,12 +14,12 @@ export class Prepack implements NamedEntity {
 
     public static Empty(): Prepack {
         return new Prepack({
-            id: '',
-            name: '',
-            lastModified: '',
+            id: "",
+            name: "",
+            lastModified: "",
             finalWeight: 0,
-            description: '',
-            ingredients: []
+            description: "",
+            ingredients: [],
         });
     }
 
@@ -52,10 +51,10 @@ export class Prepack implements NamedEntity {
                     return {
                         product: new Product(one.product),
                         serving: { ...one.serving },
-                    }
+                    };
                 }
 
-                throw new Error(`Cloning prepack: unknown prepack ingredient type:\n${JSON.stringify(one)}`)
+                throw new Error(`Cloning prepack: unknown prepack ingredient type:\n${JSON.stringify(one)}`);
             }),
         });
     }
@@ -73,19 +72,22 @@ export class Prepack implements NamedEntity {
     }
 
     public macros(): Macros {
-        return this.ingredients.reduce((acc, next) => {
-            const { carbs, prot, fat } = next.macros();
+        return this.ingredients.reduce(
+            (acc, next) => {
+                const { carbs, prot, fat } = next.macros();
 
-            acc.carbs += carbs;
-            acc.prot += prot;
-            acc.fat += fat;
+                acc.carbs += carbs;
+                acc.prot += prot;
+                acc.fat += fat;
 
-            return acc;
-        }, {
-            carbs: 0,
-            prot: 0,
-            fat: 0,
-        } as Macros);
+                return acc;
+            },
+            {
+                carbs: 0,
+                prot: 0,
+                fat: 0,
+            } as Macros,
+        );
     }
 }
 

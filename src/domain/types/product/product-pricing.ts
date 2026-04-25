@@ -3,7 +3,7 @@ import { roundMoney } from "../../util";
 export enum ProductMeasuring {
     Units = "units",
     Grams = "grams",
-};
+}
 
 export class ProductPricing implements ProductPricingDto {
     public readonly measuring: ProductMeasuring;

@@ -1,8 +1,8 @@
-import { Prepack } from '@cookbook/domain/types/prepack/prepack';
-import { Product } from '@cookbook/domain/types/product/product';
-import { Recipe } from '@cookbook/domain/types/recipe/recipe';
-import { FormMode } from './common/form-mode.enum';
-import { RootViews } from './root-views.enum';
+import { Prepack } from "@cookbook/domain/types/prepack/prepack";
+import { Product } from "@cookbook/domain/types/product/product";
+import { Recipe } from "@cookbook/domain/types/recipe/recipe";
+import { FormMode } from "./common/form-mode.enum";
+import { RootViews } from "./root-views.enum";
 
 export type RootStackParamList = {
     [RootViews.Login]: { doSignOut?: boolean } | undefined;

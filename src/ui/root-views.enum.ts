@@ -7,4 +7,4 @@ export const enum RootViews {
     RecipeDetails = "recipe-details",
     PrepackSummary = "prepack-summary",
     PrepackDetails = "prepack-details",
-};
+}

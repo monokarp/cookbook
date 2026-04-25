@@ -5,13 +5,17 @@ export class PrepackIngredient implements PrepackIngredientDto {
     public readonly prepack: Prepack;
     public readonly weightInGrams: number;
 
-    public get id(): string { return this.prepack.id; }
-    public get name(): string { return this.prepack.name; }
+    public get id(): string {
+        return this.prepack.id;
+    }
+    public get name(): string {
+        return this.prepack.name;
+    }
 
     public static Empty(): PrepackIngredient {
         return new PrepackIngredient({
             prepack: Prepack.Empty(),
-            weightInGrams: 0
+            weightInGrams: 0,
         });
     }
 

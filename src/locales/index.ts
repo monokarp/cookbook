@@ -1,7 +1,7 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import en from './en.json';
-import ru from './ru.json';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import en from "./en.json";
+import ru from "./ru.json";
 
 const resources = {
     en: {
@@ -14,10 +14,10 @@ const resources = {
 
 i18n.use(initReactI18next).init({
     resources,
-    lng: 'ru',
-    fallbackLng: 'en',
-    compatibilityJSON: 'v4',
+    lng: "ru",
+    fallbackLng: "en",
+    compatibilityJSON: "v4",
     interpolation: {
-        escapeValue: false
-    }
+        escapeValue: false,
+    },
 });

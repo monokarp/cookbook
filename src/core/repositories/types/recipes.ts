@@ -37,7 +37,7 @@ export function MapProductIngredient(row: ProductIngredientRow): ProductIngredie
         serving: {
             measuring: row.ServingMeasuring,
             units: row.ServingUnits,
-        }
+        },
     };
 }
 
@@ -55,7 +55,6 @@ export function MapPrepackIngredient(row: PrepackIngredientRow): PrepackIngredie
     };
 }
 
-
 export interface PositionGroupRow {
     RecipeId: string;
     Name: string;
@@ -65,6 +64,6 @@ export interface PositionGroupRow {
 export function MapGroup(row: PositionGroupRow): PositionGroup {
     return {
         name: row.Name,
-        positionIndices: row.PositionIndicesCsv.split(',').map(Number)
+        positionIndices: row.PositionIndicesCsv.split(",").map(Number),
     };
 }

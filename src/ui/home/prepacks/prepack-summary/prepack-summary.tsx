@@ -23,11 +23,13 @@ export function PrepackSummary({ navigation, route }: Props) {
     const [ratio, setRatio] = useState(1);
 
     return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: "100%" }}>
             <Appbar.Header>
                 <Appbar.BackAction testID={TestIds.PrepackSummary.Back} onPress={() => navigation.navigate(RootViews.Home)} />
                 <Appbar.Content title={prepack.name} />
-                <Appbar.Action testID={TestIds.PrepackSummary.ToDetails} icon="file-edit-outline"
+                <Appbar.Action
+                    testID={TestIds.PrepackSummary.ToDetails}
+                    icon="file-edit-outline"
                     onPress={() => {
                         navigation.navigate(RootViews.PrepackDetails, { prepack });
                     }}
@@ -39,16 +41,21 @@ export function PrepackSummary({ navigation, route }: Props) {
 
                 <View style={styles.bodyCol}>
                     <View style={styles.recipePriceRow}>
-                        <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
-                        <TotalsRowLabel>{FormatNumber.Weight(prepack.finalWeight * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                        <TotalsRowLabel>{t("recipe.totals")}</TotalsRowLabel>
+                        <TotalsRowLabel>
+                            {FormatNumber.Weight(prepack.finalWeight * ratio)} {t("product.measuring.grams")}
+                        </TotalsRowLabel>
                         <TotalsRowLabel>{FormatNumber.Money(prepack.price() * ratio)}</TotalsRowLabel>
                     </View>
                     <Divider />
-                    {
-                        prepack.ingredients.map((one, recipePositionIndex) =>
-                            <PositionSummary key={recipePositionIndex} position={one} ratio={ratio} recipePositionKey={recipePositionIndex.toString()} />
-                        )
-                    }
+                    {prepack.ingredients.map((one, recipePositionIndex) => (
+                        <PositionSummary
+                            key={recipePositionIndex}
+                            position={one}
+                            ratio={ratio}
+                            recipePositionKey={recipePositionIndex.toString()}
+                        />
+                    ))}
                 </View>
             </ScrollView>
         </View>

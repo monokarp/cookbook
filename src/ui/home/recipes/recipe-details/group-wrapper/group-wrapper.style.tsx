@@ -1,14 +1,14 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
 const borderWidth = 2;
 const margin = 3;
 
 export const styles = StyleSheet.create({
     base: {
-        flexDirection: 'column',
-        alignItems: 'center',
-        borderStyle: 'solid',
-        borderColor: 'black',
+        flexDirection: "column",
+        alignItems: "center",
+        borderStyle: "solid",
+        borderColor: "black",
     },
     groupedItem: {
         borderLeftWidth: borderWidth,
@@ -19,10 +19,9 @@ export const styles = StyleSheet.create({
         borderTopWidth: borderWidth,
         marginTop: margin,
     },
-    middleItem: {
-    },
+    middleItem: {},
     lastItem: {
         borderBottomWidth: borderWidth,
         marginBottom: margin,
-    }
+    },
 });

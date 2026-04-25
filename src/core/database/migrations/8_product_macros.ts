@@ -2,7 +2,7 @@ import { SQLiteDatabase } from "react-native-sqlite-storage";
 import { Migration } from "../database";
 
 export const productMacros: Migration = {
-    version: '8',
+    version: "8",
     up: async (db: SQLiteDatabase) => {
         await db.executeSql(`
             ALTER TABLE [Products] ADD COLUMN [Carbs] REAL DEFAULT 0 NOT NULL;
@@ -15,5 +15,5 @@ export const productMacros: Migration = {
         await db.executeSql(`
             ALTER TABLE [Products] ADD COLUMN [Fat] REAL DEFAULT 0 NOT NULL;
         `);
-    }
+    },
 };

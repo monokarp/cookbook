@@ -1,4 +1,4 @@
-import { useServices } from '../../services-context';
+import { useServices } from "../../services-context";
 
 export function useAppModals() {
     const { confirmation, toast, ingredientPicker } = useServices();

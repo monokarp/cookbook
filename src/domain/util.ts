@@ -25,9 +25,12 @@ export class FormatNumber {
 
     public static ServingUnits(value: Serving): string {
         switch (value.measuring) {
-            case ProductMeasuring.Grams: return FormatNumber.Weight(value.units);
-            case ProductMeasuring.Units: return FormatNumber.Units(value.units);
-            default: throw new Error(`Unexpected measuring: ${value.measuring}`);
+            case ProductMeasuring.Grams:
+                return FormatNumber.Weight(value.units);
+            case ProductMeasuring.Units:
+                return FormatNumber.Units(value.units);
+            default:
+                throw new Error(`Unexpected measuring: ${value.measuring}`);
         }
     }
 }

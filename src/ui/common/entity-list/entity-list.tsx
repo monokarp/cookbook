@@ -5,14 +5,14 @@ import { SummaryListItem } from "../summary/summary-list-item";
 import { styles } from "./entity-list.style";
 
 export interface EntityListProps<E extends NamedEntity> {
-    items: E[],
-    itemTestId: string,
-    addNewButtonTestId: string,
-    addNewButtonText: string,
-    select: (item: E) => void,
-    addNew: () => void,
-    remove: (item: E) => void,
-    exportToClipboard: (item: E) => void,
+    items: E[];
+    itemTestId: string;
+    addNewButtonTestId: string;
+    addNewButtonText: string;
+    select: (item: E) => void;
+    addNew: () => void;
+    remove: (item: E) => void;
+    exportToClipboard: (item: E) => void;
 }
 
 export function EntityList<E extends NamedEntity>({
@@ -23,14 +23,14 @@ export function EntityList<E extends NamedEntity>({
     select,
     addNew,
     remove,
-    exportToClipboard
+    exportToClipboard,
 }: EntityListProps<E>) {
     return (
         <View style={{ flexGrow: 1 }}>
             <FlatList
                 style={styles.list}
                 data={items}
-                renderItem={({ item, index }) =>
+                renderItem={({ item, index }) => (
                     <View>
                         <SummaryListItem
                             item={item}
@@ -42,18 +42,13 @@ export function EntityList<E extends NamedEntity>({
                         />
                         <Divider />
                     </View>
-                }
+                )}
                 keyExtractor={item => item.id}
             />
 
-            <Button
-                testID={addNewButtonTestId}
-                style={styles.button}
-                mode='contained-tonal'
-                onPress={addNew}
-            >
+            <Button testID={addNewButtonTestId} style={styles.button} mode="contained-tonal" onPress={addNew}>
                 <Text style={{ fontSize: 18 }}>{addNewButtonText}</Text>
             </Button>
         </View>
     );
-};
+}

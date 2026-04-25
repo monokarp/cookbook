@@ -51,17 +51,17 @@ export function mapPositions(data: PositionDto[]): Position[] {
             return new ProductIngredient(dto);
         }
 
-        throw new Error('Unknown position type');
+        throw new Error("Unknown position type");
     });
 }
 
 export function containsAsNestedIngredient(host: Prepack, target: Prepack): boolean {
-    if (host.id === target.id) { return true; }
+    if (host.id === target.id) {
+        return true;
+    }
 
     return host.ingredients.reduce((result, next) => {
-        const node = isPrepackIngredient(next)
-            ? containsAsNestedIngredient(next.prepack, target)
-            : false;
+        const node = isPrepackIngredient(next) ? containsAsNestedIngredient(next.prepack, target) : false;
         return result || node;
     }, false);
 }

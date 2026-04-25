@@ -1,5 +1,5 @@
-import { createContext } from 'react';
-import { create } from 'zustand';
+import { createContext } from "react";
+import { create } from "zustand";
 
 export interface EditableListStore {
     hasItemsEditing: boolean;
@@ -11,7 +11,7 @@ export const PrepackDetailsContext = createContext<EditableListStore | null>(nul
 export type PrepackDetailsStore = ReturnType<typeof createEditableListStore>;
 
 export function createEditableListStore() {
-    return create<EditableListStore>((set) => ({
+    return create<EditableListStore>(set => ({
         hasItemsEditing: false,
         setItemsEditing: (value: boolean) => set(state => ({ hasItemsEditing: value })),
     }));

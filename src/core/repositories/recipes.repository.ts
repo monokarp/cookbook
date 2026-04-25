@@ -1,14 +1,21 @@
-import { isPrepackIngredientEntity, isProductIngredientEntity } from '@cookbook/domain/types/position/position';
-import { RecipeEntity } from '@cookbook/domain/types/recipe/recipe';
-import { Database, Query } from '../database/database';
-import { MapGroup, MapPrepackIngredient, MapProductIngredient, MapRecipe, PositionGroupRow, PrepackIngredientRow, ProductIngredientRow, RecipeRow } from './types/recipes';
+import { isPrepackIngredientEntity, isProductIngredientEntity } from "@cookbook/domain/types/position/position";
+import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
+import { Database, Query } from "../database/database";
+import {
+    MapGroup,
+    MapPrepackIngredient,
+    MapProductIngredient,
+    MapRecipe,
+    PositionGroupRow,
+    PrepackIngredientRow,
+    ProductIngredientRow,
+    RecipeRow,
+} from "./types/recipes";
 
 export class RecipesRepository {
-
     constructor(private readonly database: Database) {}
 
-    private readonly SelectRecipeRowsSQL =
-        `SELECT 
+    private readonly SelectRecipeRowsSQL = `SELECT 
             [Recipes].[Id],
             [Recipes].[Name],
             [Recipes].[LastModified],
@@ -17,11 +24,11 @@ export class RecipesRepository {
         FROM [Recipes]`;
 
     public async All(): Promise<RecipeEntity[]> {
-        const [allRecipesResult] = await this.database.ExecuteSql(
-            `${this.SelectRecipeRowsSQL};`
-        );
+        const [allRecipesResult] = await this.database.ExecuteSql(`${this.SelectRecipeRowsSQL};`);
 
-        if (!allRecipesResult.rows.length) { return []; }
+        if (!allRecipesResult.rows.length) {
+            return [];
+        }
 
         return this.MapWithNestedEntities(allRecipesResult.rows.raw());
     }
@@ -30,10 +37,12 @@ export class RecipesRepository {
         const [recipeResult] = await this.database.ExecuteSql(
             `${this.SelectRecipeRowsSQL}
             WHERE [Recipes].[Id] = ?;`,
-            [id]
+            [id],
         );
 
-        if (!recipeResult.rows.length) { return null; }
+        if (!recipeResult.rows.length) {
+            return null;
+        }
 
         const [recipe] = await this.MapWithNestedEntities(recipeResult.rows.raw());
 
@@ -44,10 +53,12 @@ export class RecipesRepository {
         const [recipesResult] = await this.database.ExecuteSql(
             `${this.SelectRecipeRowsSQL}
             WHERE [Recipes].[LastModified] >= ?;`,
-            [date.toISOString()]
+            [date.toISOString()],
         );
 
-        if (!recipesResult.rows.length) { return []; }
+        if (!recipesResult.rows.length) {
+            return [];
+        }
 
         return this.MapWithNestedEntities(recipesResult.rows.raw());
     }
@@ -56,28 +67,16 @@ export class RecipesRepository {
         await this.database.Transaction([
             [
                 `INSERT OR REPLACE INTO [Recipes] ([Id], [Name], [LastModified], [Description], [Portions]) VALUES (?, ?, ?, ?, ?);`,
-                [recipe.id, recipe.name, new Date().toISOString(), recipe.description, recipe.portions]
+                [recipe.id, recipe.name, new Date().toISOString(), recipe.description, recipe.portions],
             ],
-            [
-                `DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`,
-                [recipe.id]
-            ],
-            [
-                `DELETE FROM [RecipePrepackIngredients] WHERE [RecipeId] = ?;`,
-                [recipe.id]
-            ],
+            [`DELETE FROM [RecipeProductIngredients] WHERE [RecipeId] = ?;`, [recipe.id]],
+            [`DELETE FROM [RecipePrepackIngredients] WHERE [RecipeId] = ?;`, [recipe.id]],
             ...recipe.positions.map((position, idx) => {
                 if (isProductIngredientEntity(position)) {
                     return [
                         `INSERT INTO [RecipeProductIngredients] ([RecipeId], [PositionNumber], [ProductId], [ServingUnits], [ServingMeasuring])
                         VALUES (?, ?, ?, ?, ?);`,
-                        [
-                            recipe.id,
-                            idx + 1,
-                            position.productId,
-                            position.serving.units,
-                            position.serving.measuring
-                        ]
+                        [recipe.id, idx + 1, position.productId, position.serving.units, position.serving.measuring],
                     ] as Query;
                 }
 
@@ -85,25 +84,17 @@ export class RecipesRepository {
                     return [
                         `INSERT INTO [RecipePrepackIngredients] ([RecipeId], [PositionNumber], [WeightInGrams], [PrepackId])
                         VALUES (?, ?, ?, ?);`,
-                        [
-                            recipe.id,
-                            idx + 1,
-                            position.weightInGrams,
-                            position.prepackId
-                        ]
+                        [recipe.id, idx + 1, position.weightInGrams, position.prepackId],
                     ] as Query;
                 }
 
                 throw new Error(`Unknown position type: ${position}`);
             }),
-            [
-                'DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;',
-                [recipe.id]
-            ],
-            ...recipe.groups.map(one => ([
-                'INSERT INTO [RecipePositionGroups] VALUES (?, ?, ?);',
-                [recipe.id, one.name, one.positionIndices.join(',')],
-            ] as Query)),
+            ["DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;", [recipe.id]],
+            ...recipe.groups.map(
+                one =>
+                    ["INSERT INTO [RecipePositionGroups] VALUES (?, ?, ?);", [recipe.id, one.name, one.positionIndices.join(",")]] as Query,
+            ),
         ]);
     }
 
@@ -113,28 +104,28 @@ export class RecipesRepository {
             SET [Description] = ?,
             [LastModified] = ?
             WHERE [Id] = ?;`,
-            [description, new Date().toISOString(), id]
+            [description, new Date().toISOString(), id],
         );
     }
 
     public async Delete(id: string): Promise<void> {
         await this.database.Transaction([
-            ['DELETE FROM [RecipeProductIngredients]  WHERE [RecipeId] = ?;', [id]],
-            ['DELETE FROM [RecipePrepackIngredients]  WHERE [RecipeId] = ?;', [id]],
-            ['DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;', [id]],
-            ['DELETE FROM [Recipes]  WHERE [Id] = ?;', [id]],
-            ['INSERT INTO [RecipesPendingDeletion] VALUES (?)', [id]],
+            ["DELETE FROM [RecipeProductIngredients]  WHERE [RecipeId] = ?;", [id]],
+            ["DELETE FROM [RecipePrepackIngredients]  WHERE [RecipeId] = ?;", [id]],
+            ["DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;", [id]],
+            ["DELETE FROM [Recipes]  WHERE [Id] = ?;", [id]],
+            ["INSERT INTO [RecipesPendingDeletion] VALUES (?)", [id]],
         ]);
     }
 
     public async GetPendingDeletion(): Promise<string[]> {
-        const [result] = await this.database.ExecuteSql('SELECT [Id] FROM [RecipesPendingDeletion]');
+        const [result] = await this.database.ExecuteSql("SELECT [Id] FROM [RecipesPendingDeletion]");
 
         return result.rows.raw().map(row => row.Id);
     }
 
     public async ClearPendingDeletion(): Promise<void> {
-        await this.database.ExecuteSql('DELETE FROM [RecipesPendingDeletion]');
+        await this.database.ExecuteSql("DELETE FROM [RecipesPendingDeletion]");
     }
 
     private async MapWithNestedEntities(recipes: RecipeRow[]): Promise<RecipeEntity[]> {
@@ -164,11 +155,7 @@ export class RecipesRepository {
     }
 
     private async GetNestedEntities(recipeIds: string[]) {
-        return await Promise.all([
-            this.GetProductRows(recipeIds),
-            this.GetPrepackRows(recipeIds),
-            this.GetPositionGroups(recipeIds)
-        ]);
+        return await Promise.all([this.GetProductRows(recipeIds), this.GetPrepackRows(recipeIds), this.GetPositionGroups(recipeIds)]);
     }
 
     private async GetProductRows(recipeIds: string[]): Promise<ProductIngredientRow[]> {
@@ -180,8 +167,8 @@ export class RecipesRepository {
                 [RecipeProductIngredients].[ServingUnits],
                 [RecipeProductIngredients].[ServingMeasuring]
             FROM [RecipeProductIngredients]
-            WHERE [RecipeProductIngredients].[RecipeId] IN (${recipeIds.map(() => '?').join(', ')});`,
-            recipeIds
+            WHERE [RecipeProductIngredients].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")});`,
+            recipeIds,
         );
 
         return productPositionsResult.rows.raw();
@@ -195,8 +182,8 @@ export class RecipesRepository {
                 [RecipePrepackIngredients].[PositionNumber],
                 [RecipePrepackIngredients].[WeightInGrams]
             FROM [RecipePrepackIngredients]
-            WHERE [RecipePrepackIngredients].[RecipeId] IN (${recipeIds.map(() => '?').join(', ')});`,
-            recipeIds
+            WHERE [RecipePrepackIngredients].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")});`,
+            recipeIds,
         );
 
         return prepackPositionsResult.rows.raw();
@@ -209,8 +196,8 @@ export class RecipesRepository {
                 [RecipePositionGroups].[Name],
                 [RecipePositionGroups].[PositionIndicesCsv]
             FROM [RecipePositionGroups]
-            WHERE [RecipePositionGroups].[RecipeId] IN (${recipeIds.map(() => '?').join(', ')})`,
-            recipeIds
+            WHERE [RecipePositionGroups].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")})`,
+            recipeIds,
         );
 
         return positionGroupRows.rows.raw();

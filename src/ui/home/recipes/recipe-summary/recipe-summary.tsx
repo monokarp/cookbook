@@ -33,7 +33,7 @@ export function RecipeSummary({ navigation, route }: Props) {
     const [portions, setPortions] = useState(0);
     const [ratio, setRatio] = useState(0);
 
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState("");
 
     const updateDescription = async (value: string) => {
         await recipeRepo.UpdateDescription(recipe.id, value);
@@ -53,11 +53,13 @@ export function RecipeSummary({ navigation, route }: Props) {
     }, [recipe, portions]);
 
     return (
-        <View style={{ height: '100%' }}>
+        <View style={{ height: "100%" }}>
             <Appbar.Header>
                 <Appbar.BackAction testID={TestIds.RecipeSummary.Back} onPress={() => navigation.navigate(RootViews.Home)} />
                 <Appbar.Content title={recipe.name} />
-                <Appbar.Action testID={TestIds.RecipeSummary.ToDetails} icon="file-edit-outline"
+                <Appbar.Action
+                    testID={TestIds.RecipeSummary.ToDetails}
+                    icon="file-edit-outline"
                     onPress={() => {
                         recipe.description = description;
 
@@ -71,26 +73,26 @@ export function RecipeSummary({ navigation, route }: Props) {
 
                 <View style={styles.bodyCol}>
                     <View style={styles.recipePriceRow}>
-                        <TotalsRowLabel>{t('recipe.totals')}</TotalsRowLabel>
-                        <TotalsRowLabel>{FormatNumber.Weight(recipe.totalWeight() * ratio)} {t('product.measuring.grams')}</TotalsRowLabel>
+                        <TotalsRowLabel>{t("recipe.totals")}</TotalsRowLabel>
+                        <TotalsRowLabel>
+                            {FormatNumber.Weight(recipe.totalWeight() * ratio)} {t("product.measuring.grams")}
+                        </TotalsRowLabel>
                         <TotalsRowLabel>{FormatNumber.Money(recipe.totalPrice() * ratio)}</TotalsRowLabel>
                     </View>
                     <Divider />
-                    {
-                        recipe.positions.map((one, recipePositionIndex) =>
-                            <GroupRowWrapper key={(recipePositionIndex * 2)} recipeGroups={recipe.groups} rowIndex={recipePositionIndex}>
-                                <PositionSummary position={one} ratio={ratio} recipePositionKey={`${recipePositionIndex * 2}`} />
-                            </GroupRowWrapper>
-                        )
-                    }
+                    {recipe.positions.map((one, recipePositionIndex) => (
+                        <GroupRowWrapper key={recipePositionIndex * 2} recipeGroups={recipe.groups} rowIndex={recipePositionIndex}>
+                            <PositionSummary position={one} ratio={ratio} recipePositionKey={`${recipePositionIndex * 2}`} />
+                        </GroupRowWrapper>
+                    ))}
                 </View>
 
                 <View style={{ ...styles.bodyCol, padding: 5, paddingTop: 15 }}>
                     <View style={styles.recipePriceRow}>
-                        <PositionRowLabel>{t('product.details.carbs')}</PositionRowLabel>
-                        <PositionRowLabel>{t('product.details.prot')}</PositionRowLabel>
-                        <PositionRowLabel>{t('product.details.fat')}</PositionRowLabel>
-                        <PositionRowLabel>{t('product.details.kcal')}</PositionRowLabel>
+                        <PositionRowLabel>{t("product.details.carbs")}</PositionRowLabel>
+                        <PositionRowLabel>{t("product.details.prot")}</PositionRowLabel>
+                        <PositionRowLabel>{t("product.details.fat")}</PositionRowLabel>
+                        <PositionRowLabel>{t("product.details.kcal")}</PositionRowLabel>
                     </View>
                     <Divider />
                     <View style={styles.recipePriceRow}>
