@@ -1,7 +1,6 @@
-import { Container } from 'inversify';
-import { PrepacksCloudRepository, PrepacksFirestore } from '../core/cloud-repositories/prepacks.cloud-repo';
-import { ProductsCloudRepository, ProductsFirestore } from '../core/cloud-repositories/products.cloud-repo';
-import { RecipesCloudRepository, RecipesFirestore } from '../core/cloud-repositories/recipes.cloud-repo';
+import { PrepacksFirestore } from '../core/cloud-repositories/prepacks.cloud-repo';
+import { ProductsFirestore } from '../core/cloud-repositories/products.cloud-repo';
+import { RecipesFirestore } from '../core/cloud-repositories/recipes.cloud-repo';
 import { Database } from '../core/database/database';
 import { SeedData } from '../core/database/seed-data';
 import { DataSync } from '../core/datasync/datasync.service';
@@ -15,42 +14,36 @@ import { DatasyncRepository } from '../core/repositories/datasync.repository';
 import { PrepacksRepository } from '../core/repositories/prepack.repository';
 import { ProductsRepository } from '../core/repositories/products.repository';
 import { RecipesRepository } from '../core/repositories/recipes.repository';
-import { RegisterModals } from './common/modals/modals.module';
+import { ConfirmationModal } from './common/modals/confirmation/confirmation.modal';
+import { IngredientPickerModal } from './common/modals/ingredient-picker/ingredient-picker.modal';
+import { ModalService } from './common/modals/modal.service';
+import { ToastModal } from './common/modals/toast/toast.modal';
+import { AppServices } from './services-context';
 
-export function buildRootContainer() {
-    const container = new Container({ skipBaseClassChecks: true, defaultScope: 'Singleton' });
+export function buildServices(): AppServices {
+    const db = new Database();
 
-    container.bind(Database).toSelf();
+    const productsRepo = new ProductsRepository(db);
+    const prepacksRepo = new PrepacksRepository(db);
+    const recipesRepo = new RecipesRepository(db);
+    const dsRepo = new DatasyncRepository(db);
 
-    container.bind(SeedData).toSelf();
+    const seedData = new SeedData(productsRepo, recipesRepo, prepacksRepo);
 
-    // Entity order below is important due to implicit dependencies
-    container.bind(ProductsCloudRepository).to(ProductsFirestore);
-    container.bind(PrepacksCloudRepository).to(PrepacksFirestore);
-    container.bind(RecipesCloudRepository).to(RecipesFirestore);
+    const dataSync = new DataSync(dsRepo);
 
-    container.bind(DatasyncRepository).toSelf();
-    container.bind(ProductsRepository).toSelf();
-    container.bind(PrepacksRepository).toSelf();
-    container.bind(RecipesRepository).toSelf();
+    new ProductsSync(dataSync, productsRepo, new ProductsFirestore());
+    new PrepacksSync(dataSync, prepacksRepo, new PrepacksFirestore());
+    new RecipesSync(dataSync, recipesRepo, new RecipesFirestore());
 
-    container.bind(DataSync).toSelf();
+    const products = new Products(productsRepo);
+    const prepacks = new Prepacks(products, prepacksRepo);
+    const recipes = new Recipes(products, prepacks, recipesRepo);
 
-    // Entities' syncs are not referenced and must be resolved manually
-    container.bind(ProductsSync).toSelf();
-    container.resolve(ProductsSync);
+    const modalService = new ModalService();
+    const confirmation = new ConfirmationModal(modalService);
+    const toast = new ToastModal(modalService);
+    const ingredientPicker = new IngredientPickerModal(modalService);
 
-    container.bind(PrepacksSync).toSelf();
-    container.resolve(PrepacksSync);
-
-    container.bind(RecipesSync).toSelf();
-    container.resolve(RecipesSync);
-
-    container.bind(Products).toSelf();
-    container.bind(Prepacks).toSelf();
-    container.bind(Recipes).toSelf();
-
-    RegisterModals(container);
-    
-    return container;
+    return { db, seedData, dataSync, products, prepacks, recipes, modalService, confirmation, toast, ingredientPicker };
 }

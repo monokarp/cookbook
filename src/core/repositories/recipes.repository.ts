@@ -1,13 +1,11 @@
 import { isPrepackIngredientEntity, isProductIngredientEntity } from '@cookbook/domain/types/position/position';
 import { RecipeEntity } from '@cookbook/domain/types/recipe/recipe';
-import { inject, injectable } from 'inversify';
 import { Database, Query } from '../database/database';
 import { MapGroup, MapPrepackIngredient, MapProductIngredient, MapRecipe, PositionGroupRow, PrepackIngredientRow, ProductIngredientRow, RecipeRow } from './types/recipes';
 
-@injectable()
 export class RecipesRepository {
 
-    @inject(Database) private readonly database!: Database;
+    constructor(private readonly database: Database) {}
 
     private readonly SelectRecipeRowsSQL =
         `SELECT 

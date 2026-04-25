@@ -1,12 +1,11 @@
 import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useInjection } from "inversify-react-native";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { Appbar, Divider } from "react-native-paper";
-import { Recipes } from "../../../../core/models/recipes";
+import { useServices } from "../../../services-context";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
 import { PositionRowLabel, TotalsRowLabel } from "../../../common/summary/label-components";
 import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
@@ -19,7 +18,7 @@ import { styles } from "./recipe-summary.style";
 export function RecipeSummary({ navigation, route }) {
     const { t } = useTranslation();
 
-    const recipeRepo = useInjection(Recipes);
+    const { recipes: recipeRepo } = useServices();
     const { set: setRecipes } = useRecipesStore();
 
     const recipe: Recipe = route.params.recipe;

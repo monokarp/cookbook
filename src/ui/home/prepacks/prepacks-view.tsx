@@ -1,12 +1,11 @@
 import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useInjection } from "inversify-react-native";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
-import { Prepacks } from "../../../core/models/prepacks";
 import { ExportToClipboard } from "../../common/clipboard-export";
+import { useServices } from "../../services-context";
 import { EntityList } from "../../common/entity-list/entity-list";
 import { useAppModals } from "../../common/modals/use-modals.hook";
 import { RootViews } from "../../root-views.enum";
@@ -17,7 +16,7 @@ export function PrepacksView({ navigation }) {
     const { t } = useTranslation();
     const clipboardExport = new ExportToClipboard(t);
 
-    const repo = useInjection(Prepacks);
+    const { prepacks: repo } = useServices();
     const { toast } = useAppModals();
 
     const { items: products } = useProductsStore();

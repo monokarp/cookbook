@@ -2,16 +2,16 @@ import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
 import { ProductEntity } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring } from "@cookbook/domain/types/product/product-pricing";
 import { RecipeEntity } from "@cookbook/domain/types/recipe/recipe";
-import { inject, injectable } from "inversify";
 import { PrepacksRepository } from "../repositories/prepack.repository";
 import { ProductsRepository } from "../repositories/products.repository";
 import { RecipesRepository } from "../repositories/recipes.repository";
 
-@injectable()
 export class SeedData {
-    @inject(ProductsRepository) private readonly productsRepo!: ProductsRepository;
-    @inject(RecipesRepository) private readonly recipesRepo!: RecipesRepository;
-    @inject(PrepacksRepository) private readonly prepacksRepo!: PrepacksRepository;
+    constructor(
+        private readonly productsRepo: ProductsRepository,
+        private readonly recipesRepo: RecipesRepository,
+        private readonly prepacksRepo: PrepacksRepository,
+    ) {}
 
     private readonly products: ProductEntity[] = [
         {

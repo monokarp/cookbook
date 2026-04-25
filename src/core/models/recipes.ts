@@ -2,22 +2,22 @@ import { isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, is
 import { PrepackIngredientEntity } from '@cookbook/domain/types/position/prepack-ingredient';
 import { ProductIngredientEntity } from '@cookbook/domain/types/position/product-ingredient';
 import { Recipe } from '@cookbook/domain/types/recipe/recipe';
-import { inject, injectable } from 'inversify';
-import uuid from 'react-native-uuid';
+import { randomUUID } from 'expo-crypto';
 import { RecipesRepository } from '../repositories/recipes.repository';
 import { MapById } from '../repositories/util';
 import { Prepacks } from './prepacks';
 import { Products } from './products';
 
-@injectable()
 export class Recipes {
-    @inject(Products) private readonly products!: Products;
-    @inject(Prepacks) private readonly prepacks!: Prepacks;
-    @inject(RecipesRepository) private readonly recipesRepo!: RecipesRepository;
+    constructor(
+        private readonly products: Products,
+        private readonly prepacks: Prepacks,
+        private readonly recipesRepo: RecipesRepository,
+    ) {}
 
     public Create(): Recipe {
         return new Recipe({
-            id: uuid.v4().toString(),
+            id: randomUUID(),
             name: '',
             lastModified: '',
             description: '',

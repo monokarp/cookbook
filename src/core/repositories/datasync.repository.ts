@@ -1,10 +1,8 @@
-import { inject, injectable } from "inversify";
 import { Database } from "../database/database";
 
-@injectable()
 export class DatasyncRepository {
 
-    @inject(Database) private readonly database!: Database;
+    constructor(private readonly database: Database) {}
 
     public async getLastSyncTime(): Promise<Date | null> {
         const [result] = await this.database.ExecuteSql('select [LastSyncedISO] from [DataSync] limit 1');

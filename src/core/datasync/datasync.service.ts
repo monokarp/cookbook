@@ -1,15 +1,13 @@
 import NetInfo from "@react-native-community/netinfo";
-import { inject, injectable } from "inversify";
 import { DatasyncRepository } from "../repositories/datasync.repository";
 import { EntitySync } from "./entity-sync";
 
 const SyncIntervalMs = 10 * 1000;
 
-@injectable()
 export class DataSync {
     private readonly syncs: EntitySync[] = [];
 
-    @inject(DatasyncRepository) protected readonly dsRepo!: DatasyncRepository;
+    constructor(protected readonly dsRepo: DatasyncRepository) {}
 
     public register(sync: EntitySync): void {
         this.syncs.push(sync);

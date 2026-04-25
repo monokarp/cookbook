@@ -4,14 +4,12 @@ import { ProductIngredient } from "@cookbook/domain/types/position/product-ingre
 import { Prepack } from "@cookbook/domain/types/prepack/prepack";
 import { FormatNumber, FormatString } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useInjection } from "inversify-react-native";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
-import { Prepacks } from "../../../../core/models/prepacks";
-import { Recipes } from "../../../../core/models/recipes";
+import { useServices } from "../../../services-context";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
 import { useProductsStore } from "../../products/products.store";
@@ -26,8 +24,7 @@ export function PrepackDetails({ navigation, route }) {
 
     const { t } = useTranslation();
 
-    const prepacksRepo = useInjection(Prepacks);
-    const recipeRepo = useInjection(Recipes);
+    const { prepacks: prepacksRepo, recipes: recipeRepo } = useServices();
 
     const { items: products } = useProductsStore();
     const { items: prepacks, set: setPrepacks } = usePrepacksStore();

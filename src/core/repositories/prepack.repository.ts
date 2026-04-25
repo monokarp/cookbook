@@ -1,12 +1,10 @@
 import { PositionEntity, isPrepackIngredientEntity, isProductIngredientEntity } from "@cookbook/domain/types/position/position";
 import { PrepackEntity } from "@cookbook/domain/types/prepack/prepack";
-import { inject, injectable } from "inversify";
 import { Database, Query } from "../database/database";
 import { MapPrepack, MapPrepackIngredient, MapProductIngredient, PrepackIngredientRow, PrepackRow, ProductIngredientRow } from "./types/prepacks";
 
-@injectable()
 export class PrepacksRepository {
-    @inject(Database) private readonly database!: Database;
+    constructor(private readonly database: Database) {}
 
     private readonly SelectPrepackIngredientRowsSQL =
         `SELECT 

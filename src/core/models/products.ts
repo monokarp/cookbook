@@ -1,16 +1,14 @@
 import { Product } from '@cookbook/domain/types/product/product';
 import { ProductMeasuring, ProductPricing } from '@cookbook/domain/types/product/product-pricing';
-import { inject, injectable } from 'inversify';
-import uuid from 'react-native-uuid';
+import { randomUUID } from 'expo-crypto';
 import { ProductsRepository } from '../repositories/products.repository';
 
-@injectable()
 export class Products {
-    @inject(ProductsRepository) private readonly productsRepo!: ProductsRepository;
+    constructor(private readonly productsRepo: ProductsRepository) {}
 
     public Create(): Product {
         return new Product({
-            id: uuid.v4().toString(),
+            id: randomUUID(),
             name: '',
             lastModified: '',
             nutrition: {

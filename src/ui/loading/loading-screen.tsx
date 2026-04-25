@@ -1,18 +1,13 @@
-import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
-import { Database } from '../../core/database/database';
-import { SeedData } from '../../core/database/seed-data';
-import { DataSync } from '../../core/datasync/datasync.service';
 import { Environment } from '../env';
 import { useSession } from '../login/session.store';
 import { RootViews } from '../root-views.enum';
+import { useServices } from '../services-context';
 
 export function LoadingScreen({ navigation }) {
-    const db = useInjection(Database);
-    const seedData = useInjection(SeedData);
-    const ds = useInjection(DataSync);
+    const { db, seedData, dataSync: ds } = useServices();
 
     const { user, hasInitialized, initialize } = useSession();
     if (!user?.id) { throw new Error('User not logged in'); }

@@ -1,19 +1,19 @@
 import { isPrepackIngredient, isPrepackIngredientEntity, isProductIngredient, isProductIngredientEntity } from '@cookbook/domain/types/position/position';
 import { Prepack, PrepackEntity } from '@cookbook/domain/types/prepack/prepack';
-import { inject, injectable } from 'inversify';
-import uuid from 'react-native-uuid';
+import { randomUUID } from 'expo-crypto';
 import { PrepacksRepository } from '../repositories/prepack.repository';
 import { MapById } from '../repositories/util';
 import { Products } from './products';
 
-@injectable()
 export class Prepacks {
-    @inject(Products) private readonly products!: Products;
-    @inject(PrepacksRepository) private readonly prepacksRepo!: PrepacksRepository;
+    constructor(
+        private readonly products: Products,
+        private readonly prepacksRepo: PrepacksRepository,
+    ) {}
 
     public Create(): Prepack {
         return new Prepack({
-            id: uuid.v4().toString(),
+            id: randomUUID(),
             name: '',
             lastModified: '',
             finalWeight: 0,

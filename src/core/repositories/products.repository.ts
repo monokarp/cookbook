@@ -1,9 +1,7 @@
 import { ProductEntity } from '@cookbook/domain/types/product/product';
-import { inject, injectable } from 'inversify';
 import { Database } from '../database/database';
 import { MapProductRow } from './types/products';
 
-@injectable()
 export class ProductsRepository {
 
     private readonly SelectProductWithPricingRowsSQL =
@@ -21,7 +19,7 @@ export class ProductsRepository {
         FROM [Products]
         LEFT JOIN [ProductPricing] ON [ProductPricing].[ProductId] = [Products].[Id]`;
 
-    @inject(Database) private readonly database!: Database;
+    constructor(private readonly database: Database) {}
 
     public async All(): Promise<ProductEntity[]> {
         const [result] = await this.database.ExecuteSql(this.SelectProductWithPricingRowsSQL);

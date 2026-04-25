@@ -1,7 +1,6 @@
 import { TestIds } from '@cookbook/ui/test-ids';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Provider } from 'inversify-react-native';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Appbar, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
@@ -17,7 +16,8 @@ import { LoadingScreen } from './loading/loading-screen';
 import { LoginScreen } from './login/login-screen';
 import { useSession } from './login/session.store';
 import { RootViews } from './root-views.enum';
-import { buildRootContainer } from './root.container';
+import { buildServices } from './root.container';
+import { ServicesProvider } from './services-context';
 
 const Stack = createNativeStackNavigator();
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme, materialLight: appLightTheme });
@@ -31,16 +31,16 @@ const CombinedDefaultTheme = {
   },
 };
 
-const container = buildRootContainer();
+const services = buildServices();
 
 const App = () => {
   const { t } = useTranslation();
 
-  const { setUser } = useSession();
+  useSession();
 
   return (
     <PaperProvider theme={CombinedDefaultTheme}>
-      <Provider container={container}>
+      <ServicesProvider value={services}>
         <NavigationContainer theme={CombinedDefaultTheme}>
           <Stack.Navigator>
             <Stack.Screen
@@ -95,7 +95,7 @@ const App = () => {
           </Stack.Navigator>
         </NavigationContainer>
         <ModalOutlet />
-      </Provider>
+      </ServicesProvider>
     </PaperProvider>
   );
 };

@@ -5,13 +5,12 @@ import { ProductIngredient } from "@cookbook/domain/types/position/product-ingre
 import { PositionGroup, Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber } from "@cookbook/domain/util";
 import { TestIds } from "@cookbook/ui/test-ids";
-import { useInjection } from "inversify-react-native";
 import { useState } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
-import { Recipes } from "../../../../core/models/recipes";
+import { useServices } from "../../../services-context";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
 import { RootViews } from "../../../root-views.enum";
 import { usePrepacksStore } from "../../prepacks/prepacks.store";
@@ -30,7 +29,7 @@ export function RecipeDetails({ navigation, route }) {
     let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
-    const recipeRepo = useInjection(Recipes);
+    const { recipes: recipeRepo } = useServices();
 
     const { items: products } = useProductsStore();
     const { items: prepacks } = usePrepacksStore();

@@ -1,15 +1,14 @@
-import { useInjection } from "inversify-react-native";
 import React, { useEffect, useState } from "react";
 import { View } from "react-native";
-import { ModalService } from "./modal.service";
+import { useServices } from '../../services-context';
 
 export function ModalOutlet() {
 
-    const service = useInjection(ModalService);
+    const { modalService } = useServices();
 
     const [modal, setModal] = useState(null);
 
-    useEffect(() => service.setOutletRef({
+    useEffect(() => modalService.setOutletRef({
         setModal: (component, props) => setModal({ component, props }),
         clearModal: () => setModal(null),
     }), []);

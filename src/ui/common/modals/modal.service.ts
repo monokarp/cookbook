@@ -1,11 +1,8 @@
-import { injectable } from "inversify";
-
 export interface ModalRef {
     setModal: (component, props) => void,
     clearModal: () => void,
 }
 
-@injectable()
 export class ModalService {
 
     private outletRef: ModalRef | null = null;

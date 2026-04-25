@@ -1,12 +1,11 @@
 import { Product } from '@cookbook/domain/types/product/product';
 import { TestIds } from '@cookbook/ui/test-ids';
-import { useInjection } from 'inversify-react-native';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
-import { Products } from '../../../core/models/products';
 import { ExportToClipboard } from '../../common/clipboard-export';
+import { useServices } from '../../services-context';
 import { EntityList } from '../../common/entity-list/entity-list';
 import { FormMode } from '../../common/form-mode.enum';
 import { useAppModals } from '../../common/modals/use-modals.hook';
@@ -18,7 +17,7 @@ export function ProductsView({ navigation }) {
   const { t } = useTranslation();
   const clipboardExport = new ExportToClipboard(t);
 
-  const repo = useInjection(Products);
+  const { products: repo } = useServices();
 
   const { set: setProducts, filteredItems: filteredProducts, filter, deleteItem } = useProductsStore();
 

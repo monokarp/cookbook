@@ -1,4 +1,3 @@
-import { injectable } from 'inversify';
 import { ResultSet, SQLiteDatabase, Transaction, enablePromise, openDatabase } from 'react-native-sqlite-storage';
 import { migrations } from './migrations';
 
@@ -12,7 +11,6 @@ export type Migration = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Query = [string, any[]];
 
-@injectable()
 export class Database {
     private sqliteDb: SQLiteDatabase | null = null;
 
