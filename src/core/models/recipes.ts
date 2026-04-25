@@ -67,14 +67,14 @@ export class Recipes {
             positions: entity.positions.map(one => {
                 if (isProductIngredientEntity(one)) {
                     return {
-                        product: productsMap.get(one.productId),
+                        product: productsMap.get(one.productId)!,
                         serving: one.serving,
                     };
                 }
 
                 if (isPrepackIngredientEntity(one)) {
                     return {
-                        prepack: prepacksMap.get(one.prepackId),
+                        prepack: prepacksMap.get(one.prepackId)!,
                         weightInGrams: one.weightInGrams,
                     }
                 }

@@ -51,14 +51,14 @@ export class Prepacks {
                 ingredients: prepack.ingredients.map(one => {
                     if (isProductIngredientEntity(one)) {
                         return {
-                            product: productsMap.get(one.productId),
+                            product: productsMap.get(one.productId)!,
                             serving: one.serving,
                         };
                     }
 
                     if (isPrepackIngredientEntity(one)) {
                         return {
-                            prepack: AttachIngredients(prepacksMap.get(one.prepackId)),
+                            prepack: AttachIngredients(prepacksMap.get(one.prepackId)!),
                             weightInGrams: one.weightInGrams,
                         }
                     }

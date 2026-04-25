@@ -5,13 +5,17 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, View } from "react-native";
 import { Appbar, Divider } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingredient-ratio";
 import { TotalsRowLabel } from "../../../common/summary/label-components";
 import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
+import { RootStackParamList } from "../../../navigation.types";
 import { RootViews } from "../../../root-views.enum";
 import { styles } from "./prepack-summary.style";
 
-export function PrepackSummary({ navigation, route }) {
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.PrepackSummary>;
+
+export function PrepackSummary({ navigation, route }: Props) {
     const { t } = useTranslation();
 
     const prepack: Prepack = route.params.prepack;

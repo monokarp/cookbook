@@ -9,8 +9,10 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useServices } from "../../../services-context";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
+import { RootStackParamList } from "../../../navigation.types";
 import { RootViews } from "../../../root-views.enum";
 import { useProductsStore } from "../../products/products.store";
 import { useRecipesStore } from "../../recipes/recipes.store";
@@ -18,8 +20,9 @@ import { usePrepacksStore } from "../prepacks.store";
 import { PrepackDescription } from "./prepack-description/prepack-description";
 import { styles } from "./prepack-details.style";
 
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.PrepackDetails>;
 
-export function PrepackDetails({ navigation, route }) {
+export function PrepackDetails({ navigation, route }: Props) {
     let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
@@ -44,7 +47,7 @@ export function PrepackDetails({ navigation, route }) {
 
     const setIngredient = (value: Position, index: number) => setPrepack(new Prepack({
         ...prepack,
-        ingredients: prepack.ingredients.reduce((updated, next, idx) => {
+        ingredients: prepack.ingredients.reduce((updated: Position[], next, idx) => {
             updated.push(idx === index ? value : next);
             return updated;
         }, [])
@@ -85,7 +88,7 @@ export function PrepackDetails({ navigation, route }) {
         addIngredient(ProductIngredient.Empty());
         setCurrentlyEditedItemIndex(prepack.ingredients.length);
         if (prepack.ingredients.length) {
-            listElementRef.scrollToIndex({ index: prepack.ingredients.length - 1 });
+            listElementRef?.scrollToIndex({ index: prepack.ingredients.length - 1 });
         }
     };
 
@@ -108,7 +111,7 @@ export function PrepackDetails({ navigation, route }) {
             </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
-                    ref={ref => listElementRef = ref}
+                    ref={ref => { listElementRef = ref; }}
                     style={{ flexGrow: 0, width: '100%' }}
                     keyExtractor={(item, index) => `${index}_${item.id}`}
                     data={prepack.ingredients}

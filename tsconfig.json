@@ -6,6 +6,8 @@
     "paths": {
       "@cookbook/domain/*": ["src/domain/*"],
       "@cookbook/ui/*": ["src/ui/*"]
-    }
-  }
+    },
+    "types": ["jest"]
+  },
+  "exclude": ["e2e"]
 }

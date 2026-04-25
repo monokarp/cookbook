@@ -63,6 +63,6 @@ export class DataSync {
 
     private async hasNetwork(): Promise<boolean> {
         const { isConnected } = await NetInfo.fetch();
-        return isConnected;
+        return isConnected ?? false;
     }
 }

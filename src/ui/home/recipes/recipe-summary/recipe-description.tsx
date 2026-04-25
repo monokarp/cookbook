@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { View } from "react-native";
+import { TextInput as NativeTextInput, View } from "react-native";
 import { IconButton, TextInput } from "react-native-paper";
 import { IconResetTimeoutMs } from "../../../contsants";
 
@@ -17,7 +17,7 @@ enum Icons {
 export function RecipeDescription({ description, onUpdate }: RecipeDescriptionProps) {
     const { t } = useTranslation();
 
-    let inputRef = null;
+    let inputRef: NativeTextInput | null = null;
 
     const [value, setValue] = useState(description);
 
@@ -40,7 +40,7 @@ export function RecipeDescription({ description, onUpdate }: RecipeDescriptionPr
                 {
                     textDisplayed &&
                     <TextInput
-                        ref={ref => inputRef = ref}
+                        ref={(ref: NativeTextInput | null) => { inputRef = ref; }}
                         label={t('recipe.description')}
                         style={{ marginHorizontal: 5 }}
                         mode="outlined"

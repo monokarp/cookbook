@@ -1,16 +1,22 @@
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import { Environment } from '../env';
 import { useSession } from '../login/session.store';
+import { RootStackParamList } from '../navigation.types';
 import { RootViews } from '../root-views.enum';
 import { useServices } from '../services-context';
 
-export function LoadingScreen({ navigation }) {
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.Loading>;
+
+export function LoadingScreen({ navigation }: Props) {
     const { db, seedData, dataSync: ds } = useServices();
 
     const { user, hasInitialized, initialize } = useSession();
     if (!user?.id) { throw new Error('User not logged in'); }
+
+    const userId = user.id;
 
     async function loadData() {
         console.log('Init database');
@@ -22,10 +28,10 @@ export function LoadingScreen({ navigation }) {
         }
 
         if (Environment.Type !== 'Test') {
-            if (isFreshInstall) { await ds.recover(user.id); }
-            else if (didRunMigrations) { await ds.pushAllLocal(user.id); }
+            if (isFreshInstall) { await ds.recover(userId); }
+            else if (didRunMigrations) { await ds.pushAllLocal(userId); }
 
-            await ds.start(user.id);
+            await ds.start(userId);
         }
 
         initialize();

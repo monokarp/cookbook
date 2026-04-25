@@ -1,6 +1,5 @@
 
 import { registerRootComponent } from 'expo';
-import "reflect-metadata";
 import './locales/index';
 
 import App from './ui/app';

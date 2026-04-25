@@ -10,8 +10,10 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useServices } from "../../../services-context";
 import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
+import { RootStackParamList } from "../../../navigation.types";
 import { RootViews } from "../../../root-views.enum";
 import { usePrepacksStore } from "../../prepacks/prepacks.store";
 import { useProductsStore } from "../../products/products.store";
@@ -25,7 +27,9 @@ export interface RecipeDetailsFormData {
     portions: string;
 };
 
-export function RecipeDetails({ navigation, route }) {
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.RecipeDetails>;
+
+export function RecipeDetails({ navigation, route }: Props) {
     let listElementRef: FlatList<Position> | null = null;
 
     const { t } = useTranslation();
@@ -36,6 +40,7 @@ export function RecipeDetails({ navigation, route }) {
 
     const [recipe, setRecipe] = useState<Recipe>(route.params.recipe);
 
+    // @ts-expect-error chill
     const withStoreUpdate = fn => (...args) => {
         fn.call(recipe, ...args);
         setRecipe(recipe.clone());
@@ -67,6 +72,8 @@ export function RecipeDetails({ navigation, route }) {
     }
 
     function isAdjacentToActiveGroup(positionIndex: number): boolean {
+        if (!activeGroup) return false;
+
         const firstIndex = activeGroup.positionIndices[0];
         const lastIndex = activeGroup.positionIndices[activeGroup.positionIndices.length - 1];
 
@@ -77,6 +84,8 @@ export function RecipeDetails({ navigation, route }) {
     }
 
     function isLastInActiveGroup(positionIndex: number): boolean {
+        if (!activeGroup) return false;
+
         return activeGroup.positionIndices.length === 1 && activeGroup.positionIndices[0] === positionIndex;
     }
 
@@ -114,12 +123,12 @@ export function RecipeDetails({ navigation, route }) {
             </Appbar.Header>
             <KeyboardAvoidingView style={styles.container}>
                 <FlatList
-                    ref={ref => listElementRef = ref}
+                    ref={ref => { listElementRef = ref; }}
                     onContentSizeChange={() => {
                         const lastIngredientEmpty = recipe.positions.length && recipe.positions[recipe.positions.length - 1].id === '';
 
                         if (lastIngredientEmpty) {
-                            listElementRef.scrollToIndex({ index: recipe.positions.length - 1 });
+                            listElementRef?.scrollToIndex({ index: recipe.positions.length - 1 });
                         }
                     }}
                     style={{ flexGrow: 0, width: '100%' }}
@@ -192,7 +201,7 @@ export function RecipeDetails({ navigation, route }) {
                         <GroupRowWrapper
                             recipeGroups={
                                 isEditingGroups
-                                    ? [activeGroup]
+                                    ? (activeGroup ? [activeGroup] : [])
                                     : recipe.groups
                             }
                             rowIndex={index}
@@ -236,7 +245,7 @@ export function RecipeDetails({ navigation, route }) {
                                     setGroupEditing(true);
                                 }}
                                 toggleItemGrouping={() => {
-                                    if (!isEditingGroups || isLastInActiveGroup(index) || !isAdjacentToActiveGroup(index)) { return; }
+                                    if (!isEditingGroups || !activeGroup || isLastInActiveGroup(index) || !isAdjacentToActiveGroup(index)) { return; }
 
                                     const updatedIndices = activeGroup.positionIndices.includes(index)
                                         ? activeGroup.positionIndices.filter(one => one !== index)

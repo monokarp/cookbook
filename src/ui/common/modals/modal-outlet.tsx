@@ -6,9 +6,10 @@ export function ModalOutlet() {
 
     const { modalService } = useServices();
 
-    const [modal, setModal] = useState(null);
+    const [modal, setModal] = useState<any>(null);
 
     useEffect(() => modalService.setOutletRef({
+        // @ts-expect-error
         setModal: (component, props) => setModal({ component, props }),
         clearModal: () => setModal(null),
     }), []);

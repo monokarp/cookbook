@@ -12,9 +12,7 @@ export abstract class FirestoreRepository<T extends NamedEntity> implements Clou
         const data = await firestore().collection<RemotelyStored<T>>(this.getCollectionName()).where('userId', '==', userId).get();
 
         return data.docs.map(one => {
-            const dto = one.data();
-
-            return { id: one.id, ...dto };
+            return { ...one.data(), id: one.id } as unknown as T;
         })
     }
 

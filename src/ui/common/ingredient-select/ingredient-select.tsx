@@ -11,7 +11,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { Pressable, View } from "react-native";
-import { Divider, IconButton, Switch, Text, TextInput, withTheme } from "react-native-paper";
+import { Divider, IconButton, MD3Theme, Switch, Text, TextInput, withTheme } from "react-native-paper";
 import { useAppModals } from "../modals/use-modals.hook";
 import { styles } from "./ingredient-select.style";
 
@@ -57,7 +57,7 @@ function _IngredientSelect({
     toggleGroupEditing,
     toggleItemGrouping,
     theme
-}: IngredientSelectProps & { theme }) {
+}: IngredientSelectProps & { theme: MD3Theme }) {
     const { t } = useTranslation();
 
     const isServedInUnits = isProductIngredient(ingredient) && ingredient.serving.measuring === ProductMeasuring.Units;

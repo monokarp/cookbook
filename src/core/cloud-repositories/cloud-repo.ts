@@ -8,7 +8,7 @@ export interface CloudRepository<T extends NamedEntity> {
 }
 
 export abstract class CloudRepositoryBase<T extends NamedEntity> implements CloudRepository<T> {
-    public readonly collectionName: string;
+    public readonly collectionName!: string;
     public abstract Many(userId: string): Promise<T[]>;
     public abstract SaveMany(userId: string, entities: T[]): Promise<void>;
     public abstract DeleteMany(ids: string[]): Promise<void>

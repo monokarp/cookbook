@@ -5,7 +5,7 @@ import { Product } from "@cookbook/domain/types/product/product";
 import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product/product-pricing";
 import { Recipe } from "@cookbook/domain/types/recipe/recipe";
 import { FormatNumber, roundMoney } from "@cookbook/domain/util";
-import Clipboard from '@react-native-clipboard/clipboard';
+import * as Clipboard from 'expo-clipboard';
 
 
 export class ExportToClipboard {
@@ -16,15 +16,15 @@ export class ExportToClipboard {
     }
 
     public product(product: Product): void {
-        Clipboard.setString(this.summarizeProduct(product));
+        Clipboard.setStringAsync(this.summarizeProduct(product));
     }
 
     public recipe(recipe: Recipe): void {
-        Clipboard.setString(this.summarizeRecipe(recipe));
+        Clipboard.setStringAsync(this.summarizeRecipe(recipe));
     }
 
     public prepack(prepack: Prepack): void {
-        Clipboard.setString(this.summarizePrepack(prepack));
+        Clipboard.setStringAsync(this.summarizePrepack(prepack));
     }
 
     private summarizeProduct(entity: Product): string {

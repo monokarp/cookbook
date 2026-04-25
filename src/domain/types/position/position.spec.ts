@@ -21,6 +21,7 @@ function dummyProduct(id: string): Product {
         id,
         name: '',
         lastModified: '',
+        nutrition: { carbs: 0, prot: 0, fat: 0 },
         pricing: {
             measuring: ProductMeasuring.Grams,
             price: 1,

@@ -9,7 +9,7 @@ interface RatioProps {
   onChange: (value: number) => void;
 }
 
-const round = (num) => Number(num.toFixed(1));
+const round = (num: number) => Number(num.toFixed(1));
 
 export function IngredientRatio({
   value: ratio,

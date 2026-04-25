@@ -5,14 +5,18 @@ import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { TextInput } from "react-native-paper";
 import { ExportToClipboard } from "../../common/clipboard-export";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useServices } from "../../services-context";
 import { EntityList } from "../../common/entity-list/entity-list";
 import { useAppModals } from "../../common/modals/use-modals.hook";
+import { RootStackParamList } from "../../navigation.types";
 import { RootViews } from "../../root-views.enum";
 import { useProductsStore } from "../products/products.store";
 import { usePrepacksStore } from "./prepacks.store";
 
-export function PrepacksView({ navigation }) {
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList> };
+
+export function PrepacksView({ navigation }: Props) {
     const { t } = useTranslation();
     const clipboardExport = new ExportToClipboard(t);
 
@@ -32,7 +36,7 @@ export function PrepacksView({ navigation }) {
 
             deleteItem(id);
         } catch (e) {
-            switch (e.code) {
+            switch ((e as { code?: number }).code) {
                 case 0: toast.show({ message: t('errors.prepack.fkViolation') }); break;
                 default: toast.show({ message: t('errors.prepack.cantDelete') });
             }

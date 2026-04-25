@@ -5,13 +5,17 @@ import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import { ExportToClipboard } from '../../common/clipboard-export';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useServices } from '../../services-context';
 import { EntityList } from '../../common/entity-list/entity-list';
+import { RootStackParamList } from '../../navigation.types';
 import { RootViews } from '../../root-views.enum';
 import { useProductsStore } from '../products/products.store';
 import { useRecipesStore } from './recipes.store';
 
-export function RecipesView({ navigation }) {
+type Props = { navigation: NativeStackNavigationProp<RootStackParamList> };
+
+export function RecipesView({ navigation }: Props) {
   const { t } = useTranslation();
   const clipboardExport = new ExportToClipboard(t);
 

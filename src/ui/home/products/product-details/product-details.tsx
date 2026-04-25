@@ -8,14 +8,19 @@ import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useTranslation } from 'react-i18next';
 import { KeyboardAvoidingView, ScrollView } from 'react-native';
 import { Button, List, SegmentedButtons, Text, TextInput } from 'react-native-paper';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useServices } from '../../../services-context';
 import { useProductsStore } from '../products.store';
+import { RootStackParamList } from '../../../navigation.types';
+import { RootViews } from '../../../root-views.enum';
 import { FormDataFacade, ProductDetailsFormData } from './form-data-facade';
 import { PricingByWeightForm } from './pricing-type-forms/pricing-by-weight-form';
 import { PricingPerPieceForm } from './pricing-type-forms/pricing-per-piece-form';
 import { styles } from './product-defails.style';
 
-export function ProductDetails({ route: { params: { product, mode } }, navigation }) {
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.ProductDetails>;
+
+export function ProductDetails({ route: { params: { product, mode } }, navigation }: Props) {
     const { t } = useTranslation();
 
     const { products: repo } = useServices();
@@ -89,7 +94,7 @@ export function ProductDetails({ route: { params: { product, mode } }, navigatio
                         render={({ field: { value, onChange } }) => (
                             <SegmentedButtons
                                 style={styles.input}
-                                value={value}
+                                value={value as ProductMeasuring}
                                 onValueChange={value => { setMeasuringType(value); onChange(value); }}
                                 buttons={[
                                     {

@@ -2,15 +2,20 @@ import { TestIds } from '@cookbook/ui/test-ids';
 import NetInfo from '@react-native-community/netinfo';
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, GoogleSigninButton, User } from '@react-native-google-signin/google-signin';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { Environment } from '../env';
+import { RootStackParamList } from '../navigation.types';
 import { RootViews } from '../root-views.enum';
 import { useSession } from './session.store';
 
 GoogleSignin.configure({ webClientId: Environment.ClientID });
 
-export function LoginScreen({ navigation, doSignOut }) {
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.Login>;
+
+export function LoginScreen({ navigation, route }: Props) {
+  const doSignOut = route.params?.doSignOut;
   const [isSigninInProgress, setIsSigninInProgress] = useState(true);
 
   const { setUser } = useSession();
@@ -19,8 +24,10 @@ export function LoginScreen({ navigation, doSignOut }) {
     try {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      if (await GoogleSignin.isSignedIn()) {
+      if (GoogleSignin.hasPreviousSignIn()) {
         const userInfo = await GoogleSignin.getCurrentUser();
+
+        if (!userInfo) { return await signIn();  }
 
         authFirebase(userInfo);
 
@@ -66,18 +73,19 @@ export function LoginScreen({ navigation, doSignOut }) {
     try {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      const userInfo = await GoogleSignin.signIn();
+      const response = await GoogleSignin.signIn();
 
-      await authFirebase(userInfo);
-
-      finishLogin(userInfo);
+      if (response.type === 'success') {
+        await authFirebase(response.data);
+        finishLogin(response.data);
+      }
     } catch (error) {
       console.log('login error', error);
     }
   };
 
   async function signOut() {
-    if (await GoogleSignin.isSignedIn()) {
+    if (GoogleSignin.hasPreviousSignIn()) {
       await GoogleSignin.signOut();
     }
 

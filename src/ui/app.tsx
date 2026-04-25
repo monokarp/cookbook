@@ -1,6 +1,7 @@
 import { TestIds } from '@cookbook/ui/test-ids';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { RootStackParamList } from './navigation.types';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Appbar, PaperProvider, adaptNavigationTheme } from 'react-native-paper';
@@ -19,17 +20,14 @@ import { RootViews } from './root-views.enum';
 import { buildServices } from './root.container';
 import { ServicesProvider } from './services-context';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
 const { LightTheme } = adaptNavigationTheme({ reactNavigationLight: DefaultTheme, materialLight: appLightTheme });
 
-const CombinedDefaultTheme = {
-  ...appLightTheme,
-  ...LightTheme,
-  colors: {
-    ...appLightTheme.colors,
-    ...LightTheme.colors,
-  },
-};
+// adaptNavigationTheme carries DefaultTheme.fonts at runtime but its return type omits them
+// (paper's NavigationTheme predates react-navigation v7 adding fonts to Theme).
+// Spreading DefaultTheme first makes the fonts explicit so NavigationContainer types are satisfied.
+const navTheme = { ...DefaultTheme, ...LightTheme };
 
 const services = buildServices();
 
@@ -39,9 +37,9 @@ const App = () => {
   useSession();
 
   return (
-    <PaperProvider theme={CombinedDefaultTheme}>
+    <PaperProvider theme={appLightTheme}>
       <ServicesProvider value={services}>
-        <NavigationContainer theme={CombinedDefaultTheme}>
+        <NavigationContainer theme={navTheme}>
           <Stack.Navigator>
             <Stack.Screen
               name={RootViews.Login}

@@ -1,13 +1,13 @@
-import { CLIENT_ID, ENV } from "@env";
-
-console.log('ENV', ENV);
-
 export interface Env {
     Type: 'Test' | 'Dev' | 'Prod';
     ClientID: string;
 }
 
+const env = process.env.EXPO_PUBLIC_ENV;
+
+console.log('ENV', env);
+
 export const Environment: Env = {
-    Type: ENV,
-    ClientID: CLIENT_ID,
-}
+    Type: (env ?? 'Dev') as Env['Type'],
+    ClientID: process.env.EXPO_PUBLIC_CLIENT_ID ?? '',
+};
