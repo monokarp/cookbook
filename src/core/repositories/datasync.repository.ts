@@ -4,9 +4,9 @@ export class DatasyncRepository {
     constructor(private readonly database: Database) {}
 
     public async getLastSyncTime(): Promise<Date | null> {
-        const [result] = await this.database.ExecuteSql("select [LastSyncedISO] from [DataSync] limit 1");
+        const rows = await this.database.ExecuteSql<{ LastSyncedISO: string }>("select [LastSyncedISO] from [DataSync] limit 1");
 
-        return result.rows.length ? new Date(result.rows.item(0).LastSyncedISO) : null;
+        return rows.length ? new Date(rows[0].LastSyncedISO) : null;
     }
 
     public async setLastSyncedTime(dateTime: Date) {

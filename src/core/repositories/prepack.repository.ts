@@ -13,7 +13,7 @@ import {
 export class PrepacksRepository {
     constructor(private readonly database: Database) {}
 
-    private readonly SelectPrepackIngredientRowsSQL = `SELECT 
+    private readonly SelectPrepackIngredientRowsSQL = `SELECT
             [Prepacks].[Id],
             [Prepacks].[Name],
             [Prepacks].[LastModified],
@@ -22,55 +22,55 @@ export class PrepacksRepository {
         FROM [Prepacks]`;
 
     public async All(): Promise<PrepackEntity[]> {
-        const [result] = await this.database.ExecuteSql(`${this.SelectPrepackIngredientRowsSQL};`);
+        const rows = await this.database.ExecuteSql<PrepackRow>(`${this.SelectPrepackIngredientRowsSQL};`);
 
-        if (!result.rows.length) {
+        if (!rows.length) {
             return [];
         }
 
-        return this.MapWithNestedEntities(result.rows.raw());
+        return this.MapWithNestedEntities(rows);
     }
 
     public async Many(ids: string[]): Promise<PrepackEntity[]> {
-        const [result] = await this.database.ExecuteSql(
+        const rows = await this.database.ExecuteSql<PrepackRow>(
             `${this.SelectPrepackIngredientRowsSQL}
             WHERE [Prepacks].[Id] IN (${ids.map(() => "?").join(", ")});`,
             ids,
         );
 
-        if (!result.rows.length) {
+        if (!rows.length) {
             return [];
         }
 
-        return this.MapWithNestedEntities(result.rows.raw());
+        return this.MapWithNestedEntities(rows);
     }
 
     public async ModifiedAfter(date: Date): Promise<PrepackEntity[]> {
-        const [result] = await this.database.ExecuteSql(
+        const rows = await this.database.ExecuteSql<PrepackRow>(
             `${this.SelectPrepackIngredientRowsSQL}
             WHERE [Prepacks].[LastModified] >= ?;`,
             [date.toISOString()],
         );
 
-        if (!result.rows.length) {
+        if (!rows.length) {
             return [];
         }
 
-        return this.MapWithNestedEntities(result.rows.raw());
+        return this.MapWithNestedEntities(rows);
     }
 
     public async One(id: string): Promise<PrepackEntity | null> {
-        const [result] = await this.database.ExecuteSql(
+        const rows = await this.database.ExecuteSql<PrepackRow>(
             `${this.SelectPrepackIngredientRowsSQL}
             WHERE [Prepacks].[Id] = ?`,
             [id],
         );
 
-        if (!result.rows.length) {
+        if (!rows.length) {
             return null;
         }
 
-        const [prepack] = await this.MapWithNestedEntities(result.rows.raw());
+        const [prepack] = await this.MapWithNestedEntities(rows);
 
         return prepack;
     }
@@ -115,9 +115,9 @@ export class PrepacksRepository {
     }
 
     public async GetPendingDeletion(): Promise<string[]> {
-        const [result] = await this.database.ExecuteSql("SELECT [Id] FROM [PrepacksPendingDeletion]");
+        const rows = await this.database.ExecuteSql<{ Id: string }>("SELECT [Id] FROM [PrepacksPendingDeletion]");
 
-        return result.rows.raw().map(row => row.Id);
+        return rows.map(row => row.Id);
     }
 
     public async ClearPendingDeletion(): Promise<void> {
@@ -136,11 +136,11 @@ export class PrepacksRepository {
         }
 
         for (const one of productPositions) {
-            recipesMap.get(one.PrepackId).ingredients[one.PositionNumber - 1] = MapProductIngredient(one);
+            recipesMap.get(one.PrepackId)!.ingredients[one.PositionNumber - 1] = MapProductIngredient(one);
         }
 
         for (const one of prepackPositions) {
-            recipesMap.get(one.PrepackId).ingredients[one.PositionNumber - 1] = MapPrepackIngredient(one);
+            recipesMap.get(one.PrepackId)!.ingredients[one.PositionNumber - 1] = MapPrepackIngredient(one);
         }
 
         return [...recipesMap.values()];
@@ -151,7 +151,7 @@ export class PrepacksRepository {
     }
 
     private async GetProductRows(prepackIds: string[]): Promise<ProductIngredientRow[]> {
-        const [productPositionsResult] = await this.database.ExecuteSql(
+        return this.database.ExecuteSql<ProductIngredientRow>(
             `SELECT
                 [PrepackProductIngredients].[PrepackId],
                 [PrepackProductIngredients].[ProductId],
@@ -162,12 +162,10 @@ export class PrepacksRepository {
             WHERE [PrepackProductIngredients].[PrepackId] IN (${prepackIds.map(() => "?").join(", ")});`,
             prepackIds,
         );
-
-        return productPositionsResult.rows.raw();
     }
 
     private async GetPrepackRows(prepackIds: string[]): Promise<PrepackIngredientRow[]> {
-        const [prepackPositionsResult] = await this.database.ExecuteSql(
+        return this.database.ExecuteSql<PrepackIngredientRow>(
             `SELECT
                 [PrepackPrepackIngredients].[PrepackId],
                 [PrepackPrepackIngredients].[PrepackIngredientId],
@@ -177,7 +175,5 @@ export class PrepacksRepository {
             WHERE [PrepackPrepackIngredients].[PrepackId] IN (${prepackIds.map(() => "?").join(", ")});`,
             prepackIds,
         );
-
-        return prepackPositionsResult.rows.raw();
     }
 }

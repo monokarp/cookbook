@@ -15,7 +15,7 @@ import {
 export class RecipesRepository {
     constructor(private readonly database: Database) {}
 
-    private readonly SelectRecipeRowsSQL = `SELECT 
+    private readonly SelectRecipeRowsSQL = `SELECT
             [Recipes].[Id],
             [Recipes].[Name],
             [Recipes].[LastModified],
@@ -24,43 +24,43 @@ export class RecipesRepository {
         FROM [Recipes]`;
 
     public async All(): Promise<RecipeEntity[]> {
-        const [allRecipesResult] = await this.database.ExecuteSql(`${this.SelectRecipeRowsSQL};`);
+        const rows = await this.database.ExecuteSql<RecipeRow>(`${this.SelectRecipeRowsSQL};`);
 
-        if (!allRecipesResult.rows.length) {
+        if (!rows.length) {
             return [];
         }
 
-        return this.MapWithNestedEntities(allRecipesResult.rows.raw());
+        return this.MapWithNestedEntities(rows);
     }
 
     public async One(id: string): Promise<RecipeEntity | null> {
-        const [recipeResult] = await this.database.ExecuteSql(
+        const rows = await this.database.ExecuteSql<RecipeRow>(
             `${this.SelectRecipeRowsSQL}
             WHERE [Recipes].[Id] = ?;`,
             [id],
         );
 
-        if (!recipeResult.rows.length) {
+        if (!rows.length) {
             return null;
         }
 
-        const [recipe] = await this.MapWithNestedEntities(recipeResult.rows.raw());
+        const [recipe] = await this.MapWithNestedEntities(rows);
 
         return recipe;
     }
 
     public async ModifiedAfter(date: Date): Promise<RecipeEntity[]> {
-        const [recipesResult] = await this.database.ExecuteSql(
+        const rows = await this.database.ExecuteSql<RecipeRow>(
             `${this.SelectRecipeRowsSQL}
             WHERE [Recipes].[LastModified] >= ?;`,
             [date.toISOString()],
         );
 
-        if (!recipesResult.rows.length) {
+        if (!rows.length) {
             return [];
         }
 
-        return this.MapWithNestedEntities(recipesResult.rows.raw());
+        return this.MapWithNestedEntities(rows);
     }
 
     public async Save(recipe: RecipeEntity): Promise<void> {
@@ -119,9 +119,9 @@ export class RecipesRepository {
     }
 
     public async GetPendingDeletion(): Promise<string[]> {
-        const [result] = await this.database.ExecuteSql("SELECT [Id] FROM [RecipesPendingDeletion]");
+        const rows = await this.database.ExecuteSql<{ Id: string }>("SELECT [Id] FROM [RecipesPendingDeletion]");
 
-        return result.rows.raw().map(row => row.Id);
+        return rows.map(row => row.Id);
     }
 
     public async ClearPendingDeletion(): Promise<void> {
@@ -140,15 +140,15 @@ export class RecipesRepository {
         }
 
         for (const one of productPositions) {
-            recipesMap.get(one.RecipeId).positions[one.PositionNumber - 1] = MapProductIngredient(one);
+            recipesMap.get(one.RecipeId)!.positions[one.PositionNumber - 1] = MapProductIngredient(one);
         }
 
         for (const one of prepackPositions) {
-            recipesMap.get(one.RecipeId).positions[one.PositionNumber - 1] = MapPrepackIngredient(one);
+            recipesMap.get(one.RecipeId)!.positions[one.PositionNumber - 1] = MapPrepackIngredient(one);
         }
 
         for (const one of groups) {
-            recipesMap.get(one.RecipeId).groups.push(MapGroup(one));
+            recipesMap.get(one.RecipeId)!.groups.push(MapGroup(one));
         }
 
         return [...recipesMap.values()];
@@ -159,7 +159,7 @@ export class RecipesRepository {
     }
 
     private async GetProductRows(recipeIds: string[]): Promise<ProductIngredientRow[]> {
-        const [productPositionsResult] = await this.database.ExecuteSql(
+        return this.database.ExecuteSql<ProductIngredientRow>(
             `SELECT
                 [RecipeProductIngredients].[RecipeId],
                 [RecipeProductIngredients].[ProductId],
@@ -170,12 +170,10 @@ export class RecipesRepository {
             WHERE [RecipeProductIngredients].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")});`,
             recipeIds,
         );
-
-        return productPositionsResult.rows.raw();
     }
 
     private async GetPrepackRows(recipeIds: string[]): Promise<PrepackIngredientRow[]> {
-        const [prepackPositionsResult] = await this.database.ExecuteSql(
+        return this.database.ExecuteSql<PrepackIngredientRow>(
             `SELECT
                 [RecipePrepackIngredients].[RecipeId],
                 [RecipePrepackIngredients].[PrepackId],
@@ -185,12 +183,10 @@ export class RecipesRepository {
             WHERE [RecipePrepackIngredients].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")});`,
             recipeIds,
         );
-
-        return prepackPositionsResult.rows.raw();
     }
 
     private async GetPositionGroups(recipeIds: string[]): Promise<PositionGroupRow[]> {
-        const [positionGroupRows] = await this.database.ExecuteSql(
+        return this.database.ExecuteSql<PositionGroupRow>(
             `SELECT
                 [RecipePositionGroups].[RecipeId],
                 [RecipePositionGroups].[Name],
@@ -199,7 +195,5 @@ export class RecipesRepository {
             WHERE [RecipePositionGroups].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")})`,
             recipeIds,
         );
-
-        return positionGroupRows.rows.raw();
     }
 }

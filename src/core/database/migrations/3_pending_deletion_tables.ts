@@ -1,27 +1,21 @@
-import { SQLiteDatabase, Transaction } from "react-native-sqlite-storage";
+import { SQLiteDatabase } from "expo-sqlite";
 import { Migration } from "../database";
 
 export const pendingDeletionTables: Migration = {
     version: "3",
     up: async (db: SQLiteDatabase) => {
-        await db.transaction(async (tx: Transaction) => {
-            tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS [RecipesPendingDeletion] (
-                    [Id] TEXT NOT NULL PRIMARY KEY
-                );
-            `);
+        await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS [RecipesPendingDeletion] (
+                [Id] TEXT NOT NULL PRIMARY KEY
+            );
 
-            tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS [PrepacksPendingDeletion] (
-                    [Id] TEXT NOT NULL PRIMARY KEY
-                );
-            `);
+            CREATE TABLE IF NOT EXISTS [PrepacksPendingDeletion] (
+                [Id] TEXT NOT NULL PRIMARY KEY
+            );
 
-            tx.executeSql(`
-                CREATE TABLE IF NOT EXISTS [ProductsPendingDeletion] (
-                    [Id] TEXT NOT NULL PRIMARY KEY
-                );
-            `);
-        });
+            CREATE TABLE IF NOT EXISTS [ProductsPendingDeletion] (
+                [Id] TEXT NOT NULL PRIMARY KEY
+            );
+        `);
     },
 };

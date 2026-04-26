@@ -1,7 +1,5 @@
-import { ResultSet, SQLiteDatabase, Transaction, enablePromise, openDatabase } from "react-native-sqlite-storage";
+import { SQLiteDatabase, openDatabaseAsync } from "expo-sqlite";
 import { migrations } from "./migrations";
-
-enablePromise(true);
 
 export type Migration = {
     version: string;
@@ -16,13 +14,13 @@ export class Database {
 
     async Close(): Promise<void> {
         if (this.sqliteDb) {
-            await this.sqliteDb.close();
+            await this.sqliteDb.closeAsync();
         }
     }
 
     public async Init(): Promise<{ didRunMigrations: boolean; isFreshInstall: boolean }> {
         if (this.sqliteDb) {
-            return;
+            return { didRunMigrations: false, isFreshInstall: false };
         }
 
         await this.Open();
@@ -32,11 +30,11 @@ export class Database {
         console.log("Pending migrations:", pendingMigrations);
 
         for (const migration of pendingMigrations) {
-            await migration.up(this.sqliteDb);
+            await migration.up(this.sqliteDb!);
 
             console.log(`Migration ${migration.version} applied`);
 
-            await this.sqliteDb.executeSql(`INSERT INTO [MigrationHistory] ([Version], [Created]) VALUES (?, ?)`, [
+            await this.sqliteDb!.runAsync(`INSERT INTO [MigrationHistory] ([Version], [Created]) VALUES (?, ?)`, [
                 migration.version,
                 new Date().toISOString(),
             ]);
@@ -52,21 +50,23 @@ export class Database {
 
     public async Transaction(queries: Query[]): Promise<void> {
         if (queries.length) {
-            await this.sqliteDb.transaction(async (tx: Transaction) => {
+            const db = this.sqliteDb!;
+            await db.withTransactionAsync(async () => {
                 for (const [sql, params] of queries) {
-                    tx.executeSql(sql, params);
+                    await db.runAsync(sql, params);
                 }
             });
         }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public async ExecuteSql(sql: string, params: any[] = []): Promise<[ResultSet]> {
-        return this.sqliteDb.executeSql(sql, params);
+    public async ExecuteSql<T = unknown>(sql: string, params: any[] = []): Promise<T[]> {
+        return this.sqliteDb!.getAllAsync<T>(sql, params);
     }
 
     private async Open(): Promise<void> {
-        this.sqliteDb = await openDatabase({ name: "cookbook.db", location: "default" });
+        this.sqliteDb = await openDatabaseAsync("cookbook.db");
+        await this.sqliteDb.execAsync("PRAGMA foreign_keys = ON;");
     }
 
     private async GetPendingMigrations(): Promise<Migration[]> {
@@ -82,7 +82,7 @@ export class Database {
             throw new Error("Downgrade attempt, please uninstall local app version first");
         }
 
-        const output = [];
+        const output: Migration[] = [];
 
         migrations.forEach((migration, index) => {
             const appliedVersion = appliedVersions[index];
@@ -102,13 +102,14 @@ export class Database {
     }
 
     private async MigrationTableExists(): Promise<boolean> {
-        const [result] = await this.sqliteDb.executeSql(`SELECT name FROM sqlite_master WHERE type='table' AND name='MigrationHistory';`);
-
-        return !!result.rows.length;
+        const rows = await this.sqliteDb!.getAllAsync<{ name: string }>(
+            `SELECT name FROM sqlite_master WHERE type='table' AND name='MigrationHistory';`,
+        );
+        return !!rows.length;
     }
 
     private async GetAppliedMigrationVersions(): Promise<string[]> {
-        const [migrationsHistory] = await this.sqliteDb.executeSql("SELECT [Version] FROM [MigrationHistory]");
-        return migrationsHistory.rows.raw().map((row: { Version: string }) => row.Version);
+        const rows = await this.sqliteDb!.getAllAsync<{ Version: string }>("SELECT [Version] FROM [MigrationHistory]");
+        return rows.map(row => row.Version);
     }
 }

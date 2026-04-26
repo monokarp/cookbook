@@ -39,9 +39,8 @@ export function RecipeDetails({ navigation, route }: Props) {
     const [recipe, setRecipe] = useState<Recipe>(route.params.recipe);
 
     // @ts-expect-error chill
-    const withStoreUpdate =
-        fn =>
-        (...args) => {
+    // prettier-ignore
+    const withStoreUpdate = fn => (...args) => {
             fn.call(recipe, ...args);
             setRecipe(recipe.clone());
         };
