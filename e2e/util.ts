@@ -34,5 +34,5 @@ export function collectionElement(testId: string) {
 }
 
 function findElement(testId: string, index?: number) {
-    return Number.isInteger(index) ? collectionElement(testId).at(index) : element(by.id(testId));
+    return index !== undefined ? collectionElement(testId).at(index) : element(by.id(testId));
 }

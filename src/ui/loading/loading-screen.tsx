@@ -14,6 +14,7 @@ export function LoadingScreen({ navigation }: Props) {
     const { db, seedData, dataSync: ds } = useServices();
 
     const { user, hasInitialized, initialize } = useSession();
+
     if (!user?.id) {
         throw new Error("User not logged in");
     }

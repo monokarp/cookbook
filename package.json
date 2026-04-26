@@ -7,7 +7,8 @@
     "prebuild": "npx expo prebuild --platform android",
     "android": "expo run:android",
     "test": "npx jest",
-    "ios": "expo run:ios"
+    "e2e:build": "npx detox build -c android.emu.debug",
+    "e2e": "npx detox test -c android.emu.debug"
   },
   "dependencies": {
     "@expo/vector-icons": "15.1.1",

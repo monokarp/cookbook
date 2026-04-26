@@ -92,6 +92,7 @@ export function LoginScreen({ navigation, route }: Props) {
         }
 
         setUser(null);
+        setIsSigninInProgress(false);
     }
 
     useEffect(() => {

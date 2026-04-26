@@ -52,8 +52,11 @@ const App = () => {
                                         <Appbar.Content title={t("common.cookbook")} />
                                         <Appbar.Action
                                             icon="logout"
-                                            onPress={async () => {
-                                                navigation.navigate(RootViews.Login, { doSignOut: true });
+                                            onPress={() => {
+                                                navigation.reset({
+                                                    index: 0,
+                                                    routes: [{ name: RootViews.Login, params: { doSignOut: true } }],
+                                                });
                                             }}
                                             testID={TestIds.PrepackDetails.Submit}
                                         />
