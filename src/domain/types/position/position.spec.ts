@@ -31,7 +31,45 @@ function dummyProduct(id: string): Product {
     });
 }
 
+function makeProductIngredient(pricing: { price: number; weightInGrams: number; numberOfUnits: number; measuring: ProductMeasuring }, serving: { units: number; measuring: ProductMeasuring }): ProductIngredient {
+    return new ProductIngredient({
+        product: new Product({
+            id: "test",
+            name: "",
+            lastModified: "",
+            nutrition: { carbs: 0, prot: 0, fat: 0 },
+            pricing,
+        }),
+        serving,
+    });
+}
+
 const target: Prepack = dummyPrepack("target");
+
+describe("Product ingredient calculations", () => {
+    it("price() does not accumulate rounding error when pricePerGram is a repeating decimal", () => {
+        // 500 price for 150g → pricePerGram = 3.3333… (repeating)
+        // Rounding the rate to 4dp gives 3.3333, so 150 × 3.3333 = 499.995.
+        // At ratio 2 that yields 999.99 instead of 1000.
+        const ingredient = makeProductIngredient(
+            { measuring: ProductMeasuring.Grams, price: 500, weightInGrams: 150, numberOfUnits: 1 },
+            { units: 150, measuring: ProductMeasuring.Grams },
+        );
+
+        expect(ingredient.price() * 2).toBe(1000);
+    });
+
+    it("weight() divides weightInGrams by numberOfUnits for unit-measured products", () => {
+        // 10 eggs weigh 500g (50g each). Serving: 8 eggs → expected weight 400g.
+        // Multiplying serving.units × weightInGrams directly gives 8 × 500 = 4000g.
+        const ingredient = makeProductIngredient(
+            { measuring: ProductMeasuring.Units, price: 10.98, weightInGrams: 500, numberOfUnits: 10 },
+            { units: 8, measuring: ProductMeasuring.Units },
+        );
+
+        expect(ingredient.weight()).toBe(400);
+    });
+});
 
 describe("containsNestedIngredient", () => {
     it("returns true when host ingredient is the target prepack", () => {

@@ -37,7 +37,7 @@ export class ProductIngredient implements ProductIngredientDto {
     public weight(): number {
         return this.serving.measuring === ProductMeasuring.Grams
             ? this.serving.units
-            : this.serving.units * this.product.pricing.weightInGrams;
+            : this.serving.units * (this.product.pricing.weightInGrams / this.product.pricing.numberOfUnits);
     }
 
     public units(): number {

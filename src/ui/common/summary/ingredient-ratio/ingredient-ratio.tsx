@@ -26,8 +26,8 @@ export function IngredientRatio({ value: ratio, smallIncrement = 0.1, largeIncre
                 onValueChange={() => {}}
                 value=""
             >
-                <ToggleButton icon="minus" onPress={() => decrement(largeIncrement)} />
-                <ToggleButton icon="minus-thick" onPress={() => decrement(smallIncrement)} />
+                <ToggleButton icon="minus-thick" onPress={() => decrement(largeIncrement)} />
+                <ToggleButton icon="minus" onPress={() => decrement(smallIncrement)} />
                 <ToggleButton icon="plus" onPress={() => increment(smallIncrement)} />
                 <ToggleButton icon="plus-thick" onPress={() => increment(largeIncrement)} />
             </ToggleButton.Row>

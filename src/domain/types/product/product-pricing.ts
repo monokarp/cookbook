@@ -1,4 +1,3 @@
-import { roundMoney } from "../../util";
 
 export enum ProductMeasuring {
     Units = "units",
@@ -19,11 +18,11 @@ export class ProductPricing implements ProductPricingDto {
     }
 
     public pricePerGram(): number {
-        return this.weightInGrams ? roundMoney(this.price / (this.weightInGrams * this.numberOfUnits)) : 0;
+        return this.weightInGrams ? this.price / (this.weightInGrams * this.numberOfUnits) : 0;
     }
 
     public pricePerUnit(): number {
-        return this.numberOfUnits ? roundMoney(this.price / this.numberOfUnits) : 0;
+        return this.numberOfUnits ? this.price / this.numberOfUnits : 0;
     }
 }
 
