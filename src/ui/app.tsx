@@ -5,6 +5,7 @@ import { RootStackParamList } from "./navigation.types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Appbar, PaperProvider, adaptNavigationTheme } from "react-native-paper";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { appLightTheme } from "./app.theme";
 import { ModalOutlet } from "./common/modals/modal-outlet";
 import { HomeScreen } from "./home/home-screen";
@@ -37,48 +38,50 @@ const App = () => {
     useSession();
 
     return (
-        <PaperProvider theme={appLightTheme}>
-            <ServicesProvider value={services}>
-                <NavigationContainer theme={navTheme}>
-                    <Stack.Navigator>
-                        <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
-                        <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
-                        <Stack.Screen
-                            name={RootViews.Home}
-                            component={HomeScreen}
-                            options={{
-                                header: ({ navigation }) => (
-                                    <Appbar.Header>
-                                        <Appbar.Content title={t("common.cookbook")} />
-                                        <Appbar.Action
-                                            icon="logout"
-                                            onPress={() => {
-                                                navigation.reset({
-                                                    index: 0,
-                                                    routes: [{ name: RootViews.Login, params: { doSignOut: true } }],
-                                                });
-                                            }}
-                                            testID={TestIds.PrepackDetails.Submit}
-                                        />
-                                    </Appbar.Header>
-                                ),
-                                headerBackVisible: false,
-                            }}
-                        />
-                        <Stack.Screen name={RootViews.RecipeSummary} component={RecipeSummary} options={{ headerShown: false }} />
-                        <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetails} options={{ headerShown: false }} />
-                        <Stack.Screen
-                            name={RootViews.ProductDetails}
-                            component={ProductDetails}
-                            options={{ headerTitle: t("product.details.title") }}
-                        />
-                        <Stack.Screen name={RootViews.PrepackSummary} component={PrepackSummary} options={{ headerShown: false }} />
-                        <Stack.Screen name={RootViews.PrepackDetails} component={PrepackDetails} options={{ headerShown: false }} />
-                    </Stack.Navigator>
-                </NavigationContainer>
-                <ModalOutlet />
-            </ServicesProvider>
-        </PaperProvider>
+        <SafeAreaProvider>
+            <PaperProvider theme={appLightTheme}>
+                <ServicesProvider value={services}>
+                    <NavigationContainer theme={navTheme}>
+                        <Stack.Navigator>
+                            <Stack.Screen name={RootViews.Login} component={LoginScreen} options={{ headerShown: false }} />
+                            <Stack.Screen name={RootViews.Loading} component={LoadingScreen} options={{ headerShown: false }} />
+                            <Stack.Screen
+                                name={RootViews.Home}
+                                component={HomeScreen}
+                                options={{
+                                    header: ({ navigation }) => (
+                                        <Appbar.Header>
+                                            <Appbar.Content title={t("common.cookbook")} />
+                                            <Appbar.Action
+                                                icon="logout"
+                                                onPress={() => {
+                                                    navigation.reset({
+                                                        index: 0,
+                                                        routes: [{ name: RootViews.Login, params: { doSignOut: true } }],
+                                                    });
+                                                }}
+                                                testID={TestIds.PrepackDetails.Submit}
+                                            />
+                                        </Appbar.Header>
+                                    ),
+                                    headerBackVisible: false,
+                                }}
+                            />
+                            <Stack.Screen name={RootViews.RecipeSummary} component={RecipeSummary} options={{ headerShown: false }} />
+                            <Stack.Screen name={RootViews.RecipeDetails} component={RecipeDetails} options={{ headerShown: false }} />
+                            <Stack.Screen
+                                name={RootViews.ProductDetails}
+                                component={ProductDetails}
+                                options={{ headerTitle: t("product.details.title") }}
+                            />
+                            <Stack.Screen name={RootViews.PrepackSummary} component={PrepackSummary} options={{ headerShown: false }} />
+                            <Stack.Screen name={RootViews.PrepackDetails} component={PrepackDetails} options={{ headerShown: false }} />
+                        </Stack.Navigator>
+                    </NavigationContainer>
+                    <ModalOutlet />
+                </ServicesProvider>
+            </PaperProvider>
+        </SafeAreaProvider>
     );
 };
 

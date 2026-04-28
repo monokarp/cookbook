@@ -1,6 +1,7 @@
 import { NamedEntity } from "@cookbook/domain/types/named-entity";
 import { FlatList, View } from "react-native";
 import { Button, Divider, Text } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { SummaryListItem } from "../summary/summary-list-item";
 import { styles } from "./entity-list.style";
 
@@ -25,8 +26,10 @@ export function EntityList<E extends NamedEntity>({
     remove,
     exportToClipboard,
 }: EntityListProps<E>) {
+    const { bottom } = useSafeAreaInsets();
+
     return (
-        <View style={{ flexGrow: 1 }}>
+        <View style={{ flexGrow: 1, paddingBottom: bottom }}>
             <FlatList
                 style={styles.list}
                 data={items}

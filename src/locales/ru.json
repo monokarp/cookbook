@@ -61,7 +61,8 @@
             "servingSizeInGrams": "Кило",
             "servingSizeInUnits": "Штуки",
             "addIngredient": "Добавить ингредиент",
-            "portions": "Количество порций"
+            "portions": "Количество порций",
+            "ratio": "Порции"
         },
         "ingredientPrice": "Стоимость",
         "groups": {

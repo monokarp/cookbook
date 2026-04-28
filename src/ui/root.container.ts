@@ -17,6 +17,7 @@ import { RecipesRepository } from "../core/repositories/recipes.repository";
 import { ConfirmationModal } from "./common/modals/confirmation/confirmation.modal";
 import { IngredientPickerModal } from "./common/modals/ingredient-picker/ingredient-picker.modal";
 import { ModalService } from "./common/modals/modal.service";
+import { RatioPickerModal } from "./common/modals/ratio-picker/ratio-picker.modal";
 import { ToastModal } from "./common/modals/toast/toast.modal";
 import { AppServices } from "./services-context";
 
@@ -44,6 +45,7 @@ export function buildServices(): AppServices {
     const confirmation = new ConfirmationModal(modalService);
     const toast = new ToastModal(modalService);
     const ingredientPicker = new IngredientPickerModal(modalService);
+    const ratioPicker = new RatioPickerModal(modalService);
 
-    return { db, seedData, dataSync, products, prepacks, recipes, modalService, confirmation, toast, ingredientPicker };
+    return { db, seedData, dataSync, products, prepacks, recipes, modalService, confirmation, toast, ingredientPicker, ratioPicker };
 }

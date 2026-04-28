@@ -5,10 +5,10 @@ export const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
-        marginTop: 10,
+        padding: 10,
     },
     label: {
         marginHorizontal: 10,
-        width: "15%",
+        fontSize: 18,
     },
 });

@@ -8,6 +8,7 @@ import { Recipes } from "../core/models/recipes";
 import { ConfirmationModal } from "./common/modals/confirmation/confirmation.modal";
 import { IngredientPickerModal } from "./common/modals/ingredient-picker/ingredient-picker.modal";
 import { ModalService } from "./common/modals/modal.service";
+import { RatioPickerModal } from "./common/modals/ratio-picker/ratio-picker.modal";
 import { ToastModal } from "./common/modals/toast/toast.modal";
 
 export interface AppServices {
@@ -21,6 +22,7 @@ export interface AppServices {
     confirmation: ConfirmationModal;
     toast: ToastModal;
     ingredientPicker: IngredientPickerModal;
+    ratioPicker: RatioPickerModal;
 }
 
 const ServicesContext = createContext<AppServices | null>(null);

@@ -61,7 +61,8 @@
             "servingSizeInGrams": "Kilos",
             "servingSizeInUnits": "Units",
             "addIngredient": "Add ingredient",
-            "portions": "Number of portions"
+            "portions": "Number of portions",
+            "ratio": "Ratio"
         },
         "ingredientPrice": "Ingredient price",
         "groups": {
