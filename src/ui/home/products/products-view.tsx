@@ -34,10 +34,10 @@ export function ProductsView({ navigation }: Props) {
         } catch (e) {
             switch ((e as { code?: number }).code) {
                 case 0:
-                    toast.show({ message: "errors.product.fkViolation" });
+                    toast.show({ message: t("errors.product.fkViolation"), testID: TestIds.ProductsView.ToastMessage });
                     break;
                 default:
-                    toast.show({ message: "errors.product.cantDelete" });
+                    toast.show({ message: t("errors.product.cantDelete"), testID: TestIds.ProductsView.ToastMessage });
             }
         }
     }

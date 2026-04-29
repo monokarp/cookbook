@@ -1,0 +1,114 @@
+appId: com.cookbookmobile
+---
+- launchApp:
+    stopApp: true
+
+# Land on recipes view
+- assertVisible:
+    id: "recipes-view"
+
+# Navigate to products
+- tapOn:
+    id: "navigation-products"
+- assertVisible:
+    id: "products-view"
+- assertVisible:
+    id: "products-view-list-item-2"
+- assertNotVisible:
+    id: "products-view-list-item-3"
+
+# Open add product form
+- tapOn:
+    id: "products-view-add"
+- assertVisible:
+    id: "product-details"
+- assertVisible:
+    id: "product-details-name-input"
+- assertVisible:
+    id: "product-details-weight-input"
+- assertVisible:
+    id: "product-details-price-input"
+- assertNotVisible:
+    id: "product-details-units-input"
+
+# Submit empty form - all errors visible
+- tapOn:
+    id: "product-details-submit"
+- assertVisible:
+    id: "product-details-name-input-error"
+- assertVisible:
+    id: "product-details-weight-input-error"
+- assertVisible:
+    id: "product-details-price-input-error"
+
+# Fill name - name error clears
+- tapOn:
+    id: "product-details-name-input"
+- eraseText: 50
+- inputText: "Novy"
+- assertNotVisible:
+    id: "product-details-name-input-error"
+
+# Fill weight - weight error clears
+- tapOn:
+    id: "product-details-weight-input"
+- inputText: "0.100"
+- assertNotVisible:
+    id: "product-details-weight-input-error"
+
+# Fill price - price error clears
+- tapOn:
+    id: "product-details-price-input"
+- inputText: "50"
+- assertNotVisible:
+    id: "product-details-price-input-error"
+
+# Submit and return to products list with 4 items
+- tapOn:
+    id: "product-details-submit"
+- assertVisible:
+    id: "products-view"
+- assertVisible:
+    id: "products-view-list-item-3"
+- assertNotVisible:
+    id: "products-view-list-item-4"
+
+# Filter by "Nov" - only Novy matches
+- tapOn:
+    id: "products-view-search-input"
+- inputText: "Nov"
+- assertVisible:
+    id: "products-view-list-item-0"
+- assertNotVisible:
+    id: "products-view-list-item-1"
+
+# Clear filter - all 4 back
+- tapOn:
+    id: "products-view-search-input"
+- eraseText: 50
+- assertVisible:
+    id: "products-view-list-item-3"
+- assertNotVisible:
+    id: "products-view-list-item-4"
+
+# Attempt to delete referenced product (Банан) - fails with toast
+- longPressOn: "Банан"
+- assertVisible:
+    id: "confirm-delete-modal"
+- tapOn:
+    id: "confirm-delete-modal-confirm"
+- assertVisible:
+    id: "products-view-list-item-3"
+- assertNotVisible:
+    id: "products-view-list-item-4"
+
+# Delete new product (Novy) - succeeds
+- longPressOn: "Novy"
+- assertVisible:
+    id: "confirm-delete-modal"
+- tapOn:
+    id: "confirm-delete-modal-confirm"
+- assertVisible:
+    id: "products-view-list-item-2"
+- assertNotVisible:
+    id: "products-view-list-item-3"

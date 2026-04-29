@@ -10,6 +10,7 @@ import { IngredientRatio } from "../../../common/summary/ingredient-ratio/ingred
 import { TotalsRowLabel } from "../../../common/summary/label-components";
 import { PositionSummary } from "../../../common/summary/position-summary/position-summary";
 import { RootStackParamList } from "../../../navigation.types";
+import { HomeTabs } from "../../home-tabs.enum";
 import { RootViews } from "../../../root-views.enum";
 import { styles } from "./prepack-summary.style";
 
@@ -25,7 +26,7 @@ export function PrepackSummary({ navigation, route }: Props) {
     return (
         <View style={{ height: "100%" }}>
             <Appbar.Header>
-                <Appbar.BackAction testID={TestIds.PrepackSummary.Back} onPress={() => navigation.navigate(RootViews.Home)} />
+                <Appbar.BackAction testID={TestIds.PrepackSummary.Back} onPress={() => navigation.navigate(RootViews.Home, { screen: HomeTabs.Prepacks })} />
                 <Appbar.Content title={prepack.name} />
                 <Appbar.Action
                     testID={TestIds.PrepackSummary.ToDetails}

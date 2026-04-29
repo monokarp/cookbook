@@ -6,10 +6,11 @@ const DefaultTimeoutMs = 3000;
 
 export interface ToastProps {
     message: string;
+    testID?: string;
     onResult: () => void;
 }
 
-export function Toast({ message, onResult }: ToastProps) {
+export function Toast({ message, testID, onResult }: ToastProps) {
     const { t } = useTranslation();
 
     setTimeout(() => onResult(), DefaultTimeoutMs);
@@ -24,7 +25,7 @@ export function Toast({ message, onResult }: ToastProps) {
                     label: t("common.ok"),
                 }}
             >
-                <Text style={{ color: "white" }} testID={TestIds.PrepacksView.ToastMessage}>
+                <Text style={{ color: "white" }} testID={TestIds.Common.ToastMessage ?? testID}>
                     {message}
                 </Text>
             </Snackbar>

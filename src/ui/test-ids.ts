@@ -3,6 +3,9 @@ export function collectionElementId(id: string, index: number): string {
 }
 
 export const TestIds = {
+    Common: {
+        ToastMessage: "common-toast-message",
+    },
     Login: {
         LoginButton: "login-button",
     },

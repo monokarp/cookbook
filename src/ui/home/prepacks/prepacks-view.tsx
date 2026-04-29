@@ -38,10 +38,10 @@ export function PrepacksView({ navigation }: Props) {
         } catch (e) {
             switch ((e as { code?: number }).code) {
                 case 0:
-                    toast.show({ message: t("errors.prepack.fkViolation") });
+                    toast.show({ message: t("errors.prepack.fkViolation"), testID: TestIds.PrepacksView.ToastMessage });
                     break;
                 default:
-                    toast.show({ message: t("errors.prepack.cantDelete") });
+                    toast.show({ message: t("errors.prepack.cantDelete"), testID: TestIds.PrepacksView.ToastMessage });
             }
         }
     };
