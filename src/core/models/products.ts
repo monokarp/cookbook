@@ -1,0 +1,47 @@
+import { Product } from "@cookbook/domain/types/product/product";
+import { ProductMeasuring, ProductPricing } from "@cookbook/domain/types/product/product-pricing";
+import { randomUUID } from "expo-crypto";
+import { ProductsRepository } from "../repositories/products.repository";
+
+export class Products {
+    constructor(private readonly productsRepo: ProductsRepository) {}
+
+    public Create(): Product {
+        return new Product({
+            id: randomUUID(),
+            name: "",
+            lastModified: "",
+            nutrition: {
+                carbs: 0,
+                prot: 0,
+                fat: 0,
+            },
+            pricing: new ProductPricing({
+                measuring: ProductMeasuring.Grams,
+                price: 0,
+                weightInGrams: 0,
+                numberOfUnits: 0,
+            }),
+        });
+    }
+
+    public async All(): Promise<Product[]> {
+        const entities = await this.productsRepo.All();
+
+        return entities.map(e => new Product(e));
+    }
+
+    public async Many(ids: string[]): Promise<Product[]> {
+        const entities = await this.productsRepo.Many(ids);
+
+        return entities.map(one => new Product(one));
+    }
+
+    public Save(product: Product): Promise<void> {
+        return this.productsRepo.Save(product);
+    }
+
+    public Delete(id: string): Promise<void> {
+        return this.productsRepo.Delete(id);
+    }
+}

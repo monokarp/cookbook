@@ -1,17 +1,11 @@
-# Cookbook
-A mobile app for personal use that manages cooking recipes.
+Android emulator requires env setup:
+https://docs.expo.dev/get-started/set-up-your-environment/?platform=android&device=simulated&mode=expo-go
 
-## Setup
-- GCP Android config should be saved as `apps/cookbook-mobile/android/app/google-services.json`
-- Firebase client id is injected via `.env`
-- Emulator has to be stared manually before running e2e tests
-- API version has to be 31 or below because of detox
+Requires Java 17 installed
 
-## Run on emulator
-`npx nx run-android cookbook-mobile`
-## Run integration tests on emulator
-- Set the ENV variable to 'Test'
-- Run the app (clear app data if using same emulator for dev and test)
-- In a separate terminal session: `npx nx test-android cookbook-mobile-e2e`
-## Publish to connected device
-`npx nx run-android-device-dev cookbook-mobile`
+Requires Maestro CLI to run e2e tests
+https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli
+
+- For development, set `.env` `EXPO_PUBLIC_ENV=Test` - disables data sync and login, pre-seeds test data.
+- To troubleshoot datasync and google auth, use `EXPO_PUBLIC_ENV=Dev` to sync with dev firestore.
+- To publish to a connected device, use `EXPO_PUBLIC_ENV=Dev` or `Prod` and run `android:publish` script.

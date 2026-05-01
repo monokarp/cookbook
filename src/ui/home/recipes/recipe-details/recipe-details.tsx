@@ -1,0 +1,276 @@
+import { RegexPatterns } from "@cookbook/domain/constants";
+import { Position } from "@cookbook/domain/types/position/position";
+import { ProductIngredient } from "@cookbook/domain/types/position/product-ingredient";
+import { PositionGroup, Recipe } from "@cookbook/domain/types/recipe/recipe";
+import { FormatNumber } from "@cookbook/domain/util";
+import { TestIds } from "@cookbook/ui/test-ids";
+import { useState } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { FlatList, KeyboardAvoidingView, View } from "react-native";
+import { Appbar, Button, Divider, Text, TextInput } from "react-native-paper";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useServices } from "../../../services-context";
+import { IngredientSelect } from "../../../common/ingredient-select/ingredient-select";
+import { RootStackParamList } from "../../../navigation.types";
+import { RootViews } from "../../../root-views.enum";
+import { usePrepacksStore } from "../../prepacks/prepacks.store";
+import { useProductsStore } from "../../products/products.store";
+import { useRecipesStore } from "../recipes.store";
+import { GroupRowWrapper } from "./group-wrapper/group-wrapper";
+import { styles } from "./recipe-details.style";
+
+export interface RecipeDetailsFormData {
+    recipeName: string;
+    portions: string;
+}
+
+type Props = NativeStackScreenProps<RootStackParamList, RootViews.RecipeDetails>;
+
+export function RecipeDetails({ navigation, route }: Props) {
+    let listElementRef: FlatList<Position> | null = null;
+
+    const { t } = useTranslation();
+    const { recipes: recipeRepo } = useServices();
+
+    const { items: products } = useProductsStore();
+    const { items: prepacks } = usePrepacksStore();
+
+    const [recipe, setRecipe] = useState<Recipe>(route.params.recipe);
+
+    // @ts-expect-error chill
+    // prettier-ignore
+    const withStoreUpdate = fn => (...args) => {
+            fn.call(recipe, ...args);
+            setRecipe(recipe.clone());
+        };
+
+    const addPosition = withStoreUpdate(recipe.addPosition);
+    const setPosition = withStoreUpdate(recipe.setPosition);
+    const removePosition = withStoreUpdate(recipe.removePosition);
+    const applyGroup = withStoreUpdate(recipe.applyGroup);
+    const removeGroup = withStoreUpdate(recipe.removeGroup);
+
+    const { set: setRecipes } = useRecipesStore();
+
+    const form = useForm({
+        defaultValues: {
+            recipeName: recipe.name,
+            portions: recipe.portions.toString(),
+        },
+    });
+
+    const [currentlyEditedItemIndex, setCurrentlyEditedItemIndex] = useState<number | null>(null);
+
+    const [isEditingGroups, setGroupEditing] = useState(false);
+    const [activeGroup, setActiveGroup] = useState<PositionGroup | null>(null);
+
+    function clearGroupEditing() {
+        setGroupEditing(false);
+        setActiveGroup(null);
+    }
+
+    function isAdjacentToActiveGroup(positionIndex: number): boolean {
+        if (!activeGroup) return false;
+
+        const firstIndex = activeGroup.positionIndices[0];
+        const lastIndex = activeGroup.positionIndices[activeGroup.positionIndices.length - 1];
+
+        const isFirstOrAdjacent = [firstIndex - 1, firstIndex].includes(positionIndex);
+        const isLastOrAdjacent = [lastIndex, lastIndex + 1].includes(positionIndex);
+
+        return isFirstOrAdjacent || isLastOrAdjacent;
+    }
+
+    function isLastInActiveGroup(positionIndex: number): boolean {
+        if (!activeGroup) return false;
+
+        return activeGroup.positionIndices.length === 1 && activeGroup.positionIndices[0] === positionIndex;
+    }
+
+    const onSubmit = async (data: RecipeDetailsFormData) => {
+        recipe.name = data.recipeName.trim();
+        recipe.portions = Number(data.portions);
+
+        await recipeRepo.Save(recipe);
+
+        await recipeRepo.All().then(setRecipes);
+
+        navigation.navigate(RootViews.RecipeSummary, { recipe: recipe.clone() });
+    };
+
+    function addEmptyIngredient() {
+        addPosition(ProductIngredient.Empty());
+        setCurrentlyEditedItemIndex(recipe.positions.length - 1);
+    }
+
+    function deleteIngredient(index: number) {
+        const isGrouped = !!recipe.groups.find(one => one.positionIndices.includes(index));
+
+        if (isGrouped) {
+            return;
+        }
+
+        removePosition(index);
+        setCurrentlyEditedItemIndex(null);
+    }
+
+    return (
+        <FormProvider {...form}>
+            <Appbar.Header>
+                <Appbar.BackAction onPress={() => navigation.goBack()} />
+                <Appbar.Content title={t("recipe.details.title")} />
+                <Appbar.Action icon="check-bold" onPress={form.handleSubmit(onSubmit)} testID={TestIds.RecipeDetails.Submit} />
+            </Appbar.Header>
+            <KeyboardAvoidingView style={styles.container}>
+                <FlatList
+                    ref={ref => {
+                        listElementRef = ref;
+                    }}
+                    onContentSizeChange={() => {
+                        const lastIngredientEmpty = recipe.positions.length && recipe.positions[recipe.positions.length - 1].id === "";
+
+                        if (lastIngredientEmpty) {
+                            listElementRef?.scrollToEnd({ animated: true });
+                        }
+                    }}
+                    style={{ flexGrow: 0, width: "100%" }}
+                    keyExtractor={(item, index) => {
+                        return `${index}_${item.id}`;
+                    }}
+                    ListHeaderComponent={
+                        <View style={{ flexDirection: "row" }}>
+                            <View style={{ flex: 4 }}>
+                                <Controller
+                                    name="recipeName"
+                                    rules={{
+                                        required: true,
+                                        pattern: RegexPatterns.EntityName,
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <View>
+                                            <TextInput
+                                                testID={TestIds.RecipeDetails.NameInput}
+                                                placeholder={t("recipe.name")}
+                                                style={styles.input}
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        </View>
+                                    )}
+                                />
+                                {form.formState.errors.recipeName && (
+                                    <Text testID={TestIds.RecipeDetails.NameInputError} style={styles.validationErrorLabel}>{t("validation.required.alphanumeric")}</Text>
+                                )}
+
+                                <Controller
+                                    name="portions"
+                                    rules={{
+                                        required: true,
+                                        pattern: RegexPatterns.NonZeroInteger,
+                                    }}
+                                    render={({ field: { onChange, onBlur, value } }) => (
+                                        <View>
+                                            <TextInput
+                                                testID={TestIds.RecipeDetails.PortionsInput}
+                                                placeholder={t("recipe.details.portions")}
+                                                keyboardType="numeric"
+                                                style={styles.input}
+                                                onBlur={onBlur}
+                                                onChangeText={onChange}
+                                                value={value}
+                                            />
+                                        </View>
+                                    )}
+                                />
+                                {form.formState.errors.portions && (
+                                    <Text style={styles.validationErrorLabel}>{t("validation.required.integerGTE", { gte: 1 })}</Text>
+                                )}
+
+                                <Text variant="labelLarge" style={{ margin: 5 }}>
+                                    {`${t("product.pricing.totalPrice")}: ${FormatNumber.Money(recipe.totalPrice())}`}
+                                </Text>
+
+                                <Divider />
+                            </View>
+                        </View>
+                    }
+                    data={recipe.positions}
+                    renderItem={({ item, index }) => (
+                        <GroupRowWrapper
+                            recipeGroups={isEditingGroups ? (activeGroup ? [activeGroup] : []) : recipe.groups}
+                            rowIndex={index}
+                            groupEditing={{
+                                isActive: isEditingGroups,
+                                onRemove: removeGroup,
+                                onConfirm: name => {
+                                    applyGroup({ ...activeGroup, name });
+                                    clearGroupEditing();
+                                },
+                                onCancel: clearGroupEditing,
+                            }}
+                        >
+                            <IngredientSelect
+                                ingredientList={[...products, ...prepacks]}
+                                ingredient={item}
+                                index={index}
+                                isEditing={currentlyEditedItemIndex === index}
+                                requestEdit={() => {
+                                    setCurrentlyEditedItemIndex(index);
+                                }}
+                                onEditConfirmed={position => {
+                                    setPosition(position, index);
+                                    setCurrentlyEditedItemIndex(null);
+                                }}
+                                onDelete={() => {
+                                    deleteIngredient(index);
+                                }}
+                                toggleGroupEditing={() => {
+                                    if (isEditingGroups) {
+                                        return;
+                                    }
+
+                                    const existingGroup = recipe.groups.find(one => one.positionIndices.includes(index));
+
+                                    setActiveGroup({
+                                        name: existingGroup ? existingGroup.name : "",
+                                        positionIndices: existingGroup ? [...existingGroup.positionIndices] : [index],
+                                    });
+
+                                    setGroupEditing(true);
+                                }}
+                                toggleItemGrouping={() => {
+                                    if (!isEditingGroups || !activeGroup || isLastInActiveGroup(index) || !isAdjacentToActiveGroup(index)) {
+                                        return;
+                                    }
+
+                                    const updatedIndices = activeGroup.positionIndices.includes(index)
+                                        ? activeGroup.positionIndices.filter(one => one !== index)
+                                        : [...activeGroup.positionIndices, index].sort((a, b) => a - b);
+
+                                    setActiveGroup({
+                                        name: activeGroup.name,
+                                        positionIndices: updatedIndices,
+                                    });
+                                }}
+                            />
+                        </GroupRowWrapper>
+                    )}
+                    ListFooterComponentStyle={{ justifyContent: "center" }}
+                    ListFooterComponent={() => (
+                        <Button
+                            mode="outlined"
+                            testID={TestIds.RecipeDetails.AddIngredient}
+                            disabled={currentlyEditedItemIndex !== null}
+                            onPress={addEmptyIngredient}
+                            style={{ alignSelf: "center", margin: 15 }}
+                        >
+                            {t("recipe.details.addIngredient")}
+                        </Button>
+                    )}
+                />
+            </KeyboardAvoidingView>
+        </FormProvider>
+    );
+}

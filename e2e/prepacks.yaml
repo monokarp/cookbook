@@ -1,0 +1,174 @@
+appId: com.cookbookmobile
+---
+- launchApp:
+    stopApp: true
+
+# Land on recipes view
+- assertVisible:
+    id: "recipes-view"
+
+# Navigate to prepacks
+- tapOn:
+    id: "navigation-prepacks"
+- assertVisible:
+    id: "prepacks-view"
+- assertVisible:
+    id: "prepacks-view-list-item-2"
+- assertNotVisible:
+    id: "prepacks-view-list-item-3"
+
+# Add new prepack
+- tapOn:
+    id: "prepacks-view-add"
+- assertVisible:
+    id: "prepack-details-name-input"
+- assertVisible:
+    id: "prepack-details-weight-input"
+
+# Submit empty - name error
+- tapOn:
+    id: "prepack-details-submit"
+- assertVisible:
+    id: "prepack-details-name-input-error"
+
+# Fill name and submit (empty prepack saves with 0 weight)
+- tapOn:
+    id: "prepack-details-name-input"
+- eraseText: 50
+- inputText: "Novy"
+- tapOn:
+    id: "prepack-details-submit"
+
+# Back from summary to prepacks list - now 4 prepacks
+- assertVisible:
+    id: "prepack-summary-back"
+- tapOn:
+    id: "prepack-summary-back"
+- assertVisible:
+    id: "prepacks-view"
+- assertVisible:
+    id: "prepacks-view-list-item-3"
+- assertNotVisible:
+    id: "prepacks-view-list-item-4"
+
+# Open Novy by text (sort position unknown with mixed locale)
+- tapOn: "Novy"
+- assertVisible:
+    id: "prepack-summary-to-details"
+- tapOn:
+    id: "prepack-summary-to-details"
+- assertVisible:
+    id: "prepack-details-name-input"
+- assertVisible:
+    id: "prepack-details-weight-input"
+
+# Add ingredient
+- tapOn:
+    id: "prepack-details-add-ingredient"
+- assertVisible:
+    id: "ingredient-select-ingredient-button-0"
+
+# Open ingredient picker modal - 6 items
+- tapOn:
+    id: "ingredient-select-ingredient-button-0"
+- assertVisible:
+    id: "ingredient-select-ingredient-modal-name-search-input"
+- assertVisible:
+    id: "ingredient-select-ingredient-modal-list-item-5"
+- assertNotVisible:
+    id: "ingredient-select-ingredient-modal-list-item-6"
+
+# Select Банан (index 0)
+- tapOn:
+    id: "ingredient-select-ingredient-modal-list-item-0"
+
+# Validate units required
+- tapOn:
+    id: "ingredient-select-edit-0"
+- assertVisible:
+    id: "ingredient-select-ingredient-units-error-0"
+
+# Fill units and confirm
+- tapOn:
+    id: "ingredient-select-units-input-0"
+- inputText: "0.100"
+- assertNotVisible:
+    id: "ingredient-select-ingredient-units-error-0"
+- tapOn:
+    id: "ingredient-select-edit-0"
+- assertVisible:
+    id: "prepack-details-submit"
+
+# Submit without weight - weight error (prepack with ingredients requires weight)
+- tapOn:
+    id: "prepack-details-submit"
+- assertVisible:
+    id: "prepack-details-weight-input-error"
+
+# Fill weight and re-submit
+- tapOn:
+    id: "prepack-details-weight-input"
+- inputText: "0.200"
+- assertNotVisible:
+    id: "prepack-details-weight-input-error"
+- assertVisible:
+    id: "prepack-details-submit"
+
+# Save prepack and return to prepacks list
+- tapOn:
+    id: "prepack-details-submit"
+- assertVisible:
+    id: "prepack-summary-back"
+- tapOn:
+    id: "prepack-summary-back"
+- assertVisible:
+    id: "prepacks-view"
+- assertVisible:
+    id: "prepacks-view-list-item-3"
+- assertNotVisible:
+    id: "prepacks-view-list-item-4"
+
+# Filter by "Nov" - only Novy matches
+- tapOn:
+    id: "prepacks-view-search-input"
+- inputText: "Nov"
+- assertVisible:
+    id: "prepacks-view-list-item-0"
+- assertNotVisible:
+    id: "prepacks-view-list-item-1"
+
+# Clear filter - all 4 back
+- tapOn:
+    id: "prepacks-view-search-input"
+- eraseText: 50
+- assertVisible:
+    id: "prepacks-view-list-item-3"
+- assertNotVisible:
+    id: "prepacks-view-list-item-4"
+
+# Attempt to delete referenced prepack (Яблоко с бананом) - fails with toast
+- longPressOn:
+    id: "prepacks-view-list-item-3"
+- assertVisible:
+    id: "confirm-delete-modal"
+- tapOn:
+    id: "confirm-delete-modal-confirm"
+- assertNotVisible:
+    id: "confirm-delete-modal"
+- assertVisible:
+    id: "prepacks-view-list-item-3"
+- assertNotVisible:
+    id: "prepacks-view-list-item-4"
+
+# Delete new prepack (Novy) - succeeds
+- longPressOn: "Novy"
+- assertVisible:
+    id: "confirm-delete-modal"
+- tapOn:
+    id: "confirm-delete-modal-confirm"
+- assertNotVisible:
+    id: "confirm-delete-modal"
+- assertVisible:
+    id: "prepacks-view-list-item-2"
+- assertNotVisible:
+    id: "prepacks-view-list-item-3"

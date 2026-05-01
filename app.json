@@ -1,0 +1,35 @@
+{
+  "expo": {
+    "name": "cookbook",
+    "slug": "cookbook",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/cinnamon_roll.jpg",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/cinnamon_roll.jpg",
+        "backgroundColor": "#f4a9c0"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.cookbookmobile",
+      "googleServicesFile": "./google-services.json"
+    },
+    "plugins": [
+      "@react-native-google-signin/google-signin",
+      "expo-sqlite",
+      "@react-native-firebase/app",
+      "@react-native-firebase/auth"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.cookbookmobile"
+    }
+  }
+}

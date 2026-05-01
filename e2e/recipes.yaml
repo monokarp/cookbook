@@ -1,0 +1,154 @@
+appId: com.cookbookmobile
+---
+- launchApp:
+    stopApp: true
+
+# Land on recipes view with 4 seed recipes
+- assertVisible:
+    id: "recipes-view"
+- assertVisible:
+    id: "recipes-view-list-item-3"
+- assertNotVisible:
+    id: "recipes-view-list-item-4"
+
+# Add new recipe
+- tapOn:
+    id: "recipes-view-add"
+- assertVisible:
+    id: "recipe-details-name-input"
+
+# Submit empty - name error
+- tapOn:
+    id: "recipe-details-submit"
+- assertVisible:
+    id: "recipe-details-name-input-error"
+
+# Fill name and submit
+- tapOn:
+    id: "recipe-details-name-input"
+- inputText: "Novy recept"
+- tapOn:
+    id: "recipe-details-submit"
+
+# Back from summary to recipes list - now 5 recipes
+- assertVisible:
+    id: "recipe-summary-back"
+- tapOn:
+    id: "recipe-summary-back"
+- assertVisible:
+    id: "recipes-view"
+- assertVisible:
+    id: "recipes-view-list-item-4"
+- assertNotVisible:
+    id: "recipes-view-list-item-5"
+
+# Open Novy recept by text (sort position unknown with mixed locale)
+- tapOn: "Novy recept"
+- assertVisible:
+    id: "recipe-summary-to-details"
+
+# Go to recipe details
+- tapOn:
+    id: "recipe-summary-to-details"
+- assertVisible:
+    id: "recipe-details-name-input"
+
+# Add first ingredient
+- tapOn:
+    id: "recipe-details-add-ingredient"
+- assertVisible:
+    id: "ingredient-select-ingredient-button-0"
+
+# Open ingredient picker modal - 6 items (products + prepacks)
+- tapOn:
+    id: "ingredient-select-ingredient-button-0"
+- assertVisible:
+    id: "ingredient-select-ingredient-modal-name-search-input"
+- assertVisible:
+    id: "ingredient-select-ingredient-modal-list-item-5"
+- assertNotVisible:
+    id: "ingredient-select-ingredient-modal-list-item-6"
+
+# Select Яблоко (index 4)
+- tapOn:
+    id: "ingredient-select-ingredient-modal-list-item-4"
+
+# Validate units required
+- tapOn:
+    id: "ingredient-select-edit-0"
+- assertVisible:
+    id: "ingredient-select-ingredient-units-error-0"
+
+# Fill units and confirm
+- tapOn:
+    id: "ingredient-select-units-input-0"
+- inputText: "0.100"
+- assertNotVisible:
+    id: "ingredient-select-ingredient-units-error-0"
+- tapOn:
+    id: "ingredient-select-edit-0"
+- assertVisible:
+    id: "recipe-details-submit"
+
+# Add second ingredient
+- tapOn:
+    id: "recipe-details-add-ingredient"
+- assertVisible:
+    id: "ingredient-select-ingredient-button-1"
+
+# Open picker modal again
+- tapOn:
+    id: "ingredient-select-ingredient-button-1"
+- assertVisible:
+    id: "ingredient-select-ingredient-modal-name-search-input"
+
+# Select Морковка (index 2)
+- tapOn:
+    id: "ingredient-select-ingredient-modal-list-item-2"
+
+# Validate units required - units toggle visible for per-unit product
+- tapOn:
+    id: "ingredient-select-edit-1"
+- assertVisible:
+    id: "ingredient-select-ingredient-units-error-1"
+- assertVisible:
+    id: "ingredient-select-units-toggle-1"
+
+# Fill weight units
+- tapOn:
+    id: "ingredient-select-units-input-1"
+- inputText: "0.100"
+- assertNotVisible:
+    id: "ingredient-select-ingredient-units-error-1"
+
+# Switch to per-unit pricing and re-validate
+- tapOn:
+    id: "ingredient-select-units-toggle-1"
+- tapOn:
+    id: "ingredient-select-edit-1"
+- assertVisible:
+    id: "ingredient-select-ingredient-units-error-1"
+
+# Fill per-unit count and confirm
+- tapOn:
+    id: "ingredient-select-units-input-1"
+- eraseText: 50
+- inputText: "3"
+- assertNotVisible:
+    id: "ingredient-select-ingredient-units-error-1"
+- tapOn:
+    id: "ingredient-select-edit-1"
+
+# Save recipe and return to recipes list
+- tapOn:
+    id: "recipe-details-submit"
+- assertVisible:
+    id: "recipe-summary-back"
+- tapOn:
+    id: "recipe-summary-back"
+- assertVisible:
+    id: "recipes-view"
+- assertVisible:
+    id: "recipes-view-list-item-4"
+- assertNotVisible:
+    id: "recipes-view-list-item-5"

@@ -1,0 +1,105 @@
+{
+    "common": {
+        "save": "Сохранить",
+        "login": "Логин",
+        "cookbook": "Книга рецептов",
+        "loading": "Загрузка...",
+        "ok": "OK",
+        "cancel": "Отмена",
+        "yes": "Да",
+        "done": "Готово"
+    },
+    "lists": {
+        "deleteItemPrompt": "Удалить этот элемент?"
+    },
+    "views": {
+        "recipes": "Рецепты",
+        "products": "Продукты",
+        "prepacks": "П / Ф"
+    },
+    "product": {
+        "measuring": {
+            "grams": "кг",
+            "units": "шт"
+        },
+        "search": {
+            "byName": "Поиск по имени",
+            "noneSelected": "Не выбран продукт"
+        },
+        "name": "Название продукта",
+        "details": {
+            "title": "Детали продукта",
+            "totalWeight": "Общий вес",
+            "numberOfPieces": "Количество штук",
+            "gramsPerPiece": "Вес одной штуки",
+            "weightPerPiece": "Вес одной штуки",
+            "weightInGrams": "Вес в граммах",
+            "macros": "Пищевая ценность",
+            "carbs": "Углеводы",
+            "prot": "Белок",
+            "fat": "Жир",
+            "kcal": "ККалории"
+        },
+        "pricing": {
+            "type": "Тип цены",
+            "pricedByWeight": "Цена за упаковку",
+            "pricedPerPiece": "Цена за штуку",
+            "label": "Цена за грамм: {{pricePerGram}}",
+            "price": "Цена",
+            "totalPrice": "Общая цена"
+        },
+        "addNew": "Добавить продукт"
+    },
+    "recipe": {
+        "name": "Имя рецепта",
+        "addNew": "Добавить рецепт",
+        "totals": "Общие",
+        "description": "Описание",
+        "details": {
+            "isPrepack": "(П/Ф)",
+            "title": "Детали рецепта",
+            "servingSizeInGrams": "Кило",
+            "servingSizeInUnits": "Штуки",
+            "addIngredient": "Добавить ингредиент",
+            "portions": "Количество порций",
+            "ratio": "Порции"
+        },
+        "ingredientPrice": "Стоимость",
+        "groups": {
+            "confirm": "Подтвердить группу",
+            "cancel": "Отменить группу",
+            "name": "Имя группы",
+            "new": "Новая группа",
+            "remove": "Удалить группу?"
+        }
+    },
+    "prepack": {
+        "name": "Название",
+        "finalWeight": "Финальный вес",
+        "addNew": "Добавить полуфабрикат",
+        "details": {
+            "title": "Детали полуфабриката",
+            "descriptionAdd": "Добавить описание",
+            "descriptionView": "Посмотреть описание"
+        }
+    },
+    "validation": {
+        "required": {
+            "integerGTE": "Ожидается целое число не менее {{gte}}",
+            "decimalGTE": "Ожидается десятичное число c точностью до тысячных, не менее {{gte}}",
+            "alphanumeric": "Ожидаются буквы и пробелы",
+            "selectProduct": "Выберите продукт",
+            "real": "Ожидается целое или десятичное число"
+        }
+    },
+    "errors": {
+        "product": {
+            "cantDelete": "Ошибка при удалении продукта",
+            "fkViolation": "Существуют рецепты ссылающиеся на этот продукт"
+        },
+        "prepack": {
+            "cantDelete": "Ошибка при удалении п/ф.",
+            "fkViolation": "Существуют рецепты ссылающиеся на этот п/ф."
+        }
+    }
+}
