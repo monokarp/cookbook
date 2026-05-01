@@ -92,7 +92,6 @@ appId: com.cookbookmobile
 - tapOn:
     id: "ingredient-select-units-input-0"
 - inputText: "0.100"
-- hideKeyboard
 - assertNotVisible:
     id: "ingredient-select-ingredient-units-error-0"
 - tapOn:
@@ -110,7 +109,6 @@ appId: com.cookbookmobile
 - tapOn:
     id: "prepack-details-weight-input"
 - inputText: "0.200"
-- hideKeyboard
 - assertNotVisible:
     id: "prepack-details-weight-input-error"
 - assertVisible:
@@ -149,7 +147,8 @@ appId: com.cookbookmobile
     id: "prepacks-view-list-item-4"
 
 # Attempt to delete referenced prepack (Яблоко с бананом) - fails with toast
-- longPressOn: "Яблоко с бананом"
+- longPressOn:
+    id: "prepacks-view-list-item-3"
 - assertVisible:
     id: "confirm-delete-modal"
 - tapOn:

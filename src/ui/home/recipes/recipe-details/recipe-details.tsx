@@ -131,14 +131,14 @@ export function RecipeDetails({ navigation, route }: Props) {
                         const lastIngredientEmpty = recipe.positions.length && recipe.positions[recipe.positions.length - 1].id === "";
 
                         if (lastIngredientEmpty) {
-                            listElementRef?.scrollToIndex({ index: recipe.positions.length - 1 });
+                            listElementRef?.scrollToEnd({ animated: true });
                         }
                     }}
                     style={{ flexGrow: 0, width: "100%" }}
                     keyExtractor={(item, index) => {
                         return `${index}_${item.id}`;
                     }}
-                    ListHeaderComponent={() => (
+                    ListHeaderComponent={
                         <View style={{ flexDirection: "row" }}>
                             <View style={{ flex: 4 }}>
                                 <Controller
@@ -161,7 +161,7 @@ export function RecipeDetails({ navigation, route }: Props) {
                                     )}
                                 />
                                 {form.formState.errors.recipeName && (
-                                    <Text style={styles.validationErrorLabel}>{t("validation.required.alphanumeric")}</Text>
+                                    <Text testID={TestIds.RecipeDetails.NameInputError} style={styles.validationErrorLabel}>{t("validation.required.alphanumeric")}</Text>
                                 )}
 
                                 <Controller
@@ -188,14 +188,14 @@ export function RecipeDetails({ navigation, route }: Props) {
                                     <Text style={styles.validationErrorLabel}>{t("validation.required.integerGTE", { gte: 1 })}</Text>
                                 )}
 
-                                <Text testID={TestIds.RecipeDetails.NameInputError} variant="labelLarge" style={{ margin: 5 }}>
+                                <Text variant="labelLarge" style={{ margin: 5 }}>
                                     {`${t("product.pricing.totalPrice")}: ${FormatNumber.Money(recipe.totalPrice())}`}
                                 </Text>
 
                                 <Divider />
                             </View>
                         </View>
-                    )}
+                    }
                     data={recipe.positions}
                     renderItem={({ item, index }) => (
                         <GroupRowWrapper

@@ -26,7 +26,6 @@ appId: com.cookbookmobile
 # Fill name and submit
 - tapOn:
     id: "recipe-details-name-input"
-- eraseText: 50
 - inputText: "Novy recept"
 - tapOn:
     id: "recipe-details-submit"
@@ -84,7 +83,6 @@ appId: com.cookbookmobile
 - tapOn:
     id: "ingredient-select-units-input-0"
 - inputText: "0.100"
-- hideKeyboard
 - assertNotVisible:
     id: "ingredient-select-ingredient-units-error-0"
 - tapOn:
@@ -120,7 +118,6 @@ appId: com.cookbookmobile
 - tapOn:
     id: "ingredient-select-units-input-1"
 - inputText: "0.100"
-- hideKeyboard
 - assertNotVisible:
     id: "ingredient-select-ingredient-units-error-1"
 
@@ -137,7 +134,6 @@ appId: com.cookbookmobile
     id: "ingredient-select-units-input-1"
 - eraseText: 50
 - inputText: "3"
-- hideKeyboard
 - assertNotVisible:
     id: "ingredient-select-ingredient-units-error-1"
 - tapOn:
