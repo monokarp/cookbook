@@ -1,9 +1,7 @@
 {
     "common": {
         "save": "Save",
-        "login": "Login",
         "cookbook": "Cookbook",
-        "loading": "Loading...",
         "ok": "OK",
         "cancel": "Cancel",
         "yes": "Yes",
@@ -44,7 +42,6 @@
             "type": "Pricing type",
             "pricedByWeight": "Priced by total weight",
             "pricedPerPiece": "Priced per piece",
-            "label": "Priced at {{pricePerGram}} per gram",
             "price": "Price",
             "totalPrice": "Total price"
         },
@@ -58,17 +55,12 @@
         "details": {
             "isPrepack": "Prepack",
             "title": "Recipe details",
-            "servingSizeInGrams": "Kilos",
-            "servingSizeInUnits": "Units",
             "addIngredient": "Add ingredient",
             "portions": "Number of portions",
             "ratio": "Ratio"
         },
         "ingredientPrice": "Ingredient price",
         "groups": {
-            "confirm": "Confirm group",
-            "cancel": "Cancel group",
-            "name": "Group name",
             "new": "New group",
             "remove": "Remove this group?"
         }

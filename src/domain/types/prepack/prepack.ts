@@ -1,4 +1,4 @@
-import { roundMoney, roundMoneySafe } from "../../util";
+import { roundMoney } from "../../util";
 import { Macros } from "../macros";
 import { NamedEntity } from "../named-entity";
 import { Position, PositionDto, PositionEntity, isPrepackIngredient, isProductIngredient, mapPositions } from "../position/position";
@@ -64,7 +64,7 @@ export class Prepack implements NamedEntity {
     }
 
     public pricePerGram(): number {
-        return roundMoneySafe(this.finalWeight ? this.price() / this.finalWeight : 0);
+        return roundMoney(this.finalWeight ? this.price() / this.finalWeight : 0);
     }
 
     public weightRatio(): number {

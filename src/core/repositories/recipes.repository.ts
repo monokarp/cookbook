@@ -114,7 +114,7 @@ export class RecipesRepository {
             ["DELETE FROM [RecipePrepackIngredients]  WHERE [RecipeId] = ?;", [id]],
             ["DELETE FROM [RecipePositionGroups] WHERE [RecipeId] = ?;", [id]],
             ["DELETE FROM [Recipes]  WHERE [Id] = ?;", [id]],
-            ["INSERT INTO [RecipesPendingDeletion] VALUES (?)", [id]],
+            ["INSERT INTO [RecipesPendingDeletion] VALUES (?);", [id]],
         ]);
     }
 
@@ -192,7 +192,7 @@ export class RecipesRepository {
                 [RecipePositionGroups].[Name],
                 [RecipePositionGroups].[PositionIndicesCsv]
             FROM [RecipePositionGroups]
-            WHERE [RecipePositionGroups].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")})`,
+            WHERE [RecipePositionGroups].[RecipeId] IN (${recipeIds.map(() => "?").join(", ")});`,
             recipeIds,
         );
     }

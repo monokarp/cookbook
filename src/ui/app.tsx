@@ -60,7 +60,7 @@ const App = () => {
                                                         routes: [{ name: RootViews.Login, params: { doSignOut: true } }],
                                                     });
                                                 }}
-                                                testID={TestIds.PrepackDetails.Submit}
+                                                testID={TestIds.Navigation.Logout}
                                             />
                                         </Appbar.Header>
                                     ),

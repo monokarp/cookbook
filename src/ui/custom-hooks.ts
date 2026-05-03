@@ -5,5 +5,5 @@ export function useSubscription<S>(subscriber: (cb: S) => { unsubscribe: () => v
         const sub = subscriber(callback);
 
         return () => sub.unsubscribe();
-    });
+    }, [subscriber, callback]);
 }

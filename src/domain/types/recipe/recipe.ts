@@ -97,9 +97,14 @@ export class Recipe implements NamedEntity {
         }
 
         this.data.positions = this.data.positions.filter((_, i) => i !== index);
+
+        this.data.groups = this.data.groups.map(group => ({
+            ...group,
+            positionIndices: group.positionIndices.map(idx => (idx > index ? idx - 1 : idx)),
+        }));
     }
 
-    public applyGroup(group: PositionGroup) {
+    public applyGroup(group: PositionGroup): void {
         const prunedGroups = this.groups.reduce((groups, next) => {
             if (next.name === group.name) {
                 return groups;

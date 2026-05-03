@@ -5,12 +5,13 @@
   "scripts": {
     "start": "expo start",
     "prebuild": "npx expo prebuild --platform android",
-    "android:debug": "expo run:android",
-    "android:standalone": "expo run:android --variant release",
-    "android:publish": "expo run:android --variant release --device",
+    "android:debug": "npx expo run:android",
+    "android:standalone": "npx expo run:android --variant release",
+    "android:publish": "npx expo run:android --variant release --device",
     "test": "npx jest",
     "e2e": "maestro test e2e/",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "android": "expo run:android"
   },
   "dependencies": {
     "@expo/vector-icons": "15.1.1",

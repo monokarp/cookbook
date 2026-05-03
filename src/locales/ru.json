@@ -1,9 +1,7 @@
 {
     "common": {
         "save": "Сохранить",
-        "login": "Логин",
         "cookbook": "Книга рецептов",
-        "loading": "Загрузка...",
         "ok": "OK",
         "cancel": "Отмена",
         "yes": "Да",
@@ -44,7 +42,6 @@
             "type": "Тип цены",
             "pricedByWeight": "Цена за упаковку",
             "pricedPerPiece": "Цена за штуку",
-            "label": "Цена за грамм: {{pricePerGram}}",
             "price": "Цена",
             "totalPrice": "Общая цена"
         },
@@ -58,17 +55,12 @@
         "details": {
             "isPrepack": "(П/Ф)",
             "title": "Детали рецепта",
-            "servingSizeInGrams": "Кило",
-            "servingSizeInUnits": "Штуки",
             "addIngredient": "Добавить ингредиент",
             "portions": "Количество порций",
             "ratio": "Порции"
         },
         "ingredientPrice": "Стоимость",
         "groups": {
-            "confirm": "Подтвердить группу",
-            "cancel": "Отменить группу",
-            "name": "Имя группы",
             "new": "Новая группа",
             "remove": "Удалить группу?"
         }

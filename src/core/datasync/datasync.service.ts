@@ -6,6 +6,7 @@ const SyncIntervalMs = 10 * 1000;
 
 export class DataSync {
     private readonly syncs: EntitySync[] = [];
+    private intervalHandle: ReturnType<typeof setInterval> | null = null;
 
     constructor(protected readonly dsRepo: DatasyncRepository) {}
 
@@ -40,7 +41,9 @@ export class DataSync {
     }
 
     public async start(userId: string): Promise<void> {
-        setInterval(async () => {
+        if (this.intervalHandle) clearInterval(this.intervalHandle);
+
+        this.intervalHandle = setInterval(async () => {
             try {
                 if (await this.hasNetwork()) {
                     const lastSynced = await this.dsRepo.getLastSyncTime();

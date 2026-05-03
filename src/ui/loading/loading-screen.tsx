@@ -51,7 +51,7 @@ export function LoadingScreen({ navigation }: Props) {
 
             navigation.navigate(RootViews.Home);
         })();
-    });
+    }, []);
 
     return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>

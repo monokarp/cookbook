@@ -62,7 +62,7 @@ export class PrepacksRepository {
     public async One(id: string): Promise<PrepackEntity | null> {
         const rows = await this.database.ExecuteSql<PrepackRow>(
             `${this.SelectPrepackIngredientRowsSQL}
-            WHERE [Prepacks].[Id] = ?`,
+            WHERE [Prepacks].[Id] = ?;`,
             [id],
         );
 
@@ -100,7 +100,7 @@ export class PrepacksRepository {
                     ] as Query;
                 }
 
-                throw new Error("Unknown ingredient type", ingredient);
+                throw new Error(`Unknown ingredient type: ${JSON.stringify(ingredient)}`);
             }),
         ]);
     }
@@ -110,7 +110,7 @@ export class PrepacksRepository {
             ["DELETE FROM [PrepackProductIngredients] WHERE [PrepackId] = ?;", [id]],
             ["DELETE FROM [PrepackPrepackIngredients] WHERE [PrepackId] = ?;", [id]],
             ["DELETE FROM [Prepacks] WHERE [Id] = ?;", [id]],
-            ["INSERT INTO [PrepacksPendingDeletion] VALUES (?)", [id]],
+            ["INSERT INTO [PrepacksPendingDeletion] VALUES (?);", [id]],
         ]);
     }
 
@@ -129,21 +129,21 @@ export class PrepacksRepository {
 
         const [productPositions, prepackPositions] = await this.GetNestedEntities(prepackIds);
 
-        const recipesMap = new Map<string, PrepackEntity>();
+        const prepacksMap = new Map<string, PrepackEntity>();
 
         for (const one of prepacks) {
-            recipesMap.set(one.Id, MapPrepack(one));
+            prepacksMap.set(one.Id, MapPrepack(one));
         }
 
         for (const one of productPositions) {
-            recipesMap.get(one.PrepackId)!.ingredients[one.PositionNumber - 1] = MapProductIngredient(one);
+            prepacksMap.get(one.PrepackId)!.ingredients[one.PositionNumber - 1] = MapProductIngredient(one);
         }
 
         for (const one of prepackPositions) {
-            recipesMap.get(one.PrepackId)!.ingredients[one.PositionNumber - 1] = MapPrepackIngredient(one);
+            prepacksMap.get(one.PrepackId)!.ingredients[one.PositionNumber - 1] = MapPrepackIngredient(one);
         }
 
-        return [...recipesMap.values()];
+        return [...prepacksMap.values()];
     }
 
     private async GetNestedEntities(prepackIds: string[]) {

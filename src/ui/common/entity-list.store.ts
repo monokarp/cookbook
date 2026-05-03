@@ -25,7 +25,7 @@ export function entityListStoreFactory<T extends NamedEntity>() {
         deleteItem: (id: string) =>
             set(state => ({
                 items: state.items.filter(item => item.id !== id).sort(byName),
-                filteredItems: state.items.filter(item => item.id !== id).sort(byName),
+                filteredItems: state.filteredItems.filter(item => item.id !== id).sort(byName),
             })),
     }));
 }

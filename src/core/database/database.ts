@@ -90,7 +90,7 @@ export class Database {
             if (appliedVersion) {
                 if (migration.version !== appliedVersion) {
                     throw new Error(
-                        `Migration mismatch at index ${index}: ${migration} (in DB) !== ${migrations[index].version} (pending)`,
+                        `Migration mismatch at index ${index}: ${appliedVersion} (in DB) !== ${migration.version} (expected)`,
                     );
                 }
             } else {

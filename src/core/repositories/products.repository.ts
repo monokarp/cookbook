@@ -88,7 +88,7 @@ export class ProductsRepository {
         await this.database.Transaction([
             ["DELETE FROM [ProductPricing] WHERE [ProductId] = ?;", [id]],
             ["DELETE FROM [Products] WHERE [Id] = ?;", [id]],
-            ["INSERT INTO [ProductsPendingDeletion] VALUES (?)", [id]],
+            ["INSERT INTO [ProductsPendingDeletion] VALUES (?);", [id]],
         ]);
     }
 

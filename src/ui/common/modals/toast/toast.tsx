@@ -1,4 +1,5 @@
 import { TestIds } from "@cookbook/ui/test-ids";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Portal, Snackbar, Text } from "react-native-paper";
 
@@ -13,7 +14,10 @@ export interface ToastProps {
 export function Toast({ message, testID, onResult }: ToastProps) {
     const { t } = useTranslation();
 
-    setTimeout(() => onResult(), DefaultTimeoutMs);
+    useEffect(() => {
+        const handle = setTimeout(() => onResult(), DefaultTimeoutMs);
+        return () => clearTimeout(handle);
+    }, []);
 
     return (
         <Portal>
@@ -25,7 +29,7 @@ export function Toast({ message, testID, onResult }: ToastProps) {
                     label: t("common.ok"),
                 }}
             >
-                <Text style={{ color: "white" }} testID={TestIds.Common.ToastMessage ?? testID}>
+                <Text style={{ color: "white" }} testID={testID ?? TestIds.Common.ToastMessage}>
                     {message}
                 </Text>
             </Snackbar>
