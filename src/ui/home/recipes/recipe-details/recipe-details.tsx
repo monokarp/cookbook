@@ -38,11 +38,14 @@ export function RecipeDetails({ navigation, route }: Props) {
 
     const [recipe, setRecipe] = useState<Recipe>(route.params.recipe);
 
-    // @ts-expect-error chill
-    // prettier-ignore
-    const withStoreUpdate = fn => (...args) => {
-            fn.call(recipe, ...args);
-            setRecipe(recipe.clone());
+    const withStoreUpdate =
+        <Args extends unknown[]>(fn: (this: Recipe, ...args: Args) => void) =>
+        (...args: Args) => {
+            setRecipe(prev => {
+                const updated = prev.clone();
+                fn.apply(updated, args);
+                return updated;
+            });
         };
 
     const addPosition = withStoreUpdate(recipe.addPosition);
@@ -100,8 +103,10 @@ export function RecipeDetails({ navigation, route }: Props) {
     };
 
     function addEmptyIngredient() {
+        const newIndex = recipe.positions.length;
+
         addPosition(ProductIngredient.Empty());
-        setCurrentlyEditedItemIndex(recipe.positions.length - 1);
+        setCurrentlyEditedItemIndex(newIndex);
     }
 
     function deleteIngredient(index: number) {
@@ -205,6 +210,8 @@ export function RecipeDetails({ navigation, route }: Props) {
                                 isActive: isEditingGroups,
                                 onRemove: removeGroup,
                                 onConfirm: name => {
+                                    if (!activeGroup) return;
+
                                     applyGroup({ ...activeGroup, name });
                                     clearGroupEditing();
                                 },
